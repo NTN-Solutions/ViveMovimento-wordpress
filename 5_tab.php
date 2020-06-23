@@ -397,6 +397,9 @@ function fnTab_5(){
 
     echo '  </div>';
     $intDiaContador = count($listadoDiario);
+
+    date_default_timezone_set('America/Costa_Rica');
+
     foreach ($listadoDiario as $diario) {
         $datFechaDiario = new DateTime($diario->datFecha);
         if ((new DateTime())->format('d/m/Y') == $datFechaDiario->format('d/m/Y')) {
