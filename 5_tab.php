@@ -363,21 +363,27 @@ function fnTab_5(){
   </div>
   <div class="panel-body">
 <?php
-    $intContadorFolder = 1;$bitFolderAbierto = false;
+    $intDiarioDelDia = 0;
+
+    $intContadorFolder = 0;$bitFolderAbierto = false;
     $intDiaContador = count($listadoDiario);
     echo '<div class="row">';    
     foreach ($listadoDiario as $diario) {
         $datFechaDiario = new DateTime($diario->datFecha);
-        if ($intContadorFolder >= (7*4) && $bitFolderAbierto == false) {
+        if ($intContadorFolder >= (4) && $bitFolderAbierto == false) {
             $bitFolderAbierto = true;
-            echo '<div class="col-md-12 col-xs-12 col-sm-12 sinPadding" style="display: none;"><br/>';
+            //se habilita nuevamente los badges de fechas, steven 22/jun/2020 09:40 pm
+            // echo '<div class="col-md-12 col-xs-12 col-sm-12 sinPadding" style="display: none;"><br/>';
+            echo '<div class="col-md-12 col-xs-12 col-sm-12 sinPadding"><br/>';
             echo '  <a class="btn btn-link badge" role="button" data-toggle="collapse" href="#collapseFOLDER" aria-expanded="false" aria-controls="collapseFOLDER">';
             echo '      <i class="fas fa-calendar-day"></i> Folder de dias anteriores';
             echo '  </a>';
             echo '</div>';
             echo '<div class="collapse col-md-12 col-xs-12 col-sm-12 sinPadding" id="collapseFOLDER">';
         }
-        echo '<div class="col-md-3 col-xs-12 col-sm-12 sinPadding" style="display: none;">';
+        //se habilita nuevamente los badges de fechas, steven 22/jun/2020 09:40 pm
+        // echo '<div class="col-md-3 col-xs-12 col-sm-12 sinPadding" style="display: none;">';
+        echo '<div class="col-md-3 col-xs-12 col-sm-12 sinPadding">';
         echo '  <a class="btn btn-link badge" role="button" data-toggle="collapse" href="#collapseDiario_'.$diario->intId.'" aria-expanded="false" aria-controls="collapseDiario_'.$diario->intId.'">';
         echo '      <i class="fas fa-calendar-day"></i> Dia '.$intDiaContador.' ('.$datFechaDiario->format('D, d-M-Y').')';
         echo '  </a>';
@@ -393,6 +399,9 @@ function fnTab_5(){
     $intDiaContador = count($listadoDiario);
     foreach ($listadoDiario as $diario) {
         $datFechaDiario = new DateTime($diario->datFecha);
+        if ((new DateTime())->format('d/m/Y') == $datFechaDiario->format('d/m/Y')) {
+            $intDiarioDelDia = $diario->intId;
+        }
         echo '<script>arrayFechas.push(["'.$datFechaDiario->format('d/m/Y').'",'.$diario->intId.']);</script>';
         echo '
             <div class="collapse col-md-12 col-xs-12 col-sm-12 sinPadding" id="collapseDiario_'.$diario->intId.'">
@@ -562,6 +571,11 @@ function fnTab_5(){
         }, 300);
         setTimeout(function(){
             $('#txtFechaDiario').datepicker('setDate', new Date());
+            <?php
+                if ($intDiarioDelDia > 0 ) {
+                    echo "setTimeout(function(){ $('#collapseDiario_".$intDiarioDelDia."').collapse('show'); }, 1000);";
+                }
+            ?>
         }, 600);
     });
 </script>
