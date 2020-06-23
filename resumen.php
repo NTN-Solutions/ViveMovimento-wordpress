@@ -23,22 +23,28 @@
     <h4><?php echo iconv('ISO-8859-1', 'UTF-8', strftime('%A, %d/%B/%Y', time())); ?></h4>
 
     <div class="alert alert-<?php echo ($gDataPaso_1 == null ? 'warning' : 'success') ?>" role="alert">
-      <strong><a href="/user/?action=tab_Paso_1"> Paso 1 - </a></strong> Información Básica (<?php echo ($gDataPaso_1 == null ? 'PENDIENTE' : 'Completada') ?>)
+      <strong><a href="/user/?action=tab_Paso_1"> Paso 1 - </strong> Información Básica (<?php echo ($gDataPaso_1 == null ? 'PENDIENTE' : 'Completada') ?>)</a>
     </div>
 
     <div class="alert alert-<?php echo ($gDataPaso_2 == null ? 'warning' : 'success') ?>" role="alert">
-      <strong><a href="/user/?action=tab_Paso_2"> Paso 2 - </a></strong> Gasto Energético (<?php echo ($gDataPaso_2 == null ? 'PENDIENTE' : 'Completada') ?>)
+      <strong><a href="/user/?action=tab_Paso_2"> Paso 2 - </strong> Gasto Energético (<?php echo ($gDataPaso_2 == null ? 'PENDIENTE' : 'Completada') ?>)</a>
     </div>
 
     <div class="alert alert-<?php echo ($gDataPaso_3 == null ? 'warning' : 'success') ?>" role="alert">
-      <strong><a href="/user/?action=tab_Paso_3"> Paso 3 - </a></strong> Metas (<?php echo ($gDataPaso_3 == null ? 'PENDIENTE' : 'Completada') ?>)
+      <strong><a href="/user/?action=tab_Paso_3"> Paso 3 - </strong> Metas (<?php echo ($gDataPaso_3 == null ? 'PENDIENTE' : 'Completada') ?>)</a>
     </div>
 
     <div class="alert alert-info" role="alert">
-      <strong><a href="/user/?action=tab_Paso_4"> Paso 4 - </a></strong> Conoce tu Plan Nutricional
+      <strong><a href="/user/?action=tab_Paso_4"> Paso 4 - </strong> Conoce tu Plan Nutricional</a>
     </div>
     <div class="alert alert-info" role="alert">
-      <strong><a href="/plan-de-ejercicios">Paso 5 - </a></strong> Elige tu Plan de Ejercicios
+      <strong><a href="/plan-de-ejercicios">Paso 5 - </strong> Elige tu Plan de Ejercicios</a>
+    </div>
+    <div class="alert alert-info" role="alert">
+      <strong><a href="/user/?action=tab_Paso_5">Paso 6 - </strong> Ingresa tus comidas en tu Food Journal</a>
+    </div>
+    <div class="alert alert-info" role="alert">
+      <strong><a href="/user/?action=tab_Paso_7">Paso 7 - </strong> Lleva control de tu progreso</a>
     </div>
   </div>
 </div>

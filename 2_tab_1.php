@@ -56,7 +56,6 @@ function fnTab_21_form($strUsuario,$intExperiencia){ ?>
     <table class="table table-striped table-condensed">
       <thead>
         <tr>
-          <th></th>
           <th>Experiencia</th>
           <th>Descripción</th>
         </tr>
@@ -87,7 +86,7 @@ function fnTab_21_form($strUsuario,$intExperiencia){ ?>
               <span class="rbCheckmark"></span>
             </label>
           </th>
-          <td>He estado disciplinada en cuanto a la dieta y el ejercicio de manera consistente por mas de 4 meses.</td>
+          <td>He estado disciplinado en cuanto a la dieta y el ejercicio de manera consistente por mas de 4 meses.</td>
         </tr>
       </tbody>
     </table>

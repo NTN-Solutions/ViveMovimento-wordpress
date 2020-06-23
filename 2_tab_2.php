@@ -68,7 +68,7 @@ function fnTab_22_form($strUsuario,$intEjercicio){ ?>
               <span class="rbCheckmark"></span>
             </label>
           </th>
-          <th>Ejercicio de resistencia muscular co peso adicional, maquinas, mancuernas, barras, etc.</th>
+          <th>Ejercicio de resistencia muscular con peso adicional, maquinas, mancuernas, barras, etc.</th>
         </tr>
         <tr class="active">
           <th scope="row">
@@ -77,7 +77,7 @@ function fnTab_22_form($strUsuario,$intEjercicio){ ?>
               <span class="rbCheckmark"></span>
             </label>
           </th>
-          <th>Cardio HIIT (intervalos de alta intensidad), videos de ejercicios en aplicaciones moviles, maquinas de cardio (caminadora, eliptica, bicicleta), caminatas, deporte. etc</th>
+          <th>Cardio HIIT (intervalos de alta intensidad), videos de ejercicios en aplicaciones móviles, máquinas de cardio (caminadora, elíptica, bicicleta), caminatas, deporte. Etc.</th>
         </tr>
         <tr class="success">
           <th scope="row">
@@ -86,7 +86,7 @@ function fnTab_22_form($strUsuario,$intEjercicio){ ?>
               <span class="rbCheckmark"></span>
             </label>
           </th>
-          <th>Crossfit, pesas y sesiones de cardio</th>
+          <th>Crossfit, pesas y sesiones de cardio.</th>
         </tr>
       </tbody>
     </table>
