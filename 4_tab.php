@@ -1,4 +1,78 @@
 <?php
+function fnVerificarCombraDeSuscripcion() {
+  //https://stackoverflow.com/questions/38157176/how-to-get-purchase-date-from-woocommerce-order
+  // Get All order of current user
+  
+  $strProducto = 'Suscripción Mensual';
+  $product = get_page_by_title( $strProducto, OBJECT, 'product' );
+  if($product == null)return 30; // devolvemos 30 dias simulando que ya paso el mes de no haber comprado la Suscripcion
+
+  $id = $product->ID;
+  $orders = get_posts( array(
+      'numberposts' => -1,
+      'meta_key'    => '_customer_user',
+      'meta_value'  => get_current_user_id(),
+      'post_type'   => wc_get_order_types( 'view-orders' ),
+      'post_status' => array_keys( wc_get_order_statuses() )
+  ) );
+
+  if ( !$orders ) return 30; // devolvemos 30 dias simulando que ya paso el mes de no haber comprado la Suscripcion
+
+  $all_ordered_product = array(); // store products ordered in an array
+
+  foreach ( $orders as $order => $data ) { // Loop through each order
+      $order_data = new WC_Order( $data->ID ); // create new object for each order
+      foreach ( $order_data->get_items() as $key => $item ) {  // loop through each order item
+          // store in array with product ID as key and order date a value
+          $all_ordered_product[ $item['product_id'] ] = $data->post_date;
+      }
+  }
+  if ( isset( $all_ordered_product[ $id ] ) ) { // check if defined ID is found in array
+    // $datFechaCompra = date('Y-m-d', strtotime( $all_ordered_product[ $id ] ) );
+    // $datFechaActual = date_format(date_create("2020-07-20"),"Y-m-d");
+
+    $datFechaHoraActual = time();
+    $datFechaHoraCompra = strtotime($all_ordered_product[ $id ]);
+    $intDias = $datFechaHoraActual - $datFechaHoraCompra;
+    $intDias = abs(round($intDias / (60 * 60 * 24)));
+    // echo '$intDias....'.$intDias.'.....';
+    return $intDias; //devolvemos la cantidad de dias transcurridos de la compra de susbcripcion
+  } else {
+    return 30;// devolvemos 30 dias simulando que ya paso el mes de no haber comprado la Suscripcion
+  }
+}
+
+function strSuscripcionComprada($strUsuario){
+  $decProducto = floatval(3731);
+  $dataProducto = wc_get_product( $decProducto );
+  //codigo de prueba comentado, se obtuvo de proyecto cafbook.org, misma logica se ocupara aca.
+
+  // $strProductoNombre = strtolower($dataProducto->get_name());
+  // $bitPermitirMostrarContenido = false;
+  // if (strpos($strProductoNombre, '(demo)') !== false || strpos($strProductoNombre, '*') !== false || strpos($strProductoNombre, 'gratis') !== false) {
+  //   //si nombre del producto lleva (Demo) le permitimos
+  //   $bitPermitirMostrarContenido = true;
+  // }else
+
+  echo '=============>'.(_cmk_check_ordered_product(3731)).'<==============';
+
+  if(!is_user_logged_in()){
+    //si no esta logeado no permitimos mostrar tabla de porciones
+    $bitPermitirMostrarContenido = false;
+  }else{
+    //si usuario esta logeado buscamos si ya lo compro
+    $strUsuarioLogeado = wp_get_current_user();
+    if ( wc_customer_bought_product( $strUsuarioLogeado->user_email, $strUsuarioLogeado->ID, $dataProducto->get_id() ) ){
+      //si ya lo compro tiene permitido tabla de porciones
+      echo '==========>'.(wc_customer_bought_product( $strUsuarioLogeado->user_email, $strUsuarioLogeado->ID, $dataProducto->get_id() )).'<===========';
+      $bitPermitirMostrarContenido = true;
+    }else{
+      //sino lo compro no tiene permitido tabla de porciones
+      $bitPermitirMostrarContenido = false;
+    }
+  } 
+}
+
 function fnTab_4_cargar(){
   global $wpdb,$intMeta;
   $strUsuario = wp_get_current_user()->user_login;
@@ -97,16 +171,32 @@ function fnTab_4(){
   $decCarbo[2] = $decCarbo[1] / 4;
   $decCarbo[3] = $decCarbo[2] / 25;
 
-  fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$decTDEE,$intActividadTipo,$decEjercicio,$decCalorias,$decProteinas,$decCarbo,$decGrasas,$decIMC);
+  $intDiasSuscripcion = fnVerificarCombraDeSuscripcion();
+  if($intDiasSuscripcion < 30){
+    fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$decTDEE,$intActividadTipo,$decEjercicio,$decCalorias,$decProteinas,$decCarbo,$decGrasas,$decIMC,$intDiasSuscripcion);
+  }else{
+    fnTab_4_alerta_Suscripcion();
+  }
+
+}
+function fnTab_4_alerta_Suscripcion(){
+  ?>
+  <div class="alert alert-warning alert-dismissible" role="alert">
+    <strong><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Suscripción Mensual</strong>
+    <br/>Para observar el calculo de tus porciones debes realizar la compra de la Suscripción!
+    <br/><br/><a href="/shop">Click aquí para comprar Suscripción Mensual</a>
+  </div>
+  <?php
 }
 
-function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$decTDEE,$intActividadTipo,$decEjercicio,$decCalorias,$decProteinas,$decCarbo,$decGrasas,$decIMC){ ?>
+function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$decTDEE,$intActividadTipo,$decEjercicio,$decCalorias,$decProteinas,$decCarbo,$decGrasas,$decIMC,$intDiasSuscripcion){ ?>
 
  <div class="row" style="padding: 0px;">
      <div class="col-md-12 col-xs-12 col-sm-12" style="padding: 0px;">
         <div class="vc_message_box vc_message_box-solid-icon vc_message_box-square vc_color-success">
           <div class="vc_message_box-icon"><i class="fa fa-info" aria-hidden="true"></i></div>
             <p><?php echo $strUsuario; ?>, hemos calculado tus porciones segun tu peso, altura y gasto energetico.</p>
+            <p>Tu suscripción terminará en <?= abs(30 - $intDiasSuscripcion) ?> días</p>
         </div>
     </div>
   </div>
