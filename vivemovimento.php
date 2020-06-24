@@ -257,10 +257,6 @@ function fnViveMovimento_topbar(){
                 <a href="/wp-login.php/" class="a_top" style="color: white;"><i class="fa fa-sign-in" aria-hidden="true"></i> Iniciar Sesión
                 </a>
             </li>
-            <li style="display:none;">
-                <a href="/wp-register.php" class="a_top" style="color: white;"><i class="fa fa-sign-in" aria-hidden="true"></i> Registrarse
-                </a>
-            </li>
           </ul>
         </li>';
 
