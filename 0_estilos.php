@@ -291,6 +291,11 @@
 							<i class="fas fa-check"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo '<br/>';} ?> Check In
 						</a>
 					</li>
+					<li role="presentation" id="tab_core_8" class="tab_planes_ejercicio" style="display: none;">
+						<a href="#tab_Paso_8" id="tab_Paso_8_Ref" aria-controls="tab_Paso_8" role="tab" data-toggle="tab">
+							<i class="fas fa-check"></i> Plan de Ejercicios
+						</a>
+					</li>
 				</ul>
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane" id="tab_Paso_1">
@@ -319,6 +324,9 @@
 					</div>
 					<div role="tabpanel" class="tab-pane" id="tab_Paso_7">
 						<?php fnTab_7(); ?>
+					</div>
+					<div role="tabpanel" class="tab-pane" id="tab_Paso_8">
+						<?php fnTab_8(); ?>
 					</div>
 				</div>
 			</div>
@@ -361,6 +369,11 @@
 						$('.tab_core_no_diario').hide();
 						$('.tab_core_diario').hide();	
 						$('.tab_check_in').show();
+					}else if(window.location.href.toLowerCase().split('tab_paso_')[1] == 8){
+						$('.tab_core_no_diario').hide();
+						$('.tab_core_diario').hide();	
+						$('.tab_check_in').hide();
+						$('.tab_planes_ejercicio').show();
 					}
 				}
 			}else{

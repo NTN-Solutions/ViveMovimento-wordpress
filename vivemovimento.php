@@ -221,6 +221,7 @@ include( plugin_dir_path( __FILE__ ) . '/5_tab.php');
 // include( plugin_dir_path( __FILE__ ) . '/3_base_datos_alimentos.php');
 include( plugin_dir_path( __FILE__ ) . '/bd_tab.php');
 include( plugin_dir_path( __FILE__ ) . '/7_tab.php');
+include( plugin_dir_path( __FILE__ ) . '/8_tab.php');
 
 // Register a new shortcode: [cr_custom_registration]
 // add_shortcode( 'cr_custom_registration', 'custom_registration_shortcode' );

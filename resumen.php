@@ -38,7 +38,7 @@
       <strong><a href="/user/?action=tab_Paso_4"> Paso 4 - </strong> Conoce tu Plan Nutricional</a>
     </div>
     <div class="alert alert-info" role="alert">
-      <strong><a href="/plan-de-ejercicios">Paso 5 - </strong> Elige tu Plan de Ejercicios</a>
+      <strong><a href="/user/?action=tab_Paso_8">Paso 5 - </strong> Elige tu Plan de Ejercicios</a>
     </div>
     <div class="alert alert-info" role="alert">
       <strong><a href="/user/?action=tab_Paso_5">Paso 6 - </strong> Ingresa tus comidas en tu Food Journal</a>
