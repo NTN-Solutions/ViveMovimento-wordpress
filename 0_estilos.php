@@ -396,6 +396,28 @@
 	$(".wpb_text_column.wpb_content_element").hide();
 </script>
 
+
+
+	<div id="modalFoto" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+	  <div class="modal-dialog modal-lg" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h4 class="modal-title" id="myModalLabel">Foto</h4>
+	      </div>
+	    	<div class="row">
+	    		<div class="col-md-12 col-xs-12 col-sm-12">
+	    			<img id="imgFotoDia" src="#" alt="Foto" class="img-responsive img-thumbnail">
+	    		</div>
+	    	</div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default btn-sm btn-block" data-dismiss="modal">Cerrar</button>
+		      </div>
+	    </div>
+	  </div>
+	</div>
+
+	
+
 <?php } ?>
 
 
