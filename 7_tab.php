@@ -154,7 +154,7 @@
 			,MAX(decPeso) decPeso
 		FROM wp_vivemov_users_informacion
 		WHERE strUsuario = '$strUsuario'
-			AND CAST(datRegistro AS DATE) >= CAST(DATE_ADD(CURDATE(), INTERVAL -31 DAY) AS DATE)
+			AND CAST(datRegistro AS DATE) >= CAST(DATE_ADD(CURDATE(), INTERVAL -2 MONTH) AS DATE)
 		GROUP BY CAST(datRegistro AS DATE)
 		ORDER BY datRegistro ASC
 		LIMIT 30
@@ -206,7 +206,10 @@
 		<div class="col-sm-12 col-xs-12 col-md-12">
 			<div class="collapse" id="collapse_grafica_peso">
 			  <div class="well">
-			  	<canvas id="graficaPesoCanvas" width="400" height="200" style="width: 100% !important;height: 200px !important;"></canvas>
+			  	<!-- <canvas id="graficaPesoCanvas" width="400" height="600" style="max-width: 1200px;max-height: 800px;"></canvas> -->
+			  	<center>
+			  		<canvas id="graficaPesoCanvas" width="1100px" height="600px" style="max-width: 1100px;max-height: 600px;"></canvas>
+			  	</center>
 			  </div>
 			</div>
 		</div>
@@ -287,39 +290,42 @@
 
 	<script>
 		function fnGraficaPesoInit() {
-			var ctx = document.getElementById('graficaPesoCanvas').getContext('2d');
-			var graficaPesoCanvas = new Chart(ctx, {
-			    type: 'line',
-			    data: {
-			        labels: [<?= $arrayGraficaPesoLabels ?>],
-			        datasets: [{
-			            label: 'Gráfica de Peso de últimos 30 días',
-			            data: [<?= $arrayGraficaPesoValues ?>],
-			            backgroundColor: [
-			                'rgba(54, 162, 235, 0.2)',
-			                'rgba(255, 206, 86, 0.2)',
-			                'rgba(75, 192, 192, 0.2)',
-			                'rgba(255, 159, 64, 0.2)'
-			            ],
-			            borderColor: [
-			                'rgba(54, 162, 235, 1)',
-			                'rgba(255, 206, 86, 1)',
-			                'rgba(75, 192, 192, 1)',
-			                'rgba(255, 159, 64, 1)'
-			            ],
-			            borderWidth: 2
-			        }]
-			    },
-			    options: {
-			        scales: {
-			            yAxes: [{
-			                ticks: {
-			                    beginAtZero: true
-			                }
-			            }]
-			        }
-			    }
-			});
+			setTimeout(function(){
+				var ctx = document.getElementById('graficaPesoCanvas').getContext('2d');
+				var graficaPesoCanvas = new Chart(ctx, {
+				    type: 'line',
+				    data: {
+				        labels: [<?= $arrayGraficaPesoLabels ?>],
+				        datasets: [{
+				            label: 'Gráfica de Peso de últimos 2 meses',
+				            data: [<?= $arrayGraficaPesoValues ?>],
+				            backgroundColor: [
+				                'rgba(54, 162, 235, 0.2)',
+				                'rgba(255, 206, 86, 0.2)',
+				                'rgba(75, 192, 192, 0.2)',
+				                'rgba(255, 159, 64, 0.2)'
+				            ],
+				            borderColor: [
+				                'rgba(54, 162, 235, 1)',
+				                'rgba(255, 206, 86, 1)',
+				                'rgba(75, 192, 192, 1)',
+				                'rgba(255, 159, 64, 1)'
+				            ],
+				            borderWidth: 1
+				        }]
+				    },
+				    options: {
+    					responsive:false,
+	                    scales: {
+				            yAxes: [{
+				                ticks: {
+				                    beginAtZero: false
+				                }
+				            }]
+				        }
+				    }
+				});				
+			}, 1000);
 		}
 		function fnMostrarFoto(strID, strFotoURL) {
 			if($('#'+strID).attr('width') == 50){
