@@ -2,9 +2,18 @@
 	function fnTab_7() {
 	    global $wpdb, $strUsuario,$reg_errors,$intEdad,$decAltura,$decPeso,$intSexo,$decGrasa;
 		global $strRutaImagenMadre;
+		global $arrayGraficaPesoLabels, $arrayGraficaPesoValues;
+		$arrayGraficaPesoLabels = "";
+		$arrayGraficaPesoValues = "";
 	    $strUsuario = wp_get_current_user()->user_login;
-		// $strRutaImagenMadre = '/Applications/MAMP/htdocs/wp-content/plugins/vivemovimento/fotos/'.$strUsuario;
 		$strRutaImagenMadre = '/home/jhx94zix8g9i/public_html/wp-content/plugins/vivemovimento/fotos/'.$strUsuario;
+		$whitelist = array(
+		    '127.0.0.1',
+		    '::1'
+		);
+		if(in_array($_SERVER['REMOTE_ADDR'], $whitelist)){
+			$strRutaImagenMadre = '/Applications/MAMP/htdocs/wp-content/plugins/vivemovimento/fotos/'.$strUsuario;
+		}
 
 		if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_7' && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '1') { 
     		$reg_errors = new WP_Error;
@@ -138,7 +147,30 @@
 		GROUP BY CAST(datRegistro AS DATE)
 		ORDER BY datRegistro DESC
     	");
+
+    $listGrafica = $wpdb->get_results("
+    	SELECT
+			MAX(datRegistro) datRegistro
+			,MAX(decPeso) decPeso
+		FROM wp_vivemov_users_informacion
+		WHERE strUsuario = '$strUsuario'
+			AND CAST(datRegistro AS DATE) >= CAST(DATE_ADD(CURDATE(), INTERVAL -31 DAY) AS DATE)
+		GROUP BY CAST(datRegistro AS DATE)
+		ORDER BY datRegistro ASC
+		LIMIT 30
+    	");
+   	foreach ($listGrafica as $item) {
+   		if ($arrayGraficaPesoLabels == ''){
+   			$arrayGraficaPesoLabels = "'".(new DateTime($item->datRegistro))->format('d-M')."'";
+   			$arrayGraficaPesoValues = $item->decPeso;
+   		}else{
+   			$arrayGraficaPesoLabels .= ", '".(new DateTime($item->datRegistro))->format('d-M')."'";
+   			$arrayGraficaPesoValues .= ', '.$item->decPeso;
+   		}
+   	}
 ?>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+
 	<div class="row">
 		<div class="col-md-6 col-xs-12 col-sm-12">
 			<form class="form-inline" action="<?php echo strtok($_SERVER["REQUEST_URI"],'?') ?>?action=tab_Paso_7" method="post">
@@ -170,9 +202,24 @@
 			</form>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-sm-12 col-xs-12 col-md-12">
+			<div class="collapse" id="collapse_grafica_peso">
+			  <div class="well">
+			  	<canvas id="graficaPesoCanvas" width="400" height="200" style="width: 100% !important;height: 200px !important;"></canvas>
+			  </div>
+			</div>
+		</div>
+	</div>
 	<div class="table-responsive">
 	  <table class="table">
-	  	<caption>Detalle por dia tu cambio en peso, grasa y metabolismo</caption>
+	  	<caption>
+	  		Detalle por dia de tu cambio del peso. Tus fotos se cargan al día que hagas Check In.
+		  <button type="button" class="btn btn-primary btn-xs" data-toggle="collapse" data-target="#collapse_grafica_peso" aria-expanded="false" aria-controls="collapse_grafica_peso" onclick="fnGraficaPesoInit();">
+		  	<span class="glyphicon glyphicon-stats" aria-hidden="true"></span> 
+		  	Gráfica de peso
+		  </button>
+	  	</caption>
 		  	<thead>
 			    <tr>
 			      <th>Fecha</th>
@@ -239,6 +286,41 @@
 	</div>
 
 	<script>
+		function fnGraficaPesoInit() {
+			var ctx = document.getElementById('graficaPesoCanvas').getContext('2d');
+			var graficaPesoCanvas = new Chart(ctx, {
+			    type: 'line',
+			    data: {
+			        labels: [<?= $arrayGraficaPesoLabels ?>],
+			        datasets: [{
+			            label: 'Gráfica de Peso de últimos 30 días',
+			            data: [<?= $arrayGraficaPesoValues ?>],
+			            backgroundColor: [
+			                'rgba(54, 162, 235, 0.2)',
+			                'rgba(255, 206, 86, 0.2)',
+			                'rgba(75, 192, 192, 0.2)',
+			                'rgba(255, 159, 64, 0.2)'
+			            ],
+			            borderColor: [
+			                'rgba(54, 162, 235, 1)',
+			                'rgba(255, 206, 86, 1)',
+			                'rgba(75, 192, 192, 1)',
+			                'rgba(255, 159, 64, 1)'
+			            ],
+			            borderWidth: 2
+			        }]
+			    },
+			    options: {
+			        scales: {
+			            yAxes: [{
+			                ticks: {
+			                    beginAtZero: true
+			                }
+			            }]
+			        }
+			    }
+			});
+		}
 		function fnMostrarFoto(strID, strFotoURL) {
 			if($('#'+strID).attr('width') == 50){
 				$('#'+strID).attr('width',400);
