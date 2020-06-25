@@ -190,10 +190,12 @@
 		</div>
 		<div class="col-md-6 col-xs-12 col-sm-12">
 			<form class="form-inline" action="<?= strtok($_SERVER["REQUEST_URI"],'?') ?>?action=tab_Paso_7" method="post" enctype="multipart/form-data">
+
 				<div class="form-group">
-			    <label for="image">Subir foto</label>
-			    <input type="file" class="form-control" id="image" name="image" placeholder="Imagen" required="required">
-			  </div>
+				    <label for="image">Subir foto</label>
+				    <input type="file" class="form-control" id="image" name="image" placeholder="Imagen" required="required">
+				    <p class="help-block">Tus fotos se cargarán al día actual y debes hacer Check In</p>
+				  </div>
 			  <input type="hidden" name="intOp" value="2">
 			  <button type="submit" class="btn btn-primary">
 			  	<span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span> 
@@ -217,7 +219,7 @@
 	<div class="table-responsive">
 	  <table class="table">
 	  	<caption>
-	  		Detalle por dia de tu cambio del peso. Tus fotos se cargan al día que hagas Check In.
+	  		Detalle por dia de tu cambio del peso.
 		  <button type="button" class="btn btn-primary btn-xs" data-toggle="collapse" data-target="#collapse_grafica_peso" aria-expanded="false" aria-controls="collapse_grafica_peso" onclick="fnGraficaPesoInit();">
 		  	<span class="glyphicon glyphicon-stats" aria-hidden="true"></span> 
 		  	Gráfica de peso
