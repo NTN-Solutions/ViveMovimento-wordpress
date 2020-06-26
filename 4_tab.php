@@ -102,15 +102,42 @@ function fnTab_4_save($strUsuario,$intMeta){
     echo fnMensaje(2,'Inconvenientes, datos no guardados!');
   }
 }
+function fnTab_4_save_custom_porciones(){
+  global $wpdb, $strUsuario;
+  $registro = array(
+    'strUsuario'=>$strUsuario,
+    'intProteina'=> intval($_POST['intCustomP']),
+    'intCarbohidrato'=> intval($_POST['intCustomC']),
+    'intGrasa'=> intval($_POST['intCustomG']),
+    'bitActivo'=>1,
+    'datCreacion'=>date('Y-m-d H:i:s')
+  );
+  $wpdb->get_results("UPDATE wp_vivemov_users_porciones as D
+                      SET D.bitActivo = 0
+                      WHERE D.strUsuario = '$strUsuario' AND D.bitActivo = 1;");
+  $response;
+  if($_POST['txtCustomOpcion'] == 1){
+    $response = $wpdb->insert("wp_vivemov_users_porciones", $registro);
+  }
+  if($response || $_POST['txtCustomOpcion'] == 2) {
+    $_POST = array();
+    echo fnMensaje(1,'Listo, '.($_POST['txtCustomOpcion'] == 1 ? 'guardado' : 'eliminado').'!');
+  } else {
+    echo fnMensaje(2,'Inconvenientes, datos no guardados!');
+  }
+
+}
 function fnTab_4(){
   global $strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$intActividadTipo,$decTDEE,$decEjercicio,$intMetaValor,$intMeta,$decCalorias,$decPeso;
   global $decProteinas,$decCarbo,$decGrasas,$decIMC,$intSexo,$intExperiencia;
   $intMetaValor = array(0,-500,0,350);
 
   $strUsuario = wp_get_current_user()->user_login;
-  if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_4' && isset($_POST['txtForm_4']) && $_POST['txtForm_4'] != null && $_POST['txtForm_4'] != '') {
+  if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_4' && isset($_POST['intOpcion']) && $_POST['intOpcion'] != null && $_POST['intOpcion'] == '1') {
     $intMeta = intval($_POST['intMeta']);
     fnTab_4_save($strUsuario,$intMeta);
+  }else if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_4' && isset($_POST['intOpcion']) && $_POST['intOpcion'] != null && $_POST['intOpcion'] == '2') {
+    fnTab_4_save_custom_porciones();
   }
   fnTab_4_cargar();
   $decTDEE = ($decMetabolismo * $decActivityFactor[$intActividadTipo]);
@@ -189,7 +216,30 @@ function fnTab_4_alerta_Suscripcion(){
   <?php
 }
 
-function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$decTDEE,$intActividadTipo,$decEjercicio,$decCalorias,$decProteinas,$decCarbo,$decGrasas,$decIMC,$intDiasSuscripcion){ ?>
+function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$decTDEE,$intActividadTipo,$decEjercicio,$decCalorias,$decProteinas,$decCarbo,$decGrasas,$decIMC,$intDiasSuscripcion){
+  global $intExperiencia;
+  global $wpdb;
+  $misPorciones = null;
+  if ($intExperiencia == 3) {
+    $misPorciones = $wpdb->get_results("SELECT * FROM wp_vivemov_users_porciones WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
+    if (count($misPorciones) > 0) {
+      $misPorciones = $misPorciones[0];
+      // echo print_r($misPorciones);
+    }else{
+      $misPorciones = null;
+    }
+  }
+
+  ?>
+
+  <style type="text/css">
+    .txtMisPorciones{
+      color: black !important;
+      font-weight: bold !important;
+      text-align: center !important;
+      font-size: x-large !important;
+    }
+  </style>
 
  <div class="row" style="padding: 0px;">
      <div class="col-md-12 col-xs-12 col-sm-12" style="padding: 0px;">
@@ -202,7 +252,7 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
   </div>
 
   <form action="<?php echo strtok($_SERVER["REQUEST_URI"],'?');?>?action=tab_Paso_4" method="post" class="row">
-  <input type="hidden" value="listo" name="txtForm_4" />
+  <input type="hidden" value="1" name="intOpcion" />
   <div class="col-md-12 col-xs-12 col-sm-12" style="padding: 0px;">
       <div class="vc_message_box vc_message_box-solid-icon vc_message_box-square vc_color-success"><div class="vc_message_box-icon"><i class="fa fa-info" aria-hidden="true"></i></div><p>Para alcanzar tu meta de <strong><?php 
         if ($intMeta == 1) {
@@ -320,6 +370,28 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
             <th class="celeste"><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decGrasas[3])); ?></th>
             <th></th>
           </tr>
+          <?php
+            if ($intExperiencia == 3) { //para avanzados mostramos opcion de cambiar porcion o elimiar si tenian agregada
+          ?>
+              <tr>
+                <form action="<?php echo strtok($_SERVER["REQUEST_URI"],'?');?>?action=tab_Paso_4" method="post" class="row">
+                  <input type="hidden" name="intOpcion" value="2">
+                  <input type="hidden" name="txtCustomOpcion" id="txtCustomOpcion" value="1">
+                  <th>MIS PORCIONES <i class="fas fa-chevron-right"></i></th>
+                  <th class="amarillo"><input type="number" name="intCustomP" class="form-control txtMisPorciones" value="<?= ($misPorciones != null ? $misPorciones->intProteina : '0') ?>" min="1" max="99"></th>
+                  <th class="naranja"><input type="number" name="intCustomC" class="form-control txtMisPorciones" value="<?= ($misPorciones != null ? $misPorciones->intCarbohidrato : '0') ?>" min="1" max="99"></th>
+                  <th class="celeste"><input type="number" name="intCustomG" class="form-control txtMisPorciones" value="<?= ($misPorciones != null ? $misPorciones->intGrasa : '0') ?>" min="1" max="99"></th>
+                  <th>
+                    <div class="btn-group btn-group-sm" role="group" aria-label="...">
+                      <button type="submit" class="btn btn-primary" onclick="$('#txtCustomOpcion').val(1);"><span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>
+                      <button type="submit" class="btn btn-warning" onclick="$('#txtCustomOpcion').val(2);"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    </div>
+                  </th>
+                </form>
+              </tr>
+          <?php
+            }
+          ?>
         </tbody>
       </table>
     </div>
