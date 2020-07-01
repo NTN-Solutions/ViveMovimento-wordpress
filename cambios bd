@@ -1,41 +1,22 @@
-cambios bd
--- phpMyAdmin SQL Dump
--- version 4.9.0.1
--- https://www.phpmyadmin.net/
---
--- Servidor: localhost:8889
--- Tiempo de generación: 01-07-2020 a las 03:18:09
--- Versión del servidor: 5.7.26
--- Versión de PHP: 7.3.8
-
---
--- Base de datos: `vivemovimento`
---
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `wp_vivemov_pasos_videos`
---
 
 CREATE TABLE `wp_vivemov_pasos_videos` (
   `decId` int(11) NOT NULL,
-  `strURL` varchar(200) DEFAULT NULL
+  `strURL` varchar(200) DEFAULT NULL,
+  `strAyudaLink` varchar(200) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Volcado de datos para la tabla `wp_vivemov_pasos_videos`
 --
 
-INSERT INTO `wp_vivemov_pasos_videos` (`decId`, `strURL`) VALUES
-(1, NULL),
-(2, NULL),
-(3, NULL),
-(4, NULL),
-(5, NULL),
-(6, NULL),
-(7, NULL),
-(8, NULL);
+INSERT INTO `wp_vivemov_pasos_videos` (`decId`, `strURL`, `strAyudaLink`) VALUES
+(1, '', ''),
+(2, 'https://www.youtube.com/embed/wZRWpr1G1Qw', ''),
+(3, '4', ''),
+(4, '5', ''),
+(5, '6', ''),
+(6, '7', ''),
+(7, '8', '');
 
 --
 -- Índices para tablas volcadas
