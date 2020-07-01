@@ -149,7 +149,7 @@
 
 ?>
 <div class="row">
-  <div class="col-md-12 col-xs-12 col-sm-12">
+  <div class="col-md-10 col-xs-12 col-sm-12  col-md-offset-1">
     <form action="<?php echo strtok($_SERVER["REQUEST_URI"],'?');?>?action=dashboard" method="post" class="row">
       <div class="table-responsive">
         <table class="table table-striped">
