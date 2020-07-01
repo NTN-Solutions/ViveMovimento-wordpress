@@ -295,7 +295,7 @@ function fnFontawesome() {
             }
           </style>';
 
-    if ( is_page('Perfil') || is_page('User') || is_page('Settings') ): 
+    if ( is_page('Perfil') || is_page('User') || is_page('Settings') || is_page('mi-cuenta') ): 
         echo '<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">';
         echo '<script src="https://kit.fontawesome.com/1ea98a15ec.js" crossorigin="anonymous"></script>';
         // echo '<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="crossorigin="anonymous"></script>';
@@ -305,7 +305,7 @@ function fnFontawesome() {
     endif;
 }
 function fnFontawesome2() {
-    if ( is_page('Perfil') || is_page('User') || is_page('Settings') ): 
+    if ( is_page('Perfil') || is_page('User') || is_page('Settings')  || is_page('mi-cuenta') ): 
         echo '<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>';
         echo '<script src="/wp-content/plugins/vivemovimento/datepicker/js/bootstrap-datepicker.min.js"></script>';
     endif;

@@ -1,5 +1,22 @@
 cambios bd
+-- phpMyAdmin SQL Dump
+-- version 4.9.0.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: localhost:8889
+-- Tiempo de generación: 01-07-2020 a las 03:18:09
+-- Versión del servidor: 5.7.26
+-- Versión de PHP: 7.3.8
 
+--
+-- Base de datos: `vivemovimento`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `wp_vivemov_pasos_videos`
+--
 
 CREATE TABLE `wp_vivemov_pasos_videos` (
   `decId` int(11) NOT NULL,
@@ -20,4 +37,22 @@ INSERT INTO `wp_vivemov_pasos_videos` (`decId`, `strURL`) VALUES
 (7, NULL),
 (8, NULL);
 
+--
+-- Índices para tablas volcadas
+--
 
+--
+-- Indices de la tabla `wp_vivemov_pasos_videos`
+--
+ALTER TABLE `wp_vivemov_pasos_videos`
+  ADD PRIMARY KEY (`decId`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `wp_vivemov_pasos_videos`
+--
+ALTER TABLE `wp_vivemov_pasos_videos`
+  MODIFY `decId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
