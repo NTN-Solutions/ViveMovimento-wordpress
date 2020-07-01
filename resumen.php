@@ -14,6 +14,9 @@
     	$strUsuario = wp_get_current_user()->user_login;
       fnViveMovimento_resumen_data();
         //$datFechaDiario = new DateTime();
+      
+      $bitPermisoAdmin = ( in_array( 'administrator', wp_get_current_user()->roles, true ) );
+
 ?>
 
 <div class="row">
@@ -38,13 +41,13 @@
       <strong><a href="/user/?action=tab_Paso_4"> Paso 4 - </strong> Conoce tu Plan Nutricional</a>
     </div>
     <div class="alert alert-info" role="alert">
-      <strong><a href="/user/?action=tab_Paso_8">Paso 5 - </strong> Elige tu Plan de Ejercicios</a>
+      <strong><a href="/user/?action=tab_Paso_8"> Paso 5 - </strong> Elige tu Plan de Ejercicios</a>
     </div>
     <div class="alert alert-info" role="alert">
-      <strong><a href="/user/?action=tab_Paso_5">Paso 6 - </strong> Ingresa tus comidas en tu Food Journal</a>
+      <strong><a href="/user/?action=tab_Paso_5"> Paso 6 - </strong> Ingresa tus comidas en tu Food Journal</a>
     </div>
     <div class="alert alert-info" role="alert">
-      <strong><a href="/user/?action=tab_Paso_7">Paso 7 - </strong> Lleva control de tu progreso</a>
+      <strong><a href="/user/?action=tab_Paso_7"> Paso 7 - </strong> Lleva control de tu progreso</a>
     </div>
   </div>
 </div>
@@ -57,5 +60,28 @@
   }else if ($gDataPaso_3 == null) {
     echo '<script>window.location.href = "/user/?action=tab_Paso_3";</script>';
   }
+
+
+
+  if ($bitPermisoAdmin == true) { ?>
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+        <tr>
+          <th>Paso</th>
+          <th>URL Video</th>
+        </tr>
+      </thead>
+      <tbody>
+    <tr class="info">
+      <td>1</td>
+      <td>URL</td>
+    </tr>
+  </table>
+</div>
+
+
+<?php  }
 }
 ?>

@@ -1,0 +1,23 @@
+cambios bd
+
+
+CREATE TABLE `wp_vivemov_pasos_videos` (
+  `decId` int(11) NOT NULL,
+  `strURL` varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `wp_vivemov_pasos_videos`
+--
+
+INSERT INTO `wp_vivemov_pasos_videos` (`decId`, `strURL`) VALUES
+(1, NULL),
+(2, NULL),
+(3, NULL),
+(4, NULL),
+(5, NULL),
+(6, NULL),
+(7, NULL),
+(8, NULL);
+
+
