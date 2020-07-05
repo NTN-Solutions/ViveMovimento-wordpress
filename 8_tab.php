@@ -1,10 +1,3 @@
-<style>
-.pdfobject-container { height: 800px !important; border: 1rem solid rgba(0,0,0,.1); }
-</style>
-
-<script src="/wp-content/plugins/vivemovimento/js/pdfobject.min.js"></script>
-
-
 <?php
 function fnTab_8_cargar(){
   global $wpdb,$intMeta;
@@ -33,10 +26,17 @@ function fnTab_8(){
 }
 function fnTab_8_alerta_Suscripcion(){
   ?>
-  <div class="alert alert-warning alert-dismissible" role="alert">
+<style>
+.pdfobject-container { height: 800px !important; border: 1rem solid rgba(0,0,0,.1); }
+</style>
+
+<script src="/wp-content/plugins/vivemovimento/js/pdfobject.min.js"></script>
+
+
+<div class="alert alert-warning alert-dismissible" role="alert">
     <strong><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Suscripción Mensual</strong>
     <br/>Para observar los planes de ejercicios debes realizar la compra de la Suscripción!
-    <br/><br/><a href="/shop">Click aquí para comprar Suscripción Mensual</a>
+    <br/><br/><a href="/product/suscripcion-de-nutricion-2/">Click aquí para comprar Suscripción Mensual</a>
   </div>
   <?php
 }

@@ -3,7 +3,8 @@ function fnVerificarCombraDeSuscripcion() {
   //https://stackoverflow.com/questions/38157176/how-to-get-purchase-date-from-woocommerce-order
   // Get All order of current user
   
-  $strProducto = 'Suscripción Mensual';
+  // $strProducto = 'Suscripción Mensual';
+  $strProducto = 'Suscripción de Nutrición';
   $product = get_page_by_title( $strProducto, OBJECT, 'product' );
   if($product == null)return 30; // devolvemos 30 dias simulando que ya paso el mes de no haber comprado la Suscripcion
 
@@ -211,7 +212,7 @@ function fnTab_4_alerta_Suscripcion(){
   <div class="alert alert-warning alert-dismissible" role="alert">
     <strong><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> Suscripción Mensual</strong>
     <br/>Para observar el calculo de tus porciones debes realizar la compra de la Suscripción!
-    <br/><br/><a href="/shop">Click aquí para comprar Suscripción Mensual</a>
+    <br/><br/><a href="/product/suscripcion-de-nutricion-2/">Click aquí para comprar Suscripción Mensual</a>
   </div>
   <?php
 }

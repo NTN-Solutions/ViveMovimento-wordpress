@@ -317,6 +317,35 @@ add_action( 'wp_head', 'fnFontawesome' );
 add_action( 'wp_footer', 'fnFontawesome2' );
 add_action( 'admin_footer', 'fnFontawesome2' );
 
+add_action( 'woocommerce_thankyou', 'fnViveMovimentoRedireccionLuegoCompra');
+  
+function fnViveMovimentoRedireccionLuegoCompra( $order_id ){
+    $order = wc_get_order( $order_id );
+    $url = '/shop';
+    if ( ! $order->has_status( 'failed' ) ) {
+        $order = wc_get_order( $order_id );
+        $items = $order->get_items();
+        $bitSuscripcionComprada = false;
+        foreach ( $items as $item ) {
+            $strProducto = strtolower($item->get_name());
+            if (strpos($strProducto, 'suscripción') !== false) {
+                $bitSuscripcionComprada = true;
+            }
+            // $product_name = $item->get_name();
+            // $product_id = $item->get_product_id();
+            // $product_variation_id = $item->get_variation_id();
+        }
+        if ($bitSuscripcionComprada == true) {
+            echo '<a type="button"  href="/user/?action=tab_Paso_4" class="btn btn-success btn-sm btn-block"><i class="fa fa-check" aria-hidden="true"></i> Ver Mi Plan Nutricional</a>';
+        }
+        // wp_safe_redirect( $url );
+        // exit;
+    }else{
+        wp_safe_redirect( $url );
+    }
+}
+
+
 function redirect_admin( $redirect_to, $request, $user ){
     if ( isset( $user->roles ) && is_array( $user->roles ) ) {
         // if ( in_array( 'administrator', $user->roles ) == false ) {
