@@ -20,14 +20,26 @@ function fnVerificarCombraDeSuscripcion() {
   if ( !$orders ) return 30; // devolvemos 30 dias simulando que ya paso el mes de no haber comprado la Suscripcion
 
   $all_ordered_product = array(); // store products ordered in an array
+  // echo '========================================><br/>';
+  // print_r($orders[0]);
+  // echo '<br/><===================================';
 
-  foreach ( $orders as $order => $data ) { // Loop through each order
-      $order_data = new WC_Order( $data->ID ); // create new object for each order
-      foreach ( $order_data->get_items() as $key => $item ) {  // loop through each order item
-          // store in array with product ID as key and order date a value
-          $all_ordered_product[ $item['product_id'] ] = $data->post_date;
-      }
+  $data = $orders[0];
+  $order_data = new WC_Order( $data->ID ); // create new object for each order
+  foreach ( $order_data->get_items() as $key => $item ) {  // loop through each order item
+      // store in array with product ID as key and order date a value
+      $all_ordered_product[ $item['product_id'] ] = $data->post_date;
+      break;
   }
+
+  // foreach ( $orders as $order => $data ) { // Loop through each order
+  //     $order_data = new WC_Order( $data->ID ); // create new object for each order
+  //     foreach ( $order_data->get_items() as $key => $item ) {  // loop through each order item
+  //         // store in array with product ID as key and order date a value
+  //         $all_ordered_product[ $item['product_id'] ] = $data->post_date;
+  //         break;
+  //     }
+  // }
   if ( isset( $all_ordered_product[ $id ] ) ) { // check if defined ID is found in array
     // $datFechaCompra = date('Y-m-d', strtotime( $all_ordered_product[ $id ] ) );
     // $datFechaActual = date_format(date_create("2020-07-20"),"Y-m-d");
