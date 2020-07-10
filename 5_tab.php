@@ -1,10 +1,38 @@
 <?php
-
 function fnListadoDiario(){
     global $wpdb, $strUsuario;
     $strUsuario = wp_get_current_user()->user_login;
     $list = $wpdb->get_results("SELECT intId,datFecha, SUM(intProteinas) intProteinas,SUM(intCarbohidratos) intCarbohidratos,SUM(intGrasas) intGrasas,SUM(intVegetales) intVegetales,SUM(intLibres) intLibres FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' GROUP BY intId,datFecha ORDER BY datFecha DESC");
     return $list;
+}
+function fnTiempoSiguiente(){
+    global $wpdb, $strUsuario;
+    $strUsuario = wp_get_current_user()->user_login;
+    $list = $wpdb->get_results("
+        SELECT CASE WHEN MAX(T.intId) + 1 > 3 THEN 3 ELSE MAX(T.intId) END intTiempoSiguiente
+        FROM wp_vivemov_users_diario_detalle D
+        INNER JOIN wp_vivemov_alimentos_tiempo T ON T.intId = D.intTiempo
+        WHERE 
+            strUsuario = '$strUsuario' AND T.bitPrincipal = 1 AND CAST(D.datModificado AS DATE) = CAST(NOW() AS DATE)
+    ");
+    if (count($list) > 0 ) {
+        return $list[0]->intTiempoSiguiente;
+    }
+    return 1;
+}
+function fnDiarioSiguiente(){
+    global $wpdb, $strUsuario;
+    $strUsuario = wp_get_current_user()->user_login;
+    $list = $wpdb->get_results("        
+        SELECT MAX(D.intId) intDiario
+        FROM wp_vivemov_users_diario D
+        WHERE 
+            strUsuario = '$strUsuario' AND CAST(D.datFecha AS DATE) <= CAST(NOW() AS DATE)
+    ");
+    if (count($list) > 0 ) {
+        return $list[0]->intDiario;        
+    }
+    return 0;
 }
 function fnDiario_Tiempos(){
     global $wpdb;
@@ -281,7 +309,8 @@ function fnTab_5(){
     $listTiempos = fnDiario_Tiempos();
     $listAlimentos = $wpdb->get_results("SELECT ap.*, um.strUnidadMedida FROM wp_vivemov_alimentos_porciones ap INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1");
 
-
+    $intTiempoSiguiente = fnTiempoSiguiente();
+    $intDiarioSiguiente = fnDiarioSiguiente();
 ?>
 
   <div class="col-md-12 col-xs-12 col-sm-12 sinPadding">
@@ -428,7 +457,7 @@ function fnTab_5(){
                         <input type="hidden" name="intOp" value="2" />
                         <div class="col-md-3 col-xs-6 col-sm-6 sinPadding" style="display: grid;">
                             <label for="intDiarioDet_Tiempo">Tiempo <strong>*</strong></label>
-                            <select name="intDiarioDet_Tiempo" id="intDiarioDet_Tiempo_'.$diario->intId.'">';
+                            <select name="intDiarioDet_Tiempo" class="intDiarioDet_Tiempo" id="intDiarioDet_Tiempo_'.$diario->intId.'">';
                             foreach ($listTiempos as $tiempo) { echo '<option value="'.$tiempo->intId.'">'.$tiempo->strTiempo.'</option>'; }
                         echo '</select>
                         </div>
@@ -594,11 +623,13 @@ function fnTab_5(){
         echo '<script>';
         echo 'setTimeout(function(){
                 $("#intIDDETALLE_'.$itemEditar->intDiario.'").val('.$itemEditar->intId.');
-                $("#intDiarioDet_Tiempo_'.$itemEditar->intDiario.'").val("'.$itemEditar->intTiempo.'").trigger("change");
+                $("#intDiarioDet_Tiempo_'.$itemEditar->intDiario.'").val("'.$itemEditar->intTiempo.'").trigger("change");                
                 $("#intDiarioDet_Cantidad_'.$itemEditar->intDiario.'").val('.$itemEditar->devCantidad.');
                 $("#intDiarioDet_Alimento_'.$itemEditar->intDiario.'").val("'.$itemEditar->intAlimentoPorcion.'").trigger("change");
         }, 2000);';
         echo '</script>';
+    }else if($intDiarioSiguiente != null && $intDiarioSiguiente > 0 ){
+        echo '<script>$("#intDiarioDet_Tiempo_'.$intDiarioSiguiente.'").val("'.$intTiempoSiguiente.'").trigger("change");</script>';
     }
 }
 ?>
