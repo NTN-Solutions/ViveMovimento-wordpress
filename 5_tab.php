@@ -189,31 +189,7 @@ function fnDiario_AgregarDetalle(){
             $responseDiario = $wpdb->insert("wp_vivemov_users_diario_detalle", $itemRow);
             if($responseDiario) {
                 echo fnMensaje(1,'Listo, agregado!');
-                $wpdb->get_results("
-                    UPDATE wp_vivemov_users_diario_detalle as D
-                    INNER JOIN wp_vivemov_alimentos_porciones AP ON AP.intId = D.intAlimentoPorcion
-                    /* SET D.intProteinas = (D.devCantidad/AP.decPorcion) * AP.decProteina
-                    ,D.intCarbohidratos = (D.devCantidad/AP.decPorcion) * AP.decCarbohidratos
-                    ,D.intGrasas = (D.devCantidad/AP.decPorcion) * AP.decGrasa
-                    ,D.intVegetales = (D.devCantidad/AP.decPorcion) * AP.decVegetales
-                    ,D.intLibres = (D.devCantidad/AP.decPorcion) * AP.decLibre */
-                    SET D.intProteinas = D.devCantidad * AP.decProteina
-                    ,D.intCarbohidratos = D.devCantidad * AP.decCarbohidratos
-                    ,D.intGrasas = D.devCantidad * AP.decGrasa
-                    ,D.intVegetales = D.devCantidad * AP.decVegetales
-                    ,D.intLibres = D.devCantidad * AP.decLibre
-                    WHERE D.strUsuario = '$strUsuario';
-                    ");
-                $wpdb->get_results("
-                    UPDATE wp_vivemov_users_diario as E
-                    SET intProteinas = (SELECT SUM(D.intProteinas) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
-                    ,intCarbohidratos = (SELECT SUM(D.intCarbohidratos) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
-                    ,intGrasas = (SELECT SUM(D.intGrasas) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
-                    ,intVegetales = (SELECT SUM(D.intVegetales) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
-                    ,intLibres = (SELECT SUM(D.intLibres) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
-                    WHERE intId = $detEncabezado  AND strUsuario = '$strUsuario';
-
-                    ");
+                fnDiarioDetalleCalcular_P_CH_G_V($wpdb,$strUsuario,$detEncabezado);
             } else {
                 echo fnMensaje(2,'Inconvenientes, no guardado!');
             }
@@ -222,8 +198,34 @@ function fnDiario_AgregarDetalle(){
         $_SESSION["intFormulario"] = 1;
     }
 }
+function fnDiarioDetalleCalcular_P_CH_G_V($wpdb,$strUsuario,$detEncabezado){
+    $wpdb->get_results("
+        UPDATE wp_vivemov_users_diario_detalle as D
+        INNER JOIN wp_vivemov_alimentos_porciones AP ON AP.intId = D.intAlimentoPorcion
+        /* SET D.intProteinas = (D.devCantidad/AP.decPorcion) * AP.decProteina
+        ,D.intCarbohidratos = (D.devCantidad/AP.decPorcion) * AP.decCarbohidratos
+        ,D.intGrasas = (D.devCantidad/AP.decPorcion) * AP.decGrasa
+        ,D.intVegetales = (D.devCantidad/AP.decPorcion) * AP.decVegetales
+        ,D.intLibres = (D.devCantidad/AP.decPorcion) * AP.decLibre */
+        SET D.intProteinas = D.devCantidad * AP.decProteina
+        ,D.intCarbohidratos = D.devCantidad * AP.decCarbohidratos
+        ,D.intGrasas = D.devCantidad * AP.decGrasa
+        ,D.intVegetales = D.devCantidad * AP.decVegetales
+        ,D.intLibres = D.devCantidad * AP.decLibre
+        WHERE D.strUsuario = '$strUsuario';
+        ");
+    $wpdb->get_results("
+        UPDATE wp_vivemov_users_diario as E
+        SET intProteinas = (SELECT SUM(D.intProteinas) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
+        ,intCarbohidratos = (SELECT SUM(D.intCarbohidratos) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
+        ,intGrasas = (SELECT SUM(D.intGrasas) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
+        ,intVegetales = (SELECT SUM(D.intVegetales) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
+        ,intLibres = (SELECT SUM(D.intLibres) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
+        WHERE intId = $detEncabezado  AND strUsuario = '$strUsuario';
+        ");
+}
 function fnDiario_ActualizarDetalle(){
-    global $wpdb, $intDiarioDet_Cantidad, $detAlimento, $detTiempo, $intIDDETALLE;
+    global $wpdb, $intDiarioDet_Cantidad, $detAlimento, $detTiempo, $intIDDETALLE, $strUsuario,$detEncabezado;
     echo fnMensaje(1,'Listo, editado!');
     $wpdb->get_results('
         UPDATE wp_vivemov_users_diario_detalle as D
@@ -232,7 +234,7 @@ function fnDiario_ActualizarDetalle(){
             ,D.intAlimentoPorcion = '.$detAlimento.'
             ,D.devCantidad = '.$intDiarioDet_Cantidad.'
         WHERE D.intId = '.$intIDDETALLE);
-
+    fnDiarioDetalleCalcular_P_CH_G_V($wpdb,$strUsuario,$detEncabezado);
 }
 function fnDiario_Detalle_Validar($decCantidad,$decAlimento,$decTiempo){
     global $reg_errors;
