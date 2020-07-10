@@ -534,11 +534,15 @@ function fnTab_5(){
 
 <script>
     function fnAlimentoSeleccionado(decDiario) {
+        debugger
         var cbAlimento = $('#intDiarioDet_Alimento_' + decDiario + ' option:selected').text();        
         $('#span_porcion_' + decDiario).html('Cantidad de ' + cbAlimento.split(' ')[1]);
 
         var decIngresado = ($('#intDiarioDet_Cantidad_' + decDiario).val() == '' ? 0 : $('#intDiarioDet_Cantidad_' + decDiario).val());
         var decBD = cbAlimento.split(' ')[0];
+        decBD = decBD.replace(',','.');
+        decIngresado = parseFloat(decIngresado);
+        decBD = parseFloat(decBD);
         var decCalculo = parseFloat(decIngresado / decBD);
         $('#intDiarioDet_Cantidad_hidden_' + decDiario).val(decCalculo);
     }

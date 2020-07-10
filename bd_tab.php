@@ -95,10 +95,11 @@ function fnTab_BD(){
     $intA_Cantidad = number_format($_POST['intA_Cantidad'], 2);
     $intA_UM = number_format($_POST['intA_UM'], 2);
     $strA_Alimento = $_POST['strA_Alimento'];
-    $decA_Proteina = number_format($_POST['decA_Proteina'], 2);
-    $decA_Carbs = number_format($_POST['decA_Carbs'], 2);
-    $decA_Grasa = number_format($_POST['decA_Grasa'], 2);
-    $decA_Libre = number_format($_POST['decA_Libre'], 2);
+
+    $decA_Proteina = (isset($_POST['decA_Proteina']) && $_POST['decA_Proteina'] != null ? number_format($_POST['decA_Proteina'], 2) : null);
+    $decA_Carbs = (isset($_POST['decA_Carbs']) && $_POST['decA_Carbs'] != null ? number_format($_POST['decA_Carbs'], 2) : null);
+    $decA_Grasa = (isset($_POST['decA_Grasa']) && $_POST['decA_Grasa'] != null ? number_format($_POST['decA_Grasa'], 2) : null);
+    $decA_Libre = (isset($_POST['decA_Libre']) && $_POST['decA_Libre'] != null ? number_format($_POST['decA_Libre'], 2) : null);
     fnTab_bd_save();
     echo fnMensaje(1,'Guardado!');
 
