@@ -247,7 +247,7 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
         <div class="vc_message_box vc_message_box-solid-icon vc_message_box-square vc_color-success">
           <div class="vc_message_box-icon"><i class="fa fa-info" aria-hidden="true"></i></div>
             <p><?php echo $strUsuario; ?>, hemos calculado tus porciones segun tu peso, altura y gasto energetico.</p>
-            <p>Tu suscripción terminará en <?= abs(30 - $intDiasSuscripcion) ?> días</p>
+            <h4 style="margin: 0px;">Suscripción de Nutrición terminará en <?= abs(30 - $intDiasSuscripcion) ?> días</h4 style="margin: 0px;">
         </div>
     </div>
   </div>
@@ -372,7 +372,8 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
             <th></th>
           </tr>
           <?php
-            if ($intExperiencia == 3) { //para avanzados mostramos opcion de cambiar porcion o elimiar si tenian agregada
+            // if ($intExperiencia == 3) { //para avanzados mostramos opcion de cambiar porcion o elimiar si tenian agregada
+            //se libera a todo ahora solicitadon
           ?>
               <tr>
                 <form action="<?php echo strtok($_SERVER["REQUEST_URI"],'?');?>?action=tab_Paso_4" method="post" class="row">
@@ -391,7 +392,7 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
                 </form>
               </tr>
           <?php
-            }
+            // }
           ?>
         </tbody>
       </table>
