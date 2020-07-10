@@ -413,7 +413,7 @@ function fnTab_5(){
                         <center><h2 style="margin: 0px;"><small><i class="fas fa-calendar-day"></i> Dia '.$intDiaContador.' - '.$datFechaDiario->format('D, d-M-Y').'</small></h2></center>
                     </div>
                     <div class="col-md-4 col-xs-6 col-sm-6 sinPadding">
-                        <input onClick="$('."'#txtClonar_".$diario->intId."'".').val('.$diario->intId.');" type="submit" name="submit" value="Clonar diario en siguiente día" class="btn btn-block btn-xs" style="padding-bottom: 0px;padding-top: 0px;"/>
+                        <input onClick="$('."'#txtClonar_".$diario->intId."'".').val('.$diario->intId.'); setTimeout(function(){ $('."'#btnForm_diario_".$diario->intId."'".').click(); }, 500);" type="submit" name="submit" value="Clonar diario en siguiente día" class="btn btn-block btn-xs" style="padding-bottom: 0px;padding-top: 0px;"/>
                     </div>
                     <div class="col-md-2 col-xs-6 col-sm-6 sinPadding">
                         <button class="btn btn-block btn-xs" onClick="$('."'".'#collapseDiario_'.$diario->intId."'".').collapse('."'".'hide'."'".')" style="color:white !important;">
@@ -423,7 +423,7 @@ function fnTab_5(){
                     <div class="col-xs-12 col-sm-12 col-md-12">
                     </div>
 
-                    <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" class="" style="margin-bottom: 0px;">
+                    <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" id="frm_diario_'.$diario->intId.'" method="post" class="" style="margin-bottom: 0px;">
                         <input type="hidden" name="intIDDETALLE" id="intIDDETALLE_'.$diario->intId.'" value="0" />
                         <input type="hidden" name="intOp" value="2" />
                         <div class="col-md-3 col-xs-6 col-sm-6 sinPadding" style="display: grid;">
@@ -465,10 +465,10 @@ function fnTab_5(){
                         <div class="col-md-2 col-xs-12 col-sm-12 sinPadding" style="display: grid;padding-left: 0px;">
                             <input type="hidden" name="intDiarioDet_Enc" value="'.$diario->intId.'"/>
                             <input type="hidden" name="intDiarioDet_Descripcion" value="..."/>
-                            <input type="submit" name="submit" value="'.($itemEditar == null? 'Agregar': 'Editar').'" class="btn btn-block btn-xs" style="margin-top: 20px;"/>
+                            <input type="submit" name="submit" value="'.($itemEditar == null? 'Agregar': 'Editar').'" class="btn btn-block btn-xs"id="btnForm_diario_'.$diario->intId.'" style="margin-top: 20px;"/>
                         </div>
                         <div style="display: none;">
-                            <input type="hidden" name="txtClonar" name="txtClonar" id="txtClonar_'.$diario->intId.'" value="0"/>                    
+                            <input type="hidden" name="txtClonar" id="txtClonar_'.$diario->intId.'" value="0"/>                    
                         </div>
                     </form>
                 </div>
