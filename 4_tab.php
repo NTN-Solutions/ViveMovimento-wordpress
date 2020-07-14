@@ -67,7 +67,7 @@ function strSuscripcionComprada($strUsuario){
   //   $bitPermitirMostrarContenido = true;
   // }else
 
-  echo '=============>'.(_cmk_check_ordered_product(3731)).'<==============';
+  // echo '=============>'.(_cmk_check_ordered_product(3731)).'<==============';
 
   if(!is_user_logged_in()){
     //si no esta logeado no permitimos mostrar tabla de porciones
@@ -77,7 +77,7 @@ function strSuscripcionComprada($strUsuario){
     $strUsuarioLogeado = wp_get_current_user();
     if ( wc_customer_bought_product( $strUsuarioLogeado->user_email, $strUsuarioLogeado->ID, $dataProducto->get_id() ) ){
       //si ya lo compro tiene permitido tabla de porciones
-      echo '==========>'.(wc_customer_bought_product( $strUsuarioLogeado->user_email, $strUsuarioLogeado->ID, $dataProducto->get_id() )).'<===========';
+      // echo '==========>'.(wc_customer_bought_product( $strUsuarioLogeado->user_email, $strUsuarioLogeado->ID, $dataProducto->get_id() )).'<===========';
       $bitPermitirMostrarContenido = true;
     }else{
       //sino lo compro no tiene permitido tabla de porciones
@@ -328,13 +328,13 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
       </table>
     </div>
   </div>
-  <div class="col-md-7 col-xs-12 col-sm-12 noMostrar">
+  <div class="col-md-7 col-xs-12 col-sm-12" id="divTablaMisPorciones">
     <br/>
     <center><h2><small>Porciones</small></h2></center>
     <div class="table-responsive">
       <table class="table table-striped table-condensed">
         <thead>
-          <tr>
+          <tr class="noMostrar">
             <th class="rojo texto_blanco">Calorias</th>
             <th class="rojo texto_blanco" colspan="3"><?php echo fnRedondear($decCalorias); ?></th>
             <th class="rojo texto_blanco"></th>
@@ -348,21 +348,21 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr class="noMostrar">
             <th>%</th>
             <th class="amarillo"><?php echo fnRedondear($decProteinas[0]*100); ?>%</th>
             <th class="naranja"><?php echo fnRedondear($decCarbo[0]*100); ?>%</th>
             <th class="celeste"><?php echo fnRedondear($decGrasas[0]*100); ?>%</th>
             <th>100%</th>
           </tr>
-          <tr>
+          <tr class="noMostrar">
             <th>CALORIAS/MACRO</th>
             <th class="amarillo"><?php echo fnRedondear($decProteinas[1]); ?></th>
             <th class="naranja"><?php echo fnRedondear($decCarbo[1]); ?></th>
             <th class="celeste"><?php echo fnRedondear($decGrasas[1]); ?></th>
             <th><?php echo fnRedondear($decCalorias); ?></th>
           </tr>
-          <tr>
+          <tr class="noMostrar">
             <th>MACROS</th>
             <th class="amarillo"><?php echo fnRedondear($decProteinas[2]); ?></th>
             <th class="naranja"><?php echo fnRedondear($decCarbo[2]); ?></th>
@@ -370,17 +370,17 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
             <th></th>
           </tr>
           <tr>
-            <th>PORCIONES</th>
+            <th>PORCIONES </th>
             <th class="amarillo"><?php echo fnRedondear($decProteinas[3]); ?></th>
             <th class="naranja"><?php echo fnRedondear($decCarbo[3]); ?></th>
             <th class="celeste"><?php echo fnRedondear($decGrasas[3]); ?></th>
             <th></th>
           </tr>
           <tr>
-            <th>PORCIONES <i class="fas fa-chevron-right"></i></th>
-            <th class="amarillo"><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decProteinas[3])); ?></th>
-            <th class="naranja"><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decCarbo[3])); ?></th>
-            <th class="celeste"><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decGrasas[3])); ?></th>
+            <th>PORCIONES<br/>Recomendadas <i class="fas fa-chevron-right"></i></th>
+            <th class="amarillo"><h3><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decProteinas[3])); ?></h3></th>
+            <th class="naranja"><h3><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decCarbo[3])); ?></h3></th>
+            <th class="celeste"><h3><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decGrasas[3])); ?></h3></th>
             <th></th>
           </tr>
           <?php
@@ -391,7 +391,7 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
                 <form action="<?php echo strtok($_SERVER["REQUEST_URI"],'?');?>?action=tab_Paso_4" method="post" class="row">
                   <input type="hidden" name="intOpcion" value="2">
                   <input type="hidden" name="txtCustomOpcion" id="txtCustomOpcion" value="1">
-                  <th>MIS PORCIONES <i class="fas fa-chevron-right"></i></th>
+                  <th>Tus Propias<br/>Porciones <i class="fas fa-chevron-right"></i></th>
                   <th class="amarillo"><input type="number" name="intCustomP" class="form-control txtMisPorciones" value="<?= ($misPorciones != null ? $misPorciones->intProteina : '0') ?>" min="1" max="99"></th>
                   <th class="naranja"><input type="number" name="intCustomC" class="form-control txtMisPorciones" value="<?= ($misPorciones != null ? $misPorciones->intCarbohidrato : '0') ?>" min="1" max="99"></th>
                   <th class="celeste"><input type="number" name="intCustomG" class="form-control txtMisPorciones" value="<?= ($misPorciones != null ? $misPorciones->intGrasa : '0') ?>" min="1" max="99"></th>
@@ -403,6 +403,9 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
                   </th>
                 </form>
               </tr>
+            <tr>
+              <th colspan="5">Puedes modificar tus propias porciones si las recomendadas no te simpatiza</th>
+            </tr>
           <?php
             // }
           ?>

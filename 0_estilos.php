@@ -220,6 +220,9 @@
 		$strUsuario = wp_get_current_user()->user_login;
 		$bitPermiso = ( in_array( 'administrator', wp_get_current_user()->roles, true ) );
 		$bitPermisoLocal = ( in_array( 'administrator', wp_get_current_user()->roles, true ) );
+
+		// $bitPermisoLocal = false;
+
 	    global $gDataPaso_1,$gDataPaso_2,$gDataPaso_3;
 	    fnViveMovimento_resumen_data();
 
@@ -347,7 +350,7 @@
 		// $('#tabsViveMovimento a[href="#tab_Paso_'+intTab+'"]').tab('show');
 		}
 		$( document ).ready(function() {
-			<?php if ($bitPermisoLocal != null && strlen($bitPermisoLocal)>0 && $bitPermisoLocal === true) { echo "$('.noMostrar').show();"; } ?>
+			<?php if ($bitPermisoLocal != null && strlen($bitPermisoLocal)>0 && $bitPermisoLocal === true) { echo "$('.noMostrar').show();"; }else{ echo "$('#divTablaMisPorciones').attr('class','col-md-8 col-xs-12 col-sm-12 col-md-offset-2'); "; } ?>
 			if(window.location.href.toLowerCase().indexOf('tab_paso_') !== -1){
 				if(window.location.href.toLowerCase().split('tab_paso_')[1].indexOf('&') !== -1){
 					var strTab = window.location.href.toLowerCase().split('tab_paso_')[1].split('&')[0];

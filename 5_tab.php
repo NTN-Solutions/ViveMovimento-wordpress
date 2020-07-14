@@ -9,14 +9,16 @@ function fnTiempoSiguiente(){
     global $wpdb, $strUsuario;
     $strUsuario = wp_get_current_user()->user_login;
     $list = $wpdb->get_results("
-        SELECT CASE WHEN MAX(T.intId) + 1 > 3 THEN 3 ELSE MAX(T.intId) END intTiempoSiguiente
+        SELECT CASE WHEN MAX(T.intId) + 1 <= 3 THEN (MAX(T.intId) + 1) ELSE MAX(T.intId) END intTiempoSiguiente
         FROM wp_vivemov_users_diario_detalle D
         INNER JOIN wp_vivemov_alimentos_tiempo T ON T.intId = D.intTiempo
         WHERE 
             strUsuario = '$strUsuario' AND T.bitPrincipal = 1 AND CAST(D.datModificado AS DATE) = CAST(NOW() AS DATE)
     ");
     if (count($list) > 0 ) {
-        return $list[0]->intTiempoSiguiente;
+        return ($list[0]->intTiempoSiguiente != null && $list[0]->intTiempoSiguiente > 0 ? $list[0]->intTiempoSiguiente : 1);
+    }else{
+
     }
     return 1;
 }
@@ -460,13 +462,14 @@ function fnTab_5(){
                         <div class="col-md-3 col-xs-6 col-sm-6 sinPadding" style="display: grid;">
                             <label for="intDiarioDet_Tiempo">Tiempo <strong>*</strong></label>
                             <select name="intDiarioDet_Tiempo" class="intDiarioDet_Tiempo" id="intDiarioDet_Tiempo_'.$diario->intId.'">';
-                            foreach ($listTiempos as $tiempo) { echo '<option value="'.$tiempo->intId.'">'.$tiempo->strTiempo.'</option>'; }
+                            $bitPrimero = false;
+                            foreach ($listTiempos as $tiempo) { echo '<option value="'.$tiempo->intId.'"'.(!$bitPrimero?' selected ':'').'>'.$tiempo->strTiempo.'</option>';$bitPrimero = true; }
                         echo '</select>
                         </div>
                         <div class="col-md-3 col-xs-6 col-sm-6 sinPadding" style="display: grid;">
                             <label for="intDiarioDet_Cantidad_'.$diario->intId.'"><span id="span_porcion_'.$diario->intId.'">Porcion</span> <strong>*</strong></label>
-                            <input type="number" id="intDiarioDet_Cantidad_'.$diario->intId.'" value="1" min="0" max="99" step="0.01" onChange="fnAlimentoSeleccionado('.$diario->intId.');" onkeyup="fnAlimentoSeleccionado('.$diario->intId.');" >
-                            <input type="hidden"id="intDiarioDet_Cantidad_hidden_'.$diario->intId.'" name="intDiarioDet_Cantidad" value="1" min="0" max="99" step="0.01">
+                            <input type="number" id="intDiarioDet_Cantidad_'.$diario->intId.'" value="1" min="0" max="999" step="0.01" onChange="fnAlimentoSeleccionado('.$diario->intId.');" onkeyup="fnAlimentoSeleccionado('.$diario->intId.');" >
+                            <input type="hidden"id="intDiarioDet_Cantidad_hidden_'.$diario->intId.'" name="intDiarioDet_Cantidad" value="1" min="0" max="999" step="0.01">
                         </div>
                         <div class="col-md-4 col-xs-12 col-sm-12 sinPadding" style="display: grid;">
                             <label for="intDiarioDet_Alimento">Alimento <strong>*</strong></label>
