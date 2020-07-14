@@ -8,8 +8,9 @@ function fnListadoDiario(){
 function fnTiempoSiguiente(){
     global $wpdb, $strUsuario;
     $strUsuario = wp_get_current_user()->user_login;
+//        SELECT CASE WHEN MAX(T.intId) + 1 <= 3 THEN (MAX(T.intId) + 1) ELSE MAX(T.intId) END intTiempoSiguiente
     $list = $wpdb->get_results("
-        SELECT CASE WHEN MAX(T.intId) + 1 <= 3 THEN (MAX(T.intId) + 1) ELSE MAX(T.intId) END intTiempoSiguiente
+        SELECT MAX(T.intId) intTiempoSiguiente
         FROM wp_vivemov_users_diario_detalle D
         INNER JOIN wp_vivemov_alimentos_tiempo T ON T.intId = D.intTiempo
         WHERE 
