@@ -1,7 +1,7 @@
 <?php
 function fnTab_3_cargar(){
   global $wpdb,$intMeta;
-  $strUsuario = wp_get_current_user()->user_login;
+  $strUsuario = fnViveMovimento_usuario();
   try {
     $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_meta WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     if (count($buscar) > 0) {
@@ -30,7 +30,7 @@ function fnTab_3_save($strUsuario,$intMeta){
 }
 function fnTab_3(){
   global $strUsuario, $intMeta;
-  $strUsuario = wp_get_current_user()->user_login;
+  $strUsuario = fnViveMovimento_usuario();
   if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_3' && isset($_POST['txtForm_3']) && $_POST['txtForm_3'] != null && $_POST['txtForm_3'] != '') {
       $intMeta = intval($_POST['intMeta']);
       fnTab_3_save($strUsuario,$intMeta);

@@ -2,7 +2,7 @@
 
 function fnListadoDiario(){
     global $wpdb, $strUsuario;
-    $strUsuario = wp_get_current_user()->user_login;
+    $strUsuario = fnViveMovimento_usuario();
     $list = $wpdb->get_results("SELECT intId,datFecha, SUM(intProteinas) intProteinas,SUM(intCarbohidratos) intCarbohidratos,SUM(intGrasas) intGrasas,SUM(intVegetales) intVegetales,SUM(intLibres) intLibres FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' GROUP BY intId,datFecha ORDER BY datFecha DESC");
     return $list;
 }
@@ -25,7 +25,7 @@ function fnDiario_Agregar(){
         $datSiguiente = date('Y-m-d');
     }
 
-    $strUsuario = wp_get_current_user()->user_login;
+    $strUsuario = fnViveMovimento_usuario();
     $itemRow = array(
         'strUsuario'        => $strUsuario,
         // 'datFecha'          => date('Y-m-d'),
@@ -69,7 +69,7 @@ function fnDiario_clonar(){
         $datSiguiente = date('Y-m-d');
     }
 
-    $strUsuario = wp_get_current_user()->user_login;
+    $strUsuario = fnViveMovimento_usuario();
     $itemRow = array(
         'strUsuario'        => $strUsuario,
         // 'datFecha'          => date('Y-m-d'),
@@ -126,7 +126,7 @@ function fnDiario_AgregarDetalle(){
         return;
     }
 
-    $strUsuario = wp_get_current_user()->user_login;
+    $strUsuario = fnViveMovimento_usuario();
     $itemRow = array(
         'intDiario'             => $detEncabezado,
         'strUsuario'            => $strUsuario,
@@ -209,7 +209,7 @@ function fnTab_5(){
     $decPorcionDia[0] = 0;
     $decPorcionDia[1] = 0;
     $decPorcionDia[2] = 0;
-    $strUsuario = wp_get_current_user()->user_login;
+    $strUsuario = fnViveMovimento_usuario();
 
     if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_5' && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '1') {    
         fnDiario_Agregar();

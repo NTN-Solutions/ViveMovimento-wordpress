@@ -120,7 +120,7 @@ $strReponseBDAlimentos = $strReponseBDAlimentos.'<option value="'.$um->intId.'" 
 
 function fnBDAlimentos_1(){
     global $wpdb, $strUsuario;
-    $strUsuario = wp_get_current_user()->user_login;
+    $strUsuario = fnViveMovimento_usuario();
     $bitPermiso = ( in_array( 'administrator', wp_get_current_user()->roles, true ) );
 
     global $intA_Id,$intA_Cantidad,$intA_UM,$strA_Alimento,$decA_Proteina,$decA_Carbs,$decA_Grasa,$decA_Libre;

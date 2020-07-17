@@ -1,7 +1,7 @@
 <?php
 function fnTab_2_cargar(){
   global $wpdb,$intActividadTipo;
-  $strUsuario = wp_get_current_user()->user_login;
+  $strUsuario = fnViveMovimento_usuario();
   try {
     $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_actividad_gasto_energetico WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     if (count($buscar) > 0) {
@@ -34,7 +34,7 @@ function fnTab_2(){
   // $decActivityFactor = array(0,1.12,1.375,1.425,1.55,1.725,1.9);
   $decActivityFactor = array(0,1.12,1.375,1.425,1.55,1.725,1.9,1.425);//la ultima es semi activo (2), la agrego a ultima hora
 
-  $strUsuario = wp_get_current_user()->user_login;
+  $strUsuario = fnViveMovimento_usuario();
   if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_2' && isset($_POST['txtForm_2']) && $_POST['txtForm_2'] != null && $_POST['txtForm_2'] != '') {
       $intActividadTipo = intval($_POST['intActividadTipo']);
       fnTab_2_save($strUsuario,$intActividadTipo);

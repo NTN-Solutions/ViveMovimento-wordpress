@@ -3,15 +3,16 @@
     setlocale(LC_ALL, 'es_ES').': ';
     global $wpdb, $strUsuario;
     global $gDataPaso_1,$gDataPaso_2,$gDataPaso_3;
-    $strUsuario = wp_get_current_user()->user_login;
+    $strUsuario = fnViveMovimento_usuario();
     $gDataPaso_1 = $wpdb->get_results("SELECT * FROM wp_vivemov_users_informacion WHERE strUsuario = '$strUsuario' ORDER BY intId DESC LIMIT 1;");
     $gDataPaso_2 = $wpdb->get_results("SELECT * FROM wp_vivemov_users_actividad_gasto_energetico WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     $gDataPaso_3 = $wpdb->get_results("SELECT * FROM wp_vivemov_users_meta WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
   }
 	function fnViveMovimento_resumen_init(){
+    fnViveMovimento_usuario(true);
   		global $wpdb, $strUsuario;
       global $gDataPaso_1,$gDataPaso_2,$gDataPaso_3;
-    	$strUsuario = wp_get_current_user()->user_login;
+    	$strUsuario = fnViveMovimento_usuario();
       fnViveMovimento_resumen_data();
         //$datFechaDiario = new DateTime();
       if (isset($_GET['action']) && $_GET['action'] == 'dashboard' && isset($_POST['intOpcion']) && $_POST['intOpcion'] != null && $_POST['intOpcion'] == '1') {
@@ -135,15 +136,15 @@
 </div>
 
 <?php 
-  if ($gDataPaso_1 == null) {
-    echo '<script>window.location.href = "/user/?action=tab_Paso_1";</script>';
-  }else if ($gDataPaso_2 == null) {
-    echo '<script>window.location.href = "/user/?action=tab_Paso_2";</script>';
-  }else if ($gDataPaso_3 == null) {
-    echo '<script>window.location.href = "/user/?action=tab_Paso_3";</script>';
+  if (!isset($_GET['infoUsuario']) || $_GET['infoUsuario'] == null || $_GET['infoUsuario'] == '') {
+    if ($gDataPaso_1 == null) {
+      echo '<script>window.location.href = "/user/?action=tab_Paso_1";</script>';
+    }else if ($gDataPaso_2 == null) {
+      echo '<script>window.location.href = "/user/?action=tab_Paso_2";</script>';
+    }else if ($gDataPaso_3 == null) {
+      echo '<script>window.location.href = "/user/?action=tab_Paso_3";</script>';
+    }
   }
-
-
 
   if ($bitPermisoAdmin == true) {
 
@@ -180,6 +181,47 @@
     </form>
   </div>
 </div>
+
+<br>
+<hr>
+<br>
+<?php
+  if (!isset($_GET['infoUsuario']) || $_GET['infoUsuario'] == null || $_GET['infoUsuario'] == '') {
+?>
+<div class="row">
+  <div class="col-md-8 col-xs-10 col-sm-10 col-md-offset-1">
+    <select id="cbUsuarioInfo">
+      <option selected="true" disabled="disabled">Ver informacion. Usuario - nombres - correo</option>
+<?php
+    $users = get_users(['meta_key' => 'first_name','orderby' => 'meta_value','order' => 'ASC' ]);
+    foreach($users as $user){
+            $info = get_user_meta ( $user->ID);
+            echo '<option value="'.$info['nickname'][0].'">'.$info['nickname'][0].' - '.$info['first_name'][0].' '.$info['last_name'][0].' - '.$info['billing_email'][0].'</option>';
+        }
+?>
+
+    </select>
+  </div>
+  <div class="col-md-2 col-xs-2 col-sm-2">
+      <button type="button" class="btn btn-primary btn-block" onclick="fnUsuarioInfo();">
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> Ver
+      </button>
+  </div>
+</div>
+<script>
+  function fnUsuarioInfo(){
+    if($('#cbUsuarioInfo').val() == null || $('#cbUsuarioInfo').val() == '')return;
+    localStorage['infoUsuario'] = $('#cbUsuarioInfo').val();
+    fnUsuarioInfoSet();
+    window.location = '/mi-cuenta?infoUsuario='+localStorage['infoUsuario'];
+  }
+</script>
+<?php
+  }
+?>
+
+
+<?php include( plugin_dir_path( __FILE__ ) . '/user_info.php'); ?>
 
 <?php  } ?>
 

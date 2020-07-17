@@ -1,7 +1,7 @@
 <?php
 function fnTab_22_cargar(){
   global $wpdb,$intEjercicio;
-  $strUsuario = wp_get_current_user()->user_login;
+  $strUsuario = fnViveMovimento_usuario();
   try {
     $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_ejercicio WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     if (count($buscar) > 0) {
@@ -30,7 +30,7 @@ function fnTab_22_save($strUsuario,$intEjercicio){
 }
 function fnTab_22(){
   global $strUsuario,$intEjercicio;
-  $strUsuario = wp_get_current_user()->user_login;
+  $strUsuario = fnViveMovimento_usuario();
   if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_22' && isset($_POST['txtForm_22']) && $_POST['txtForm_22'] != null && $_POST['txtForm_22'] != '') {
       $intEjercicio = intval($_POST['intEjercicio']);
       fnTab_22_save($strUsuario,$intEjercicio);

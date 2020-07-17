@@ -1,6 +1,30 @@
 	<?php
+	function fnViveMovimento_usuario($bitMensaje = null){
+		if (isset($_GET['infoUsuario']) && $_GET['infoUsuario'] != null && $_GET['infoUsuario'] != '') {
+			if (( in_array( 'administrator', wp_get_current_user()->roles, true ) ) == true) {
+				if($bitMensaje != null && $bitMensaje == true){
+					echo '<div class="vc_message_box vc_message_box-solid vc_message_box-rounded vc_color-warning"><div class="vc_message_box-icon"><i class="fa fa-exclamation-triangle"></i></div><p>Se encuentra como "'.$_GET['infoUsuario'].'" viendo información del USUARIO! Precaución! NO realizar guardados!</p><a href="#" onClick="fnUsuarioInfoEnd();">Finalizar</a></div>';					
+				}
+				return $_GET['infoUsuario'];
+			}else{
+				return wp_get_current_user()->user_login;
+			}
+		}else{
+			return wp_get_current_user()->user_login;
+		}
+	}
+	function fnViveMovimento_admin(){
+		if (isset($_GET['infoUsuario']) && $_GET['infoUsuario'] != null && $_GET['infoUsuario'] != '') {
+			return false;
+		}else{
+			return ( in_array( 'administrator', wp_get_current_user()->roles, true ) );
+		}
+	}
+
 	function fnViveMovimento_Init()
-		{ ?>
+		{
+	fnViveMovimento_usuario(true);
+?>
 <style>
 	label {
 	    margin-bottom: 0px !important;
@@ -215,9 +239,9 @@
 	}*/
 </style>
 <?php
-		if(wp_get_current_user()->user_login == null || wp_get_current_user()->user_login == '')return;
+		if(fnViveMovimento_usuario() == null || fnViveMovimento_usuario() == '')return;
 		global $wpdb,$bitPermiso;
-		$strUsuario = wp_get_current_user()->user_login;
+		$strUsuario = fnViveMovimento_usuario();
 		$bitPermiso = ( in_array( 'administrator', wp_get_current_user()->roles, true ) );
 		$bitPermisoLocal = ( in_array( 'administrator', wp_get_current_user()->roles, true ) );
 
@@ -399,7 +423,7 @@
 	$(".wpb_text_column.wpb_content_element").hide();
 </script>
 
-
+<?php include( plugin_dir_path( __FILE__ ) . '/user_info.php'); ?>
 
 	<div id="modalFoto" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
 	  <div class="modal-dialog modal-lg" role="document">

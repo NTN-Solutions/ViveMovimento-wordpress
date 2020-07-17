@@ -89,7 +89,7 @@ function fnTab_BD(){
   global $intA_Id,$intA_Cantidad,$intA_UM,$strA_Alimento,$decA_Proteina,$decA_Carbs,$decA_Grasa,$decA_Libre,$listUM;
   $intA_Id = 0;
   $bitPermiso = true;//ana pide que usuarios puedan agregar su base datos
-  $strUsuario = wp_get_current_user()->user_login;
+  $strUsuario = fnViveMovimento_usuario();
   if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_6' && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '1') {    
     $intA_Id = number_format($_POST['intA_Id'], 2);
     $intA_Cantidad = number_format($_POST['intA_Cantidad'], 2);

@@ -24,7 +24,7 @@ function fnMiInformacion_validar($strUsuario,$intEdad,$decAltura,$decPeso){
 }
 function fnTab_1() {
     global $strUsuario,$intEdad,$decAltura,$decPeso,$intSexo,$decGrasa,$decMetabolismo;
-    $strUsuario = wp_get_current_user()->user_login;
+    $strUsuario = fnViveMovimento_usuario();
     if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_1' && isset($_POST['txtForm_1']) && $_POST['txtForm_1'] != null && $_POST['txtForm_1'] != '') {
         fnMiInformacion_validar($strUsuario,$_POST['intEdad'],$_POST['decAltura'],$_POST['decPeso']);
         $intEdad = floatval($_POST['intEdad']);

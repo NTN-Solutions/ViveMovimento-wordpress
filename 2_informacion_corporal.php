@@ -1,7 +1,7 @@
 <?php
 
 function fnTabla_1(){
-    $strUsuario = wp_get_current_user()->user_login;
+    $strUsuario = fnViveMovimento_usuario();
     global $intEdad,$decAltura,$decPeso,$decIMC,$decRMR,$decTDEE,$decAF,$decEjercicio;
     global $intSexo,$intExperiencia,$intEjercicio,$intMeta;
     fnMiInformacion_cargar($strUsuario);    

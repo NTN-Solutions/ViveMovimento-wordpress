@@ -5,7 +5,7 @@
 		global $arrayGraficaPesoLabels, $arrayGraficaPesoValues;
 		$arrayGraficaPesoLabels = "";
 		$arrayGraficaPesoValues = "";
-	    $strUsuario = wp_get_current_user()->user_login;
+	    $strUsuario = fnViveMovimento_usuario();
 		$strRutaImagenMadre = '/home/jhx94zix8g9i/public_html/wp-content/plugins/vivemovimento/fotos/'.$strUsuario;
 		$whitelist = array(
 		    '127.0.0.1',

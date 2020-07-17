@@ -88,7 +88,7 @@ function strSuscripcionComprada($strUsuario){
 
 function fnTab_4_cargar(){
   global $wpdb,$intMeta;
-  $strUsuario = wp_get_current_user()->user_login;
+  $strUsuario = fnViveMovimento_usuario();
   try {
     $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_meta WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     if (count($buscar) > 0) {
@@ -145,7 +145,7 @@ function fnTab_4(){
   global $decProteinas,$decCarbo,$decGrasas,$decIMC,$intSexo,$intExperiencia;
   $intMetaValor = array(0,-500,0,350);
 
-  $strUsuario = wp_get_current_user()->user_login;
+  $strUsuario = fnViveMovimento_usuario();
   if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_4' && isset($_POST['intOpcion']) && $_POST['intOpcion'] != null && $_POST['intOpcion'] == '1') {
     $intMeta = intval($_POST['intMeta']);
     fnTab_4_save($strUsuario,$intMeta);
@@ -378,9 +378,9 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
           </tr>
           <tr>
             <th>PORCIONES<br/>Recomendadas <i class="fas fa-chevron-right"></i></th>
-            <th class="amarillo"><h3><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decProteinas[3])); ?></h3></th>
-            <th class="naranja"><h3><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decCarbo[3])); ?></h3></th>
-            <th class="celeste"><h3><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decGrasas[3])); ?></h3></th>
+            <th class="amarillo"><h3 style="margin: 0px;"><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decProteinas[3])); ?></h3></th>
+            <th class="naranja"><h3 style="margin: 0px;"><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decCarbo[3])); ?></h3></th>
+            <th class="celeste"><h3 style="margin: 0px;"><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decGrasas[3])); ?></h3></th>
             <th></th>
           </tr>
           <?php

@@ -1,7 +1,7 @@
 <?php
 function fnTab_21_cargar(){
   global $wpdb,$intExperiencia;
-  $strUsuario = wp_get_current_user()->user_login;
+  $strUsuario = fnViveMovimento_usuario();
   try {
     $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_experiencia WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     if (count($buscar) > 0) {
@@ -30,7 +30,7 @@ function fnTab_21_save($strUsuario,$intExperiencia){
 }
 function fnTab_21(){
   global $strUsuario,$intExperiencia;
-  $strUsuario = wp_get_current_user()->user_login;
+  $strUsuario = fnViveMovimento_usuario();
   if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_21' && isset($_POST['txtForm_21']) && $_POST['txtForm_21'] != null && $_POST['txtForm_21'] != '') {
       $intExperiencia = intval($_POST['intExperiencia']);
       fnTab_21_save($strUsuario,$intExperiencia);
