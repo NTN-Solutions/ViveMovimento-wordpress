@@ -2,7 +2,9 @@
 function fnListadoDiario(){
     global $wpdb, $strUsuario;
     $strUsuario = fnViveMovimento_usuario();
-    $list = $wpdb->get_results("SELECT intId,datFecha, SUM(intProteinas) intProteinas,SUM(intCarbohidratos) intCarbohidratos,SUM(intGrasas) intGrasas,SUM(intVegetales) intVegetales,SUM(intLibres) intLibres FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' GROUP BY intId,datFecha ORDER BY datFecha DESC");
+    $list = $wpdb->get_results("SELECT intId,datFecha, SUM(intProteinas) intProteinas,SUM(intCarbohidratos) intCarbohidratos,SUM(intGrasas) intGrasas,SUM(intVegetales) intVegetales,SUM(intLibres) intLibres,strNota
+        FROM wp_vivemov_users_diario
+        WHERE strUsuario = '$strUsuario' GROUP BY intId,datFecha,strNota ORDER BY datFecha DESC");
     return $list;
 }
 function fnTiempoSiguiente(){
@@ -294,6 +296,12 @@ function fnTab_5(){
         $intEditar = intval($_POST['intEditar']);
         $itemEditar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_diario_detalle WHERE intId = ".$intEditar);        
         // fnDiario_eliminar(intval($_POST['intEditar']));
+    }else if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_5' && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '5') {
+        $intDiario = intval($_POST['intDiario']);
+        $txtNota = $_POST['txtNota'];
+        $wpdb->get_results("UPDATE wp_vivemov_users_diario as D SET D.strNota = '$txtNota' WHERE D.intId = $intDiario");
+        echo fnMensaje(1,'Listo, nota guardada!');
+    
     }
 
     $listadoDiario = fnListadoDiario();
@@ -454,6 +462,19 @@ function fnTab_5(){
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cerrar
                         </button>
                     </div>
+
+                    <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post">
+                        <input type="hidden" name="intOp" value="5" />
+                        <input type="hidden" name="intDiario" value="'.$diario->intId.'" />
+                        <div class="col-xs-10 col-sm-10 col-md-10">
+                            <textarea name="txtNota" class="form-control" rows="2" placeholder="Nota del día...">'.$diario->strNota.'</textarea>
+                        </div>
+                        <div class="col-xs-2 col-sm-2 col-md-2">
+                            <input type="submit" name="submit" value="Guardar Nota" class="btn btn-block btn-xs" style="padding-bottom: 0px;padding-top: 0px;"/>
+                        </div>
+                    </form>
+
+
                     <div class="col-xs-12 col-sm-12 col-md-12">
                     </div>
 

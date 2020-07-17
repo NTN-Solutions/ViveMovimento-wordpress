@@ -37,3 +37,8 @@ ALTER TABLE `wp_vivemov_pasos_videos`
 --
 ALTER TABLE `wp_vivemov_pasos_videos`
   MODIFY `decId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+
+
+//mejora 7 para notas en journal
+ALTER TABLE `wp_vivemov_users_diario` ADD `strNota` VARCHAR(3000) NOT NULL AFTER `intLibres`;
