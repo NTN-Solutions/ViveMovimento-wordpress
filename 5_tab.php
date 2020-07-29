@@ -140,7 +140,7 @@ function fnDiario_clonar(){
                     SELECT $nuedoDiarioClonado, strUsuario,intTiempo,intAlimentoPorcion,devCantidad,strDescripcion,intProteinas,intCarbohidratos,intGrasas,intVegetales,intLibres,NOW()
                     FROM wp_vivemov_users_diario_detalle D
                     WHERE D.intDiario = $txtClonar;");
-                echo fnMensaje(1,'Listo, dia('.$datSiguiente.') agregado!');
+                echo fnMensaje(1,'Listo, diario clonado en dia '.$datSiguiente.'');
             } else {
                 echo fnMensaje(2,'Inconvenientes, no guardado!');
             }
@@ -189,7 +189,7 @@ function fnDiario_AgregarDetalle(){
     );
     if($_SESSION["intFormulario"] == 1){
         $_SESSION["intFormulario"] = 0;
-        if ( 1 > count( $reg_errors->get_error_messages() ) ) {
+        if ($reg_errors == null || ($reg_errors != null && 1 > count( $reg_errors->get_error_messages() ) )) {
             global $wpdb;
             $responseDiario = $wpdb->insert("wp_vivemov_users_diario_detalle", $itemRow);
             if($responseDiario) {
@@ -277,7 +277,9 @@ function fnTab_5(){
     if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_5' && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '1') {    
         fnDiario_Agregar($_POST['txtFechaDiario']);
     } else if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_5' && isset($_POST['intDiarioDet_Enc']) && $_POST['intDiarioDet_Enc'] != null  && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '2') {
-        fnDiario_Detalle_Validar($_POST['intDiarioDet_Cantidad'],(isset($_POST['intDiarioDet_Alimento'])?$_POST['intDiarioDet_Alimento'] : 0),$_POST['intDiarioDet_Tiempo']);
+        if (!isset($_POST['txtClonar']) && ($_POST['txtClonar'] == null || $_POST['txtClonar'] == '')) {
+            fnDiario_Detalle_Validar($_POST['intDiarioDet_Cantidad'],(isset($_POST['intDiarioDet_Alimento'])?$_POST['intDiarioDet_Alimento'] : 0),$_POST['intDiarioDet_Tiempo']);
+        }
         global $intDiarioDet_Cantidad, $detEncabezado, $detAlimento, $detTiempo, $txtClonar, $intIDDETALLE;
         $intDiarioDet_Cantidad = $_POST['intDiarioDet_Cantidad'];
         $detEncabezado = $_POST['intDiarioDet_Enc'];
@@ -590,7 +592,6 @@ function fnTab_5(){
 
 <script>
     function fnAlimentoSeleccionado(decDiario) {
-        debugger
         var cbAlimento = $('#intDiarioDet_Alimento_' + decDiario + ' option:selected').text();        
         $('#span_porcion_' + decDiario).html('Cantidad de ' + cbAlimento.split(' ')[1]);
 
