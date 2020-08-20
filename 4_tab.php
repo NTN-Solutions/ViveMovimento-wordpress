@@ -369,7 +369,7 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
             <th class="celeste"><?php echo fnRedondear($decGrasas[2]); ?></th>
             <th></th>
           </tr>
-          <tr>
+          <tr style="display: none;">
             <th>PORCIONES </th>
             <th class="amarillo"><?php echo fnRedondear($decProteinas[3]); ?></th>
             <th class="naranja"><?php echo fnRedondear($decCarbo[3]); ?></th>
@@ -404,7 +404,7 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
                 </form>
               </tr>
             <tr>
-              <th colspan="5">Puedes modificar tus propias porciones si las recomendadas no te simpatiza</th>
+              <th colspan="5">Puedes modificar tus propias porciones si las recomendadas no te simpatizan</th>
             </tr>
           <?php
             // }
