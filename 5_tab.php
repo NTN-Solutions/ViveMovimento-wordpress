@@ -159,9 +159,10 @@ function fnDiario_Detalle($decDiario,$intTiempo){
         WHERE T.bitActivo = 1 AND T.intId = $intTiempo ORDER BY AP.strAlimento ASC");
     return $listado;
 }
-function fnDiario_eliminar($intDetalle){
-    global $wpdb;
+function fnDiario_eliminar($intDetalle,$detEncabezado){
+    global $wpdb,$strUsuario;
     $wpdb->delete( 'wp_vivemov_users_diario_detalle', array( 'intId' => $intDetalle ) );
+    fnDiarioDetalleCalcular_P_CH_G_V($wpdb,$strUsuario,$detEncabezado);
 }
 function fnDiario_AgregarDetalle(){
     global $reg_errors, $strUsuario;
@@ -293,7 +294,7 @@ function fnTab_5(){
             fnDiario_ActualizarDetalle();            
         }
     }else if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_5' && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '3') {
-        fnDiario_eliminar(intval($_POST['intEliminar']));
+        fnDiario_eliminar(intval($_POST['intEliminar']), intval($_POST['intEncabezado']));
     }else if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_5' && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '4') {
         $intEditar = intval($_POST['intEditar']);
         $itemEditar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_diario_detalle WHERE intId = ".$intEditar);        
@@ -549,6 +550,7 @@ function fnTab_5(){
                         <td>
                             <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
                                 <input type="hidden" name="intOp" value="3" />
+                                <input type="hidden" name="intEncabezado" value="'.$diario->intId.'" />
                                 <input type="hidden" name="intEliminar" value="'.$det->intId.'" />
                                 <button type="submit" class="btn btn-link badge" role="button" href="#"><i class="fas fa-trash-alt"></i></button>
                             </form>
