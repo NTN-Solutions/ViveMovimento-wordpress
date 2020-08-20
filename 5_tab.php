@@ -16,7 +16,7 @@ function fnTiempoSiguiente(){
         FROM wp_vivemov_users_diario_detalle D
         INNER JOIN wp_vivemov_alimentos_tiempo T ON T.intId = D.intTiempo
         WHERE 
-            strUsuario = '$strUsuario' AND T.bitPrincipal = 1 AND CAST(D.datModificado AS DATE) = CAST(NOW() AS DATE)
+            strUsuario = '$strUsuario' AND CAST(D.datModificado AS DATE) = CAST(NOW() AS DATE)
     ");
     if (count($list) > 0 ) {
         return ($list[0]->intTiempoSiguiente != null && $list[0]->intTiempoSiguiente > 0 ? $list[0]->intTiempoSiguiente : 1);
