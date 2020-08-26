@@ -1,10 +1,16 @@
 <?php
-function fnListadoDiario(){
+function fnListadoDiario($decDiario){
     global $wpdb, $strUsuario;
     $strUsuario = fnViveMovimento_usuario();
-    $list = $wpdb->get_results("SELECT intId,datFecha, SUM(intProteinas) intProteinas,SUM(intCarbohidratos) intCarbohidratos,SUM(intGrasas) intGrasas,SUM(intVegetales) intVegetales,SUM(intLibres) intLibres,strNota
+    if ($decDiario == null || $decDiario == 0) {
+        $list = $wpdb->get_results("SELECT intId,datFecha, SUM(intProteinas) intProteinas,SUM(intCarbohidratos) intCarbohidratos,SUM(intGrasas) intGrasas,SUM(intVegetales) intVegetales,SUM(intLibres) intLibres,strNota
+            FROM wp_vivemov_users_diario
+            WHERE strUsuario = '$strUsuario' GROUP BY intId,datFecha,strNota ORDER BY datFecha DESC");
+    }else{
+        $list = $wpdb->get_results("SELECT intId,datFecha, SUM(intProteinas) intProteinas,SUM(intCarbohidratos) intCarbohidratos,SUM(intGrasas) intGrasas,SUM(intVegetales) intVegetales,SUM(intLibres) intLibres,strNota
         FROM wp_vivemov_users_diario
-        WHERE strUsuario = '$strUsuario' GROUP BY intId,datFecha,strNota ORDER BY datFecha DESC");
+        WHERE strUsuario = '$strUsuario' AND intId = $decDiario GROUP BY intId,datFecha,strNota ORDER BY datFecha DESC");
+    }
     return $list;
 }
 function fnTiempoSiguiente(){
@@ -44,7 +50,6 @@ function fnDiario_Tiempos(){
     $listado = $wpdb->get_results("SELECT * FROM wp_vivemov_alimentos_tiempo T WHERE T.bitActivo = 1 ORDER BY decOrden ASC");
     return $listado;
 }
-
 function fnDiario_Agregar($txtFechaDiario){
     global $wpdb, $strUsuario;
     $datSiguiente = null;
@@ -163,6 +168,10 @@ function fnDiario_eliminar($intDetalle,$detEncabezado){
     global $wpdb,$strUsuario;
     $wpdb->delete( 'wp_vivemov_users_diario_detalle', array( 'intId' => $intDetalle ) );
     fnDiarioDetalleCalcular_P_CH_G_V($wpdb,$strUsuario,$detEncabezado);
+    $result['type'] = 'success';
+    $result['mnj'] = 'Listo, eliminado!';
+    $result = json_encode($result);
+    echo $result;
 }
 function fnDiario_AgregarDetalle(){
     global $reg_errors, $strUsuario;
@@ -188,21 +197,29 @@ function fnDiario_AgregarDetalle(){
         'intLibres'             => 0,
         'datModificado'         => date('Y-m-d H:i:s'),
     );
-    if($_SESSION["intFormulario"] == 1){
-        $_SESSION["intFormulario"] = 0;
+    $result;
+    // if($_SESSION["intFormulario"] == 1){
+    //     $_SESSION["intFormulario"] = 0;
         if ($reg_errors == null || ($reg_errors != null && 1 > count( $reg_errors->get_error_messages() ) )) {
             global $wpdb;
             $responseDiario = $wpdb->insert("wp_vivemov_users_diario_detalle", $itemRow);
             if($responseDiario) {
-                echo fnMensaje(1,'Listo, agregado!');
+                // echo fnMensaje(1,'Listo, agregado!');
                 fnDiarioDetalleCalcular_P_CH_G_V($wpdb,$strUsuario,$detEncabezado);
+
+                $result['type'] = 'success';
+                $result['mnj'] = 'Listo, agregado!';
             } else {
-                echo fnMensaje(2,'Inconvenientes, no guardado!');
+                // echo fnMensaje(2,'Inconvenientes, no guardado!');
+                $result['type'] = 'error';
+                $result['mnj'] = 'Inconvenientes, no guardado!';
             }
         }
-    }else{
-        $_SESSION["intFormulario"] = 1;
-    }
+    // }else{
+    //     $_SESSION["intFormulario"] = 1;
+    // }
+    $result = json_encode($result);
+    echo $result;
 }
 function fnDiarioDetalleCalcular_P_CH_G_V($wpdb,$strUsuario,$detEncabezado){
     $wpdb->get_results("
@@ -263,6 +280,98 @@ function fnDiario_Detalle_Validar($decCantidad,$decAlimento,$decTiempo){
     }
 }
 function fnTab_5(){
+    fnFoodJournalCore();
+}
+//Ajax
+function fnViveMovimentoDiarioAgregar(){
+    global $wpdb, $strUsuario;
+    global $decProteinas,$decCarbo,$decGrasas;
+    global $decPorcionDia;
+    global $reg_errors;
+    global $itemEditar;
+    $itemEditar = null;
+    $decPorcionDia = array(0,0,0,0);
+    $decPorcionDia[0] = 0;
+    $decPorcionDia[1] = 0;
+    $decPorcionDia[2] = 0;
+    $strUsuario = fnViveMovimento_usuario();
+
+    global $intDiarioDet_Cantidad, $detEncabezado, $detAlimento, $detTiempo, $txtClonar, $intIDDETALLE;
+    $intDiarioDet_Cantidad = $_POST['intDiarioDet_Cantidad'];
+    $detEncabezado = $_POST['intDiarioDet_Enc'];
+    $detAlimento = (isset($_POST['intDiarioDet_Alimento'])?$_POST['intDiarioDet_Alimento'] : 0);
+    $detTiempo = $_POST['intDiarioDet_Tiempo'];
+    $txtClonar = $_POST['txtClonar'];
+    $intIDDETALLE = $_POST['intIDDETALLE'];
+    if ($intIDDETALLE == null || $intIDDETALLE == 0) {
+        fnDiario_AgregarDetalle();
+    }
+}
+//ajax
+function fnViveMovimentoDiarioDetalleTabla(){
+    $listTiempos = fnDiario_Tiempos();
+    $listadoDiario = fnListadoDiario(intval($_POST['intDiario']));
+    $diario = $listadoDiario[0];
+    fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos);
+}
+function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
+    echo '<div id="div_vivemovimento_tabla_diario_'.$diario->intId.'"><table id="tblDiario_'.$diario->intId.'" class="tblDiario">';
+        foreach ($listTiempos as $tiempo) {
+            $listDetalle = fnDiario_Detalle($diario->intId,$tiempo->intId);
+            if($tiempo->bitPrincipal == 0 && count($listDetalle) == 0){continue;}
+            echo '<tr>
+                <td class="blanco" style="font-weight: bolder;">'.$tiempo->strTiempo.'</td>
+                <td class="amarillo" style="font-weight: bolder;">Proteina</td>
+                <td class="naranja" style="font-weight: bolder;">Carbohidrato</td>
+                <td class="celeste" style="font-weight: bolder;">Grasa</td>
+                <td class="verde" style="font-weight: bolder;">Vegetales</td>
+                <td class="morado" style="font-weight: bolder;">Libre</td>
+              </tr>';
+              foreach ($listDetalle as $det) {
+                echo '<tr>
+                        <td>
+                            <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
+                                <input type="hidden" name="intOp" value="3" />
+                                <input type="hidden" name="intEncabezado" value="'.$diario->intId.'" />
+                                <input type="hidden" name="intEliminar" value="'.$det->intId.'" />
+                                <button type="button" class="btn btn-link badge" role="button" href="#" style="color: white;" onClick="fnDiarioEliminarAjax('.$diario->intId.','.$det->intId.')"><i class="fas fa-trash-alt"></i></button>
+                            </form>
+                            <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
+                                <input type="hidden" name="intOp" value="4" />
+                                <input type="hidden" name="intEditar" value="'.$det->intId.'" />
+                                <button type="submit" class="btn btn-link badge" role="button" href="#"><i class="fa fa-pencil"></i></button>
+                            </form>
+                            '.$det->strAlimento.'
+                        </td>
+                        <td class="amarillo">'.$det->intProteinas.'</td>
+                        <td class="naranja">'.$det->intCarbohidratos.'</td>
+                        <td class="celeste">'.$det->intGrasas.'</td>
+                        <td class="verde">'.$det->intVegetales.'</td>
+                        <td class="morado">'.$det->intLibres.'</td>
+                      </tr>';
+              }
+        }
+    echo '<tr>
+        <td class="rojo" rowspan="2" style="font-weight: bolder;">Total</td>
+        <td class="rojo" style="font-weight: bolder;">Proteinas</td>
+        <td class="rojo" style="font-weight: bolder;">Carbohidrato</td>
+        <td class="rojo" style="font-weight: bolder;">Grasa</td>
+        <td class="rojo" style="font-weight: bolder;">Vegetales</td>
+        <td class="rojo" style="font-weight: bolder;">Libre</td>
+      </tr>
+      <tr>
+        <td class="rojo" style="font-weight: bolder;">'.$diario->intProteinas.'</td>
+        <td class="rojo" style="font-weight: bolder;">'.$diario->intCarbohidratos.'</td>
+        <td class="rojo" style="font-weight: bolder;">'.$diario->intGrasas.'</td>
+        <td class="rojo" style="font-weight: bolder;">'.$diario->intVegetales.'</td>
+        <td class="rojo" style="font-weight: bolder;">'.$diario->intLibres.'</td>
+      </tr>';
+    echo '</table></div>';
+}
+function fnViveMovimentoDiarioEliminar(){
+    fnDiario_eliminar(intval($_POST['intEliminar']), intval($_POST['intEncabezado']));
+}
+function fnFoodJournalCore(){
     global $wpdb, $strUsuario;
     global $decProteinas,$decCarbo,$decGrasas;
     global $decPorcionDia;
@@ -307,7 +416,7 @@ function fnTab_5(){
     
     }
 
-    $listadoDiario = fnListadoDiario();
+    $listadoDiario = fnListadoDiario(null);
     $intDia = 0;
     // if($listadoDiario != null && $listadoDiario[0] != null && $listadoDiario[0]->datFecha != date('Y-m-d')){
     if($listadoDiario != null && $listadoDiario[0] != null){
@@ -469,35 +578,36 @@ function fnTab_5(){
                     <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post">
                         <input type="hidden" name="intOp" value="5" />
                         <input type="hidden" name="intDiario" value="'.$diario->intId.'" />
-                        <div class="col-xs-10 col-sm-10 col-md-10">
+                        <div class="col-xs-10 col-sm-10 col-md-10" style="padding-left: 0px;padding-right: 0px;">
                             <textarea name="txtNota" class="form-control" rows="2" placeholder="Nota del día...">'.$diario->strNota.'</textarea>
                         </div>
-                        <div class="col-xs-2 col-sm-2 col-md-2">
-                            <input type="submit" name="submit" value="Guardar Nota" class="btn btn-block btn-xs" style="padding-bottom: 0px;padding-top: 0px;"/>
+                        <div class="col-xs-2 col-sm-2 col-md-2" style="padding-left: 0px;padding-right: 0px;">
+                            <button type="submit" name="submit" value="Guardar Nota" class="btn btn-block btn-xs" style="padding-bottom: 0px;padding-top: 0px;color: white;"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar Nota</button>
                         </div>
                     </form>
 
 
                     <div class="col-xs-12 col-sm-12 col-md-12">
+                    <hr/>
                     </div>
 
                     <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" id="frm_diario_'.$diario->intId.'" method="post" class="" style="margin-bottom: 0px;">
                         <input type="hidden" name="intIDDETALLE" id="intIDDETALLE_'.$diario->intId.'" value="0" />
                         <input type="hidden" name="intOp" value="2" />
                         <div class="col-md-3 col-xs-6 col-sm-6 sinPadding" style="display: grid;">
-                            <label for="intDiarioDet_Tiempo">Tiempo <strong>*</strong></label>
+                            <label for="intDiarioDet_Tiempo"><i class="fa fa-clock-o" aria-hidden="true"></i> Tiempo <strong>*</strong></label>
                             <select name="intDiarioDet_Tiempo" class="intDiarioDet_Tiempo" id="intDiarioDet_Tiempo_'.$diario->intId.'">';
                             $bitPrimero = false;
                             foreach ($listTiempos as $tiempo) { echo '<option value="'.$tiempo->intId.'"'.(!$bitPrimero?' selected ':'').'>'.$tiempo->strTiempo.'</option>';$bitPrimero = true; }
                         echo '</select>
                         </div>
                         <div class="col-md-3 col-xs-6 col-sm-6 sinPadding" style="display: grid;">
-                            <label for="intDiarioDet_Cantidad_'.$diario->intId.'"><span id="span_porcion_'.$diario->intId.'">Porcion</span> <strong>*</strong></label>
+                            <label for="intDiarioDet_Cantidad_'.$diario->intId.'"><span id="span_porcion_'.$diario->intId.'"><i class="fa fa-list-ol" aria-hidden="true"></i> Porcion</span> <strong>*</strong></label>
                             <input type="number" id="intDiarioDet_Cantidad_'.$diario->intId.'" value="1" min="0" max="999" step="0.01" onChange="fnAlimentoSeleccionado('.$diario->intId.');" onkeyup="fnAlimentoSeleccionado('.$diario->intId.');" >
                             <input type="hidden"id="intDiarioDet_Cantidad_hidden_'.$diario->intId.'" name="intDiarioDet_Cantidad" value="1" min="0" max="999" step="0.01">
                         </div>
                         <div class="col-md-4 col-xs-12 col-sm-12 sinPadding" style="display: grid;">
-                            <label for="intDiarioDet_Alimento">Alimento <strong>*</strong></label>
+                            <label for="intDiarioDet_Alimento"><i class="fa fa-cutlery" aria-hidden="true"></i> Alimento <strong>*</strong></label>
                             <select name="intDiarioDet_Alimento" id="intDiarioDet_Alimento_'.$diario->intId.'" onChange="fnAlimentoSeleccionado('.$diario->intId.');">
                                 <option selected="true" disabled="disabled">Seleccionar el alimento</option>
                             ';
@@ -523,8 +633,13 @@ function fnTab_5(){
                         </div>
                         <div class="col-md-2 col-xs-12 col-sm-12 sinPadding" style="display: grid;padding-left: 0px;">
                             <input type="hidden" name="intDiarioDet_Enc" value="'.$diario->intId.'"/>
-                            <input type="hidden" name="intDiarioDet_Descripcion" value="..."/>
-                            <input type="submit" name="submit" value="'.($itemEditar == null? 'Agregar': 'Editar').'" class="btn btn-block btn-xs"id="btnForm_diario_'.$diario->intId.'" style="margin-top: 20px;"/>
+                            <input type="hidden" name="intDiarioDet_Descripcion" value="..."/>';
+                            if ($itemEditar == null) {
+                                echo '<button onClick="fnDiarioGuardarAjax('.$diario->intId.');" type="button" value="'.($itemEditar == null? 'Agregar': 'Editar').'" class="btn btn-block btn-xs"id="btnForm_diario_'.$diario->intId.'" style="margin-top: 20px;color: white;height: 40px;"><i class="fa fa-plus" aria-hidden="true"></i>'.($itemEditar == null? 'Agregar': 'Editar').'</button>';
+                            }else{
+                                echo '<button type="submit" name="submit" value="'.($itemEditar == null? 'Agregar': 'Editar').'" class="btn btn-block btn-xs"id="btnForm_diario_'.$diario->intId.'" style="margin-top: 20px;color: white;height: 40px;"><i class="fa fa-plus" aria-hidden="true"></i>'.($itemEditar == null? 'Agregar': 'Editar').'</button>';
+                            }
+                        echo '
                         </div>
                         <div style="display: none;">
                             <input type="hidden" name="txtClonar" id="txtClonar_'.$diario->intId.'" value="0"/>                    
@@ -533,58 +648,9 @@ function fnTab_5(){
                 </div>
                 <hr/>
             <div class="table-responsive">
-        <table id="tblDiario_'.$diario->intId.'" class="tblDiario">';
-        foreach ($listTiempos as $tiempo) {
-            $listDetalle = fnDiario_Detalle($diario->intId,$tiempo->intId);
-            if($tiempo->bitPrincipal == 0 && count($listDetalle) == 0){continue;}
-            echo '<tr>
-                <td class="blanco" style="font-weight: bolder;">'.$tiempo->strTiempo.'</td>
-                <td class="amarillo" style="font-weight: bolder;">Proteina</td>
-                <td class="naranja" style="font-weight: bolder;">Carbohidrato</td>
-                <td class="celeste" style="font-weight: bolder;">Grasa</td>
-                <td class="verde" style="font-weight: bolder;">Vegetales</td>
-                <td class="morado" style="font-weight: bolder;">Libre</td>
-              </tr>';
-              foreach ($listDetalle as $det) {
-                echo '<tr>
-                        <td>
-                            <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
-                                <input type="hidden" name="intOp" value="3" />
-                                <input type="hidden" name="intEncabezado" value="'.$diario->intId.'" />
-                                <input type="hidden" name="intEliminar" value="'.$det->intId.'" />
-                                <button type="submit" class="btn btn-link badge" role="button" href="#"><i class="fas fa-trash-alt"></i></button>
-                            </form>
-                            <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
-                                <input type="hidden" name="intOp" value="4" />
-                                <input type="hidden" name="intEditar" value="'.$det->intId.'" />
-                                <button type="submit" class="btn btn-link badge" role="button" href="#"><i class="fa fa-pencil"></i></button>
-                            </form>
-                            '.$det->strAlimento.'
-                        </td>
-                        <td class="amarillo">'.$det->intProteinas.'</td>
-                        <td class="naranja">'.$det->intCarbohidratos.'</td>
-                        <td class="celeste">'.$det->intGrasas.'</td>
-                        <td class="verde">'.$det->intVegetales.'</td>
-                        <td class="morado">'.$det->intLibres.'</td>
-                      </tr>';
-              }
-        }
-        echo '<tr>
-            <td class="rojo" rowspan="2" style="font-weight: bolder;">Total</td>
-            <td class="rojo" style="font-weight: bolder;">Proteinas</td>
-            <td class="rojo" style="font-weight: bolder;">Carbohidrato</td>
-            <td class="rojo" style="font-weight: bolder;">Grasa</td>
-            <td class="rojo" style="font-weight: bolder;">Vegetales</td>
-            <td class="rojo" style="font-weight: bolder;">Libre</td>
-          </tr>
-          <tr>
-            <td class="rojo" style="font-weight: bolder;">'.$diario->intProteinas.'</td>
-            <td class="rojo" style="font-weight: bolder;">'.$diario->intCarbohidratos.'</td>
-            <td class="rojo" style="font-weight: bolder;">'.$diario->intGrasas.'</td>
-            <td class="rojo" style="font-weight: bolder;">'.$diario->intVegetales.'</td>
-            <td class="rojo" style="font-weight: bolder;">'.$diario->intLibres.'</td>
-          </tr>';
-        echo '</table></div></div>';
+        ';
+        fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos);
+        echo '</div></div>';
         $intDiaContador -= 1;
     }
 ?>
@@ -622,6 +688,77 @@ function fnTab_5(){
         }else{            
             $('#divFechaNoEncontrado').hide();
         }
+    }
+    function fnDiarioGuardarAjax(decDiario) {
+        if($('#intDiarioDet_Tiempo_' + decDiario).val() == null || $('#intDiarioDet_Cantidad_hidden_' + decDiario).val() == null || $('#intDiarioDet_Alimento_' + decDiario).val() == null || $('#intDiarioDet_Cantidad_' + decDiario).val() == 0 || $('#intDiarioDet_Cantidad_hidden_' + decDiario).val() == null){
+            alert('Completar campos!');
+            return;
+        }
+        jQuery.ajax({
+            type : "post",
+            // dataType : "json",
+            url : '<?= admin_url( 'admin-ajax.php' ) ?>',
+            data : {
+                action: "fnViveMovimentoDiarioAgregar"
+                ,intDiarioDet_Cantidad : $('#intDiarioDet_Cantidad_hidden_' + decDiario).val()
+                ,intDiarioDet_Enc: decDiario
+                ,intDiarioDet_Alimento: $('#intDiarioDet_Alimento_' + decDiario).val()
+                ,intDiarioDet_Tiempo: $('#intDiarioDet_Tiempo_' + decDiario).val()
+                ,txtClonar: 0
+                ,intIDDETALLE: null
+            },
+            success: function(response) {
+                response = response.replace('"}0','"}');
+                var response = jQuery.parseJSON(response);
+                if(response.type == "success") {
+                    $('#intDiarioDet_Cantidad_hidden_' + decDiario).val(null);
+                    $('#intDiarioDet_Cantidad_' + decDiario).val(null);
+                    setTimeout(function () {
+                        fnViveMovimentoDiarioDetalleTabla(decDiario);
+                    }, 150);
+                }else {
+                   alert(response.mnj);
+                }
+            }
+        });
+    }
+    function fnDiarioEliminarAjax(decDiario, intEliminar) {
+        jQuery.ajax({
+            type : "post",
+            // dataType : "json",
+            url : '<?= admin_url( 'admin-ajax.php' ) ?>',
+            data : {
+                action: "fnViveMovimentoDiarioEliminar"
+                ,intEliminar : intEliminar
+                ,intEncabezado: decDiario
+            },
+            success: function(response) {
+                response = response.replace('"}0','"}');
+                var response = jQuery.parseJSON(response);
+                if(response.type == "success") {
+                    setTimeout(function () {
+                        fnViveMovimentoDiarioDetalleTabla(decDiario);
+                    }, 150);
+                }else {
+                   alert(response.mnj);
+                }
+            }
+        });
+    }
+    function fnViveMovimentoDiarioDetalleTabla(decDiario) {
+        jQuery.ajax({
+            type : "post",
+            // dataType : "json",
+            url : '<?= admin_url( 'admin-ajax.php' ) ?>',
+            data : {
+                action: "fnViveMovimentoDiarioDetalleTabla"
+                ,intDiario: decDiario                
+            },
+            success: function(response) {
+                response = response.replace('</div>0','</div>');
+                $('#div_vivemovimento_tabla_diario_'+ decDiario).html(response);
+            }
+        });
     }
     $( document ).ready(function() {
         setTimeout(function(){

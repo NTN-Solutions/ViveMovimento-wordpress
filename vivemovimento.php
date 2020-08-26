@@ -7,7 +7,6 @@
 * Author: steven vilchez castillo
 * Author URI: https://vivemovimento.com/
 **/
-
 function registration_form( $username, $password, $email, $website, $first_name, $last_name, $nickname, $bio ) {
     echo '
     <style>
@@ -101,7 +100,6 @@ function registration_validation( $username, $password, $email, $website, $first
         }    
     }
 }
-
 function complete_registration() {
     global $reg_errors, $username, $password, $email, $website, $first_name, $last_name, $nickname, $bio;
     if ( 1 > count( $reg_errors->get_error_messages() ) ) {
@@ -319,6 +317,10 @@ add_action( 'admin_footer', 'fnFontawesome2' );
 
 add_action( 'woocommerce_thankyou', 'fnViveMovimentoRedireccionLuegoCompra');
   
+add_action("wp_ajax_fnViveMovimentoDiarioAgregar", "fnViveMovimentoDiarioAgregar");
+add_action("wp_ajax_fnViveMovimentoDiarioEliminar", "fnViveMovimentoDiarioEliminar");
+add_action("wp_ajax_fnViveMovimentoDiarioDetalleTabla", "fnViveMovimentoDiarioDetalleTabla");
+
 function fnViveMovimentoRedireccionLuegoCompra( $order_id ){
     $order = wc_get_order( $order_id );
     $url = '/shop';

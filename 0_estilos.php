@@ -1,4 +1,4 @@
-	<?php
+<?php
 	function fnViveMovimento_usuario($bitMensaje = null){
 		if (isset($_GET['infoUsuario']) && $_GET['infoUsuario'] != null && $_GET['infoUsuario'] != '') {
 			if (( in_array( 'administrator', wp_get_current_user()->roles, true ) ) == true) {
@@ -20,7 +20,6 @@
 			return ( in_array( 'administrator', wp_get_current_user()->roles, true ) );
 		}
 	}
-
 	function fnViveMovimento_Init()
 		{
 	fnViveMovimento_usuario(true);
@@ -32,7 +31,6 @@
 	a.badge:hover, a.badge:focus {
 	    color: black !important;
 	}
-
 	/* The rbContainer */
 	.rbContainer {
 		display: inline-block;
@@ -46,14 +44,12 @@
 		-ms-user-select: none;
 		user-select: none;
 	}
-
 	/* Hide the browser's default radio button */
 	.rbContainer input {
 		position: absolute;
 		opacity: 0;
 		cursor: pointer;
 	}
-
 	/* Create a custom radio button */
 	.rbCheckmark {
 		position: absolute;
@@ -64,29 +60,24 @@
 		background-color: #eee;
 		border-radius: 50%;
 	}
-
 	/* On mouse-over, add a grey background color */
 	.rbContainer:hover input ~ .rbCheckmark {
 		background-color: #ccc;
 	}
-
 	/* When the radio button is checked, add a blue background */
 	.rbContainer input:checked ~ .rbCheckmark {
 		background-color: #2196F3;
 	}
-
 	/* Create the indicator (the dot/circle - hidden when not checked) */
 	.rbCheckmark:after {
 		content: "";
 		position: absolute;
 		display: none;
 	}
-
 	/* Show the indicator (dot/circle) when checked */
 	.rbContainer input:checked ~ .rbCheckmark:after {
 		display: block;
 	}
-
 	/* Style the indicator (dot/circle) */
 	.rbContainer .rbCheckmark:after {
 		top: 9px;
@@ -96,7 +87,6 @@
 		border-radius: 50%;
 		background: white;
 	}
-
 	#customers {
 		font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 		border-collapse: collapse;
@@ -159,7 +149,6 @@
 		background-color: #e0e0e0 !important;
 		text-align: center;
 	}
-
 	#tblAlimentos {		
 		font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 		border-collapse: collapse;
@@ -184,7 +173,6 @@
 	#tblAlimentos td {
 		text-align: center;
 	}
-
 	.tblDiario {
 		font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
 		border-collapse: collapse;
@@ -244,12 +232,9 @@
 		$strUsuario = fnViveMovimento_usuario();
 		$bitPermiso = ( in_array( 'administrator', wp_get_current_user()->roles, true ) );
 		$bitPermisoLocal = ( in_array( 'administrator', wp_get_current_user()->roles, true ) );
-
 		// $bitPermisoLocal = false;
-
 	    global $gDataPaso_1,$gDataPaso_2,$gDataPaso_3;
 	    fnViveMovimento_resumen_data();
-
 		?>
 		<div class="" style="display: none;">
 			<div class="col-md-12- col-xs-12 col-sm-12 sinPadding">
@@ -358,14 +343,12 @@
 				</div>
 			</div>
 		</div>
-
 	<script>		
 		function fnTabNavRedirect(intTab) {
 			//se hace esta funcion porque solicitaron remover botones de guardar, y la info se cargaba solo 1 vez al cargar la pagina
 			//pero ahora como los form submit se hacen por ajax no se refresca la data del siguiente paso
 			window.location = '/user/?action=tab_Paso_'+intTab;
 		}
-
 		function fnTabNav(intTab) {
 			$('.nav-tabs a[href="#tab_Paso_' + intTab + '"]').tab('show');
 			if (intTab == 10) {
@@ -406,7 +389,6 @@
 			}else{
 				fnTabNav(1);			
 			}
-
 			if(window.location.href.toLowerCase().indexOf('tab_diario') !== -1){
 				if(window.location.href.toLowerCase().split('tab_diario_')[1].indexOf('&') !== -1){
 					var strTab = window.location.href.toLowerCase().split('tab_diario_')[1].split('&')[0];
@@ -415,16 +397,12 @@
 					$('#collapseDiario_' + window.location.href.toLowerCase().split('tab_diario_')[1]).collapse('show');
 				}
 			}
-
 		});
-
 	$(".tm-titlebar-wrapper").hide();
 	$("#main").css({"padding-top":"90px"});
 	$(".wpb_text_column.wpb_content_element").hide();
 </script>
-
 <?php include( plugin_dir_path( __FILE__ ) . '/user_info.php'); ?>
-
 	<div id="modalFoto" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
 	  <div class="modal-dialog modal-lg" role="document">
 	    <div class="modal-content">
@@ -442,9 +420,4 @@
 	    </div>
 	  </div>
 	</div>
-
-	
-
 <?php } ?>
-
-
