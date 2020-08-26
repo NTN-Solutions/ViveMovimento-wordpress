@@ -396,9 +396,9 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
                   <th class="naranja"><input type="number" name="intCustomC" class="form-control txtMisPorciones" value="<?= ($misPorciones != null ? $misPorciones->intCarbohidrato : '0') ?>" min="1" max="99"></th>
                   <th class="celeste"><input type="number" name="intCustomG" class="form-control txtMisPorciones" value="<?= ($misPorciones != null ? $misPorciones->intGrasa : '0') ?>" min="1" max="99"></th>
                   <th>
-                    <div class="btn-group btn-group-sm" role="group" aria-label="...">
-                      <button type="submit" class="btn btn-primary" onclick="$('#txtCustomOpcion').val(1);"><span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>
-                      <button type="submit" class="btn btn-warning" onclick="$('#txtCustomOpcion').val(2);"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+                    <div class="btn-group btn-group-lg" role="group" aria-label="...">
+                      <button type="submit" class="btn btn-primary " onclick="$('#txtCustomOpcion').val(1);"><span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>
+                      <button type="submit" class="btn btn-warning " onclick="$('#txtCustomOpcion').val(2);"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                     </div>
                   </th>
                 </form>
@@ -417,18 +417,18 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
   <div class="col-md-12 col-xs-12 col-sm-12">
     <div class="btn-group btn-group-justified" role="group" aria-label="...">
       <div class="btn-group" role="group">
-        <button type="button" class="btn" onclick="fnTabNavRedirect(3);" style="color: white;">
+        <button type="button" class="btn btn-lg" onclick="fnTabNavRedirect(3);" style="color: white;">
           <i class="fas fa-angle-left"></i> Anterior
         </button>
       </div>
       <div class="btn-group" role="group" style="display: none;" style="color: white;">
-        <button type="submit" class="btn">
+        <button type="submit" class="btn btn-lg">
           <i class="fas fa-save"></i> Guardar
         </button>
       </div>
       <div class="btn-group" role="group">
-        <button type="button" class="btn" onclick="fnTabNavRedirect(10);" style="color: white;">
-          Perfil <i class="fas fa-angle-right"></i>
+        <button type="button" class="btn btn-lg" onclick="fnTabNavRedirect(10);" style="color: white;font-size: 27px;padding-top: 5px;padding-bottom: 4px;">
+          Siguiente <i class="fas fa-angle-right"></i> Mi Cuenta <i class="fas fa-user-circle"></i>
         </button>
       </div>
     </div>
