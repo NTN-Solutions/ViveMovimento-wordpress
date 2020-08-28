@@ -89,13 +89,13 @@ function fnViveMovimentoRecetaJournalAgregar(){
     ,'$strUsuario'
     ,$intTiempo
     ,RD.decAlimento
-    ,(RD.decCantidad / ap.decPorcion)
+    ,(RD.decCantidad / AP.decPorcion)
     ,'...'
-    ,(RD.decCantidad / ap.decPorcion) * AP.decProteina
-    ,(RD.decCantidad / ap.decPorcion) * AP.decCarbohidratos
-    ,(RD.decCantidad / ap.decPorcion) * AP.decGrasa
-    ,(RD.decCantidad / ap.decPorcion) * AP.decVegetales
-    ,(RD.decCantidad / ap.decPorcion) * AP.decLibre
+    ,(RD.decCantidad / AP.decPorcion) * AP.decProteina
+    ,(RD.decCantidad / AP.decPorcion) * AP.decCarbohidratos
+    ,(RD.decCantidad / AP.decPorcion) * AP.decGrasa
+    ,(RD.decCantidad / AP.decPorcion) * AP.decVegetales
+    ,(RD.decCantidad / AP.decPorcion) * AP.decLibre
     ,now()
     FROM wp_vivemov_recetas_detalle AS RD
     INNER JOIN wp_vivemov_alimentos_porciones AS AP on AP.intId = RD.decAlimento
