@@ -235,7 +235,7 @@ function fnDiarioDetalleCalcular_P_CH_G_V($wpdb,$strUsuario,$detEncabezado){
         ,D.intGrasas = D.devCantidad * AP.decGrasa
         ,D.intVegetales = D.devCantidad * AP.decVegetales
         ,D.intLibres = D.devCantidad * AP.decLibre
-        WHERE D.strUsuario = '$strUsuario';
+        WHERE D.intDiario = $detEncabezado AND D.strUsuario = '$strUsuario';
         ");
     $wpdb->get_results("
         UPDATE wp_vivemov_users_diario as E
@@ -297,12 +297,12 @@ function fnViveMovimentoDiarioAgregar(){
     $strUsuario = fnViveMovimento_usuario();
 
     global $intDiarioDet_Cantidad, $detEncabezado, $detAlimento, $detTiempo, $txtClonar, $intIDDETALLE;
-    $intDiarioDet_Cantidad = $_POST['intDiarioDet_Cantidad'];
-    $detEncabezado = $_POST['intDiarioDet_Enc'];
-    $detAlimento = (isset($_POST['intDiarioDet_Alimento'])?$_POST['intDiarioDet_Alimento'] : 0);
-    $detTiempo = $_POST['intDiarioDet_Tiempo'];
-    $txtClonar = $_POST['txtClonar'];
-    $intIDDETALLE = $_POST['intIDDETALLE'];
+    $intDiarioDet_Cantidad = $_GET['intDiarioDet_Cantidad'];
+    $detEncabezado = $_GET['intDiarioDet_Enc'];
+    $detAlimento = (isset($_GET['intDiarioDet_Alimento'])?$_GET['intDiarioDet_Alimento'] : 0);
+    $detTiempo = $_GET['intDiarioDet_Tiempo'];
+    $txtClonar = $_GET['txtClonar'];
+    $intIDDETALLE = $_GET['intIDDETALLE'];
     if ($intIDDETALLE == null || $intIDDETALLE == 0) {
         fnDiario_AgregarDetalle();
     }
@@ -310,7 +310,7 @@ function fnViveMovimentoDiarioAgregar(){
 //ajax
 function fnViveMovimentoDiarioDetalleTabla(){
     $listTiempos = fnDiario_Tiempos();
-    $listadoDiario = fnListadoDiario(intval($_POST['intDiario']));
+    $listadoDiario = fnListadoDiario(intval($_GET['intDiario']));
     $diario = $listadoDiario[0];
     fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos);
 }
@@ -369,7 +369,7 @@ function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
     echo '</table></div>';
 }
 function fnViveMovimentoDiarioEliminar(){
-    fnDiario_eliminar(intval($_POST['intEliminar']), intval($_POST['intEncabezado']));
+    fnDiario_eliminar(intval($_GET['intEliminar']), intval($_GET['intEncabezado']));
 }
 function fnFoodJournalCore(){
     global $wpdb, $strUsuario;
@@ -695,7 +695,7 @@ function fnFoodJournalCore(){
             return;
         }
         jQuery.ajax({
-            type : "post",
+            type : "get",
             // dataType : "json",
             url : '<?= admin_url( 'admin-ajax.php' ) ?>',
             data : {
@@ -724,7 +724,7 @@ function fnFoodJournalCore(){
     }
     function fnDiarioEliminarAjax(decDiario, intEliminar) {
         jQuery.ajax({
-            type : "post",
+            type : "get",
             // dataType : "json",
             url : '<?= admin_url( 'admin-ajax.php' ) ?>',
             data : {
@@ -747,7 +747,7 @@ function fnFoodJournalCore(){
     }
     function fnViveMovimentoDiarioDetalleTabla(decDiario) {
         jQuery.ajax({
-            type : "post",
+            type : "get",
             // dataType : "json",
             url : '<?= admin_url( 'admin-ajax.php' ) ?>',
             data : {
