@@ -294,6 +294,11 @@
 						</a>
 					</li>
 					<li role="presentation" id="tab_core_6" class="tab_core_diario" style="display: none;">
+						<a href="#tab_Paso_9" id="tab_Paso_9_Ref" aria-controls="tab_Paso_9" role="tab" data-toggle="tab">
+							<i class="fas fa-list-ul"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo '<br/>';} ?> Recetas
+						</a>
+					</li>
+					<li role="presentation" id="tab_core_6" class="tab_core_diario" style="display: none;">
 						<a href="#tab_Paso_6" id="tab_Paso_6_Ref" aria-controls="tab_Paso_6" role="tab" data-toggle="tab">
 							<i class="fas fa-hamburger"></i><i class="fas fa-pizza-slice"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo '<br/>';} ?> Base Datos
 						</a>
@@ -340,6 +345,9 @@
 					<div role="tabpanel" class="tab-pane" id="tab_Paso_8">
 						<?php fnTab_8(); ?>
 					</div>
+					<div role="tabpanel" class="tab-pane" id="tab_Paso_9">
+						<?php fnTab_9(); ?>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -372,7 +380,7 @@
 					fnTabNav(strTab);			
 				}else{
 					fnTabNav(window.location.href.toLowerCase().split('tab_paso_')[1]);
-					if (window.location.href.toLowerCase().split('tab_paso_')[1] == 5 || window.location.href.toLowerCase().split('tab_paso_')[1] == 6) {
+					if (window.location.href.toLowerCase().split('tab_paso_')[1] == 5 || window.location.href.toLowerCase().split('tab_paso_')[1] == 6 || window.location.href.toLowerCase().split('tab_paso_')[1] == 9) {
 						$('.tab_core_no_diario').hide();
 						$('.tab_core_diario').show();
 					}else if(window.location.href.toLowerCase().split('tab_paso_')[1] == 7){

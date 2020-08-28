@@ -44,3 +44,101 @@ ALTER TABLE `wp_vivemov_pasos_videos`
 ALTER TABLE `wp_vivemov_users_diario` ADD `strNota` VARCHAR(3000) NOT NULL AFTER `intLibres`;
 ALTER TABLE `wp_vivemov_users_diario` CHANGE `strNota` `strNota` VARCHAR(3000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.9.0.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: localhost:8889
+-- Tiempo de generación: 28-08-2020 a las 05:18:30
+-- Versión del servidor: 5.7.26
+-- Versión de PHP: 7.3.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Base de datos: `vivemovimento`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `wp_vivemov_recetas`
+--
+
+CREATE TABLE `wp_vivemov_recetas` (
+  `intId` int(11) NOT NULL,
+  `strUsuario` varchar(100) NOT NULL,
+  `datCreacion` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `bitActivo` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `wp_vivemov_recetas_detalle`
+--
+
+CREATE TABLE `wp_vivemov_recetas_detalle` (
+  `intId` int(11) NOT NULL,
+  `intReceta` decimal(10,2) NOT NULL,
+  `decCantidad` decimal(10,2) NOT NULL,
+  `decAlimento` decimal(10,2) NOT NULL,
+  `bitActivo` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `wp_vivemov_recetas`
+--
+ALTER TABLE `wp_vivemov_recetas`
+  ADD PRIMARY KEY (`intId`),
+  ADD KEY `intId` (`intId`);
+
+--
+-- Indices de la tabla `wp_vivemov_recetas_detalle`
+--
+ALTER TABLE `wp_vivemov_recetas_detalle`
+  ADD PRIMARY KEY (`intId`),
+  ADD KEY `intReceta` (`intReceta`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `wp_vivemov_recetas`
+--
+ALTER TABLE `wp_vivemov_recetas`
+  MODIFY `intId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de la tabla `wp_vivemov_recetas_detalle`
+--
+ALTER TABLE `wp_vivemov_recetas_detalle`
+  MODIFY `intId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+

@@ -320,16 +320,16 @@ function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
             $listDetalle = fnDiario_Detalle($diario->intId,$tiempo->intId);
             if($tiempo->bitPrincipal == 0 && count($listDetalle) == 0){continue;}
             echo '<tr>
-                <td class="blanco" style="font-weight: bolder;">'.$tiempo->strTiempo.'</td>
-                <td class="amarillo" style="font-weight: bolder;">Proteina</td>
-                <td class="naranja" style="font-weight: bolder;">Carbohidrato</td>
-                <td class="celeste" style="font-weight: bolder;">Grasa</td>
-                <td class="verde" style="font-weight: bolder;">Vegetales</td>
-                <td class="morado" style="font-weight: bolder;">Libre</td>
+                <td class="blanco" style="font-weight: bolder;" colspan=2>'.$tiempo->strTiempo.'</td>
+                <td class="amarillo" style="font-weight: bolder;width: 10%;">Proteina</td>
+                <td class="naranja" style="font-weight: bolder;width: 10%;">Carbohidrato</td>
+                <td class="celeste" style="font-weight: bolder;width: 10%;">Grasa</td>
+                <td class="verde" style="font-weight: bolder;width: 10%;">Vegetales</td>
+                <td class="morado" style="font-weight: bolder;width: 10%;">Libre</td>
               </tr>';
               foreach ($listDetalle as $det) {
                 echo '<tr>
-                        <td>
+                        <td style="width: 90px;">
                             <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
                                 <input type="hidden" name="intOp" value="3" />
                                 <input type="hidden" name="intEncabezado" value="'.$diario->intId.'" />
@@ -340,9 +340,9 @@ function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
                                 <input type="hidden" name="intOp" value="4" />
                                 <input type="hidden" name="intEditar" value="'.$det->intId.'" />
                                 <button type="submit" class="btn btn-link badge" role="button" href="#"><i class="fa fa-pencil"></i></button>
-                            </form>
-                            '.$det->strAlimento.'
+                            </form>                            
                         </td>
+                        <td>'.$det->strAlimento.'</td>
                         <td class="amarillo">'.$det->intProteinas.'</td>
                         <td class="naranja">'.$det->intCarbohidratos.'</td>
                         <td class="celeste">'.$det->intGrasas.'</td>
@@ -352,7 +352,7 @@ function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
               }
         }
     echo '<tr>
-        <td class="rojo" rowspan="2" style="font-weight: bolder;">Total</td>
+        <td class="rojo" rowspan="2" style="font-weight: bolder;" colspan=2>Total</td>
         <td class="rojo" style="font-weight: bolder;">Proteinas</td>
         <td class="rojo" style="font-weight: bolder;">Carbohidrato</td>
         <td class="rojo" style="font-weight: bolder;">Grasa</td>
@@ -436,6 +436,8 @@ function fnFoodJournalCore(){
 
     $intTiempoSiguiente = fnTiempoSiguiente();
     $intDiarioSiguiente = fnDiarioSiguiente();
+
+    $listadoRECETAS = fnViveMovimentoRecetaListado();
 ?>
 
   <div class="col-md-12 col-xs-12 col-sm-12 sinPadding">
@@ -594,56 +596,121 @@ function fnFoodJournalCore(){
                     <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" id="frm_diario_'.$diario->intId.'" method="post" class="" style="margin-bottom: 0px;">
                         <input type="hidden" name="intIDDETALLE" id="intIDDETALLE_'.$diario->intId.'" value="0" />
                         <input type="hidden" name="intOp" value="2" />
-                        <div class="col-md-3 col-xs-6 col-sm-6 sinPadding" style="display: grid;">
-                            <label for="intDiarioDet_Tiempo"><i class="fa fa-clock-o" aria-hidden="true"></i> Tiempo <strong>*</strong></label>
-                            <select name="intDiarioDet_Tiempo" class="intDiarioDet_Tiempo" id="intDiarioDet_Tiempo_'.$diario->intId.'">';
-                            $bitPrimero = false;
-                            foreach ($listTiempos as $tiempo) { echo '<option value="'.$tiempo->intId.'"'.(!$bitPrimero?' selected ':'').'>'.$tiempo->strTiempo.'</option>';$bitPrimero = true; }
-                        echo '</select>
-                        </div>
-                        <div class="col-md-3 col-xs-6 col-sm-6 sinPadding" style="display: grid;">
-                            <label for="intDiarioDet_Cantidad_'.$diario->intId.'"><span id="span_porcion_'.$diario->intId.'"><i class="fa fa-list-ol" aria-hidden="true"></i> Porcion</span> <strong>*</strong></label>
-                            <input type="number" id="intDiarioDet_Cantidad_'.$diario->intId.'" value="1" min="0" max="999" step="0.01" onChange="fnAlimentoSeleccionado('.$diario->intId.');" onkeyup="fnAlimentoSeleccionado('.$diario->intId.');" >
-                            <input type="hidden"id="intDiarioDet_Cantidad_hidden_'.$diario->intId.'" name="intDiarioDet_Cantidad" value="1" min="0" max="999" step="0.01">
-                        </div>
-                        <div class="col-md-4 col-xs-12 col-sm-12 sinPadding" style="display: grid;">
-                            <label for="intDiarioDet_Alimento"><i class="fa fa-cutlery" aria-hidden="true"></i> Alimento <strong>*</strong></label>
-                            <select name="intDiarioDet_Alimento" id="intDiarioDet_Alimento_'.$diario->intId.'" onChange="fnAlimentoSeleccionado('.$diario->intId.');">
-                                <option selected="true" disabled="disabled">Seleccionar el alimento</option>
-                            ';
-                            foreach ($listAlimentos as $alimento) {
-                                $strPCGVL = '';
-                                if($alimento->decProteina>0){
-                                    $strPCGVL = ($alimento->decProteina + 0).'P';
-                                }
-                                if($alimento->decCarbohidratos>0){
-                                    $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decCarbohidratos + 0).'C';
-                                }
-                                if($alimento->decGrasa>0){
-                                    $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decGrasa + 0).'G';
-                                }
-                                if($alimento->decVegetales>0){
-                                    $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decVegetales + 0).'V';
-                                }
-                                if($alimento->decLibre>0){
-                                    $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decLibre + 0).'L';
-                                }
-                                echo '<option value="'.$alimento->intId.'">'.($alimento->decPorcion + 0).' '.$alimento->strUnidadMedida.' de '.$alimento->strAlimento.' ('.$strPCGVL.')</option>'; }
-                        echo '</select>
-                        </div>
-                        <div class="col-md-2 col-xs-12 col-sm-12 sinPadding" style="display: grid;padding-left: 0px;">
-                            <input type="hidden" name="intDiarioDet_Enc" value="'.$diario->intId.'"/>
-                            <input type="hidden" name="intDiarioDet_Descripcion" value="..."/>';
-                            if ($itemEditar == null) {
-                                echo '<button onClick="fnDiarioGuardarAjax('.$diario->intId.');" type="button" value="'.($itemEditar == null? 'Agregar': 'Editar').'" class="btn btn-block btn-xs"id="btnForm_diario_'.$diario->intId.'" style="margin-top: 20px;color: white;height: 40px;"><i class="fa fa-plus" aria-hidden="true"></i>'.($itemEditar == null? 'Agregar': 'Editar').'</button>';
-                            }else{
-                                echo '<button type="submit" name="submit" value="'.($itemEditar == null? 'Agregar': 'Editar').'" class="btn btn-block btn-xs"id="btnForm_diario_'.$diario->intId.'" style="margin-top: 20px;color: white;height: 40px;"><i class="fa fa-plus" aria-hidden="true"></i>'.($itemEditar == null? 'Agregar': 'Editar').'</button>';
+                        
+                          <ul class="nav nav-tabs nav-justified" role="tablist">
+                            <li role="presentation" class="active"><a href="#tab_food_journal_'.$diario->intId.'" aria-controls="tab_food_journal_'.$diario->intId.'" role="tab" data-toggle="tab"><i class="fas fa-utensils"></i><i class="fas fa-book"></i> Por Alimento</a></li>
+                            <li role="presentation"><a href="#tab_food_journal_receta_'.$diario->intId.'" aria-controls="tab_food_journal_receta_'.$diario->intId.'" role="tab" data-toggle="tab"><i class="fas fa-list-ul"></i> Por Receta</a></li>
+                          </ul>
+                          <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="tab_food_journal_'.$diario->intId.'">
+
+                                <div class="col-md-3 col-xs-6 col-sm-6 sinPadding" style="display: grid;">
+                                    <label for="intDiarioDet_Tiempo"><i class="fa fa-clock-o" aria-hidden="true"></i> Tiempo <strong>*</strong></label>
+                                    <select name="intDiarioDet_Tiempo" class="intDiarioDet_Tiempo" id="intDiarioDet_Tiempo_'.$diario->intId.'">';
+                                    $bitPrimero = false;
+                                    foreach ($listTiempos as $tiempo) { echo '<option value="'.$tiempo->intId.'"'.(!$bitPrimero?' selected ':'').'>'.$tiempo->strTiempo.'</option>';$bitPrimero = true; }
+                                echo '</select>
+                                </div>
+                                <div class="col-md-3 col-xs-6 col-sm-6 sinPadding" style="display: grid;">
+                                    <label for="intDiarioDet_Cantidad_'.$diario->intId.'"><span id="span_porcion_'.$diario->intId.'"><i class="fa fa-list-ol" aria-hidden="true"></i> Porcion</span> <strong>*</strong></label>
+                                    <input type="number" id="intDiarioDet_Cantidad_'.$diario->intId.'" value="1" min="0" max="999" step="0.01" onChange="fnAlimentoSeleccionado('.$diario->intId.');" onkeyup="fnAlimentoSeleccionado('.$diario->intId.');" >
+                                    <input type="hidden"id="intDiarioDet_Cantidad_hidden_'.$diario->intId.'" name="intDiarioDet_Cantidad" value="1" min="0" max="999" step="0.01">
+                                </div>
+                                <div class="col-md-4 col-xs-12 col-sm-12 sinPadding" style="display: grid;">
+                                    <label for="intDiarioDet_Alimento"><i class="fa fa-cutlery" aria-hidden="true"></i> Alimento <strong>*</strong></label>
+                                    <select name="intDiarioDet_Alimento" id="intDiarioDet_Alimento_'.$diario->intId.'" onChange="fnAlimentoSeleccionado('.$diario->intId.');">
+                                        <option selected="true" disabled="disabled">Seleccionar el alimento</option>
+                                    ';
+                                    foreach ($listAlimentos as $alimento) {
+                                        $strPCGVL = '';
+                                        if($alimento->decProteina>0){
+                                            $strPCGVL = ($alimento->decProteina + 0).'P';
+                                        }
+                                        if($alimento->decCarbohidratos>0){
+                                            $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decCarbohidratos + 0).'C';
+                                        }
+                                        if($alimento->decGrasa>0){
+                                            $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decGrasa + 0).'G';
+                                        }
+                                        if($alimento->decVegetales>0){
+                                            $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decVegetales + 0).'V';
+                                        }
+                                        if($alimento->decLibre>0){
+                                            $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decLibre + 0).'L';
+                                        }
+                                        echo '<option value="'.$alimento->intId.'">'.($alimento->decPorcion + 0).' '.$alimento->strUnidadMedida.' de '.$alimento->strAlimento.' ('.$strPCGVL.')</option>'; }
+                                echo '</select>
+                                </div>
+                                <div class="col-md-2 col-xs-12 col-sm-12 sinPadding" style="display: grid;padding-left: 0px;">
+                                    <input type="hidden" name="intDiarioDet_Enc" value="'.$diario->intId.'"/>
+                                    <input type="hidden" name="intDiarioDet_Descripcion" value="..."/>';
+                                    if ($itemEditar == null) {
+                                        echo '<button onClick="fnDiarioGuardarAjax('.$diario->intId.');" type="button" value="'.($itemEditar == null? 'Agregar': 'Editar').'" class="btn btn-block btn-xs"id="btnForm_diario_'.$diario->intId.'" style="margin-top: 20px;color: white;height: 40px;"><i class="fa fa-plus" aria-hidden="true"></i>'.($itemEditar == null? 'Agregar': 'Editar').'</button>';
+                                    }else{
+                                        echo '<button type="submit" name="submit" value="'.($itemEditar == null? 'Agregar': 'Editar').'" class="btn btn-block btn-xs"id="btnForm_diario_'.$diario->intId.'" style="margin-top: 20px;color: white;height: 40px;"><i class="fa fa-plus" aria-hidden="true"></i>'.($itemEditar == null? 'Agregar': 'Editar').'</button>';
+                                    }
+                                echo '
+                                </div>
+                                <div style="display: none;">
+                                    <input type="hidden" name="txtClonar" id="txtClonar_'.$diario->intId.'" value="0"/>                    
+                                </div>
+                            </div>
+                        
+                        <div role="tabpanel" class="tab-pane" id="tab_food_journal_receta_'.$diario->intId.'">';                        
+                        $intCursor = 1;
+                        $intCursorRow = 1;
+                        foreach ($listadoRECETAS as $item) {
+                            if($item->bitActivo == 0){ $intCursor += 1; continue; } ?>
+
+                            <div class="col-md-4 col-xs-12 col-sm-12" style="padding-left: 2px;padding-right: 2px;">
+                                <div class="panel panel-info">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title"><i class="fa fa-list-ul" aria-hidden="true"></i> Receta No. <?= $intCursor ?>
+                                            <button type="button" class="btn btn-success btn-xs" onclick="fnViveMovimento_Receta_Journal_agregar(<?= $diario->intId ?>, <?= $item->intId ?>);" style="float: right;">
+                                              <i class="fa fa-plus" aria-hidden="true"></i> Journal
+                                            </button>
+                                            <select class="intDiarioDet_Tiempo" id="intDiarioDet_Receta_Tiempo_<?= $diario->intId ?>">';
+                                            <?php
+                                            foreach ($listTiempos as $tiempo) {
+                                                echo '<option value="'.$tiempo->intId.'">'.$tiempo->strTiempo.'</option>';
+                                            } ?>
+                                            </select>
+                                        </h3>
+                                    </div>
+                                    <div class="panel-body" style="padding-left: 2px;padding-right: 2px;">
+                                        <div class="table-responsive">
+                                            <table class="table table-condensed table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 100px;">Porción</th>
+                                                        <th>Alimento</th>
+                                                    </tr>
+                                                </thead>
+                                            <?php foreach ($item->detalle as $itemDetalle) { ?>
+                                                <tr>
+                                                    <td style="padding-left: 0px;padding-right: 0px;"><?= $itemDetalle->decCantidad ?> <?= $itemDetalle->strUnidadMedida ?></td>
+                                                    <td><?= $itemDetalle->strAlimento ?></td>
+                                                </tr>
+                                            <?php } ?>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php
+                            if ($intCursorRow % 3 == 0) {
+                              echo '<div class="col-md-12 col-xs-12 col-sm-12">.</div>';
                             }
-                        echo '
+
+                            $intCursor += 1;
+                            $intCursorRow += 1;
+                        }
+
+                        echo'</div>
+
                         </div>
-                        <div style="display: none;">
-                            <input type="hidden" name="txtClonar" id="txtClonar_'.$diario->intId.'" value="0"/>                    
-                        </div>
+
+
                     </form>
                 </div>
                 <hr/>
