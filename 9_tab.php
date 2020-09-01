@@ -1,9 +1,11 @@
 <?php //MIS RECETAS
 function fnViveMovimentoRecetaAgregar(){  
   global $wpdb;
+  $strNombre = $_GET['strNombre'];
   $strUsuario = fnViveMovimento_usuario();
   $itemRow = array(
     'strUsuario'  => $strUsuario,
+    'strNombre'  => $strNombre,
     'datCreacion' => date('Y-m-d H:i:s'),
     'bitActivo'   => 1
   );
@@ -11,6 +13,40 @@ function fnViveMovimentoRecetaAgregar(){
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, agregado!';
   echo json_encode($result);
+  exit();
+}
+function fnViveMovimentoRecetaEditar(){  
+  global $wpdb;
+  $intReceta = intval($_GET['intReceta']);
+  $strNombre = $_GET['strNombre'];
+  $wpdb->get_results("UPDATE wp_vivemov_recetas as D SET D.strNombre = '$strNombre' WHERE D.intId = $intReceta; ");
+  $result['type'] = 'success';
+  $result['mnj'] = 'Listo, actualizado!';
+  echo json_encode($result);
+  exit();
+}
+function fnViveMovimentoRecetaClonar(){  
+  global $wpdb;
+  $strUsuario = fnViveMovimento_usuario();
+  $intClonar = intval($_GET['intClonar']);
+  $insertPadre = $wpdb->get_results("
+      INSERT INTO wp_vivemov_recetas(strUsuario,datCreacion,bitActivo,strNombre)
+      SELECT '$strUsuario',now(),1,strNombre
+      FROM wp_vivemov_recetas
+      WHERE intId = $intClonar;
+      ");
+  $decReceta = $wpdb->insert_id;
+  $wpdb->get_results("
+      INSERT INTO wp_vivemov_recetas_detalle(intReceta,decCantidad,decAlimento,bitActivo)
+      SELECT $decReceta,decCantidad,decAlimento,bitActivo
+      FROM wp_vivemov_recetas_detalle
+      WHERE intReceta = $intClonar AND bitActivo = 1;
+  ");
+
+  $result['type'] = 'success';
+  $result['mnj'] = 'Listo, agregado!';
+  echo json_encode($result);
+  exit();
 }
 function fnViveMovimentoRecetaEliminar(){  
   global $wpdb;
@@ -19,16 +55,26 @@ function fnViveMovimentoRecetaEliminar(){
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, eliminado!';
   echo json_encode($result);
+  exit();
 }
 function fnViveMovimentoRecetaListado(){  
-  global $wpdb;
+  global $wpdb,$intReceta;
   $strUsuario = fnViveMovimento_usuario();
-  $list = $wpdb->get_results("SELECT * FROM wp_vivemov_recetas WHERE strUsuario = '$strUsuario' ORDER BY intId ASC;");    
+  if ($intReceta == 0) {
+    $list = $wpdb->get_results("SELECT * FROM wp_vivemov_recetas WHERE strUsuario = '$strUsuario' ORDER BY strNombre ASC;");    
+  }else{
+    $list = $wpdb->get_results("SELECT * FROM wp_vivemov_recetas WHERE strUsuario = '$strUsuario' AND intId = $intReceta ORDER BY strNombre ASC;");
+  }
   foreach ($list as $item) {
     if($item->bitActivo == 1){
       $item->detalle = fnViveMovimentoRecetaListadoDetalle($item->intId);      
     }
   }
+  return $list;
+}
+function fnViveMovimentoRecetaListadoAdmin(){  
+  global $wpdb;
+  $list = $wpdb->get_results("SELECT * FROM wp_vivemov_recetas WHERE strUsuario IN('svc9304','anamoralescpt','amms24') ORDER BY strNombre ASC;");
   return $list;
 }
 
@@ -47,7 +93,7 @@ function fnViveMovimentoRecetaListadoDetalle($intReceta){
 function fnViveMovimentoRecetaDetalleAgregar(){  
   global $wpdb;
   $intReceta = intval($_GET['intReceta']);
-  $decCantidad = intval($_GET['decCantidad']);
+  $decCantidad = floatval($_GET['decCantidad']);
   $decAlimento = intval($_GET['decAlimento']);
   $itemRow = array(
     'intReceta'  => $intReceta,
@@ -59,15 +105,17 @@ function fnViveMovimentoRecetaDetalleAgregar(){
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, agregado!';
   echo json_encode($result);
+  exit();
 }
 function fnViveMovimentoRecetaDetalleEditar(){  
   global $wpdb;
   $intReceta = intval($_GET['intReceta']);
-  $decCantidad = intval($_GET['decCantidad']);
+  $decCantidad = floatval($_GET['decCantidad']);
   $wpdb->get_results("UPDATE wp_vivemov_recetas_detalle as D SET D.decCantidad = $decCantidad WHERE D.intId = $intReceta; ");
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, actualizado!';
   echo json_encode($result);
+  exit();
 }
 function fnViveMovimentoRecetaDetalleEliminar(){
   global $wpdb;
@@ -76,6 +124,7 @@ function fnViveMovimentoRecetaDetalleEliminar(){
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, eliminado!';
   echo json_encode($result);
+  exit();
 }
 function fnViveMovimentoRecetaJournalAgregar(){
   global $wpdb;
@@ -106,14 +155,27 @@ function fnViveMovimentoRecetaJournalAgregar(){
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, agregado!';
   echo json_encode($result);
+  exit();
 }
-
+function fnViveMovimentoRecetaListadoCore(){
+  $intReceta = intval($_GET['intReceta']);
+  fnTab_9_core($intReceta);
+  exit();
+}
 function fnTab_9(){
+  echo '<div id="divRecetasCore_0">';
+  fnTab_9_core(0);
+  echo '</div>';
+}
+function fnTab_9_core($intR){
   global $wpdb;
-  $listado = fnViveMovimentoRecetaListado();
+  global $intReceta;
+  $intReceta = $intR;
+  $listado = fnViveMovimentoRecetaListado($intReceta);
+  $listadoAdmin = fnViveMovimentoRecetaListadoAdmin();
   $listAlimentos = $wpdb->get_results("SELECT ap.*, um.strUnidadMedida FROM wp_vivemov_alimentos_porciones ap INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1 ORDER BY ap.strAlimento ASC ");
 
-  ?>
+  if ($intReceta == 0) { ?>
 </br>
 <div class="col-md-4 col-xs-12 col-sm-12" style="padding-left: 2px;padding-right: 2px;">
   <div class="panel panel-primary">
@@ -121,37 +183,61 @@ function fnTab_9(){
       <h3 class="panel-title">Nueva Receta</h3>
     </div>
     <div class="panel-body">
-      <button class="btn btn-primary btn-xs btn-block" onclick="fnViveMovimento_Receta_agregar();">
-        <i class="fa fa-plus" aria-hidden="true"></i> Agregar
+        <label for="cbRecetaAlimento_configurada">Receta Personalizada:</label>
+      <input type="text" class="form-control input-sm" id="txtRecetaStrNombre_0" placeholder="Nombre..." maxlength="100" style="padding: 1px;">
+      <button class="btn btn-primary btn-xs btn-block" onclick="fnViveMovimento_Receta_agregar(0);">
+        <i class="fa fa-plus" aria-hidden="true"></i> Agregar Personalizada
+      </button>
+      <hr>
+
+      <div class="form-group col-md-12 col-xs-12 col-sm-12" style="padding-left: 0px;margin: 0px;">
+        <label for="cbRecetaAlimento_configurada">Receta Movimento:</label>
+          <select id="cbRecetaAlimento_configurada">
+            <option selected="true" disabled="disabled">Seleccionar</option>
+            <?php foreach ($listadoAdmin as $receta) { ?>
+              <option value="<?= $receta->intId ?>"><?= $receta->strNombre ?></option>
+            <?php } ?>
+          </select>
+      </div>
+      <button class="btn btn-primary btn-xs btn-block" onclick="fnViveMovimento_Receta_clonar();">
+        <i class="fa fa-plus" aria-hidden="true"></i> Agregar Receta Movimento
       </button>
     </div>
   </div>
 </div>
 <?php
+  }
+
+
 $intCursor = 1;
 $intCursorRow = 1;
 foreach ($listado as $item) {
   if($item->bitActivo == 0){ $intCursor += 1; continue; }
-  ?>
-  <div class="col-md-4 col-xs-12 col-sm-12" style="padding-left: 2px;padding-right: 2px;">
+  
+  if ($intReceta == 0) { ?>
+  <div class="col-md-4 col-xs-12 col-sm-12" style="padding-left: 2px;padding-right: 2px;" id="divRecetasCore_<?= $item->intId ?>">
+<?php 
+  }
+?>
     <div class="panel panel-info">
-      <div class="panel-heading">
-        <h3 class="panel-title"><i class="fa fa-list-ul" aria-hidden="true"></i> Receta No. <?= $intCursor ?> 
-        <button class="btn btn-success btn-xs" onclick="fnViveMovimento_Receta_Detalle_agregar(<?= $item->intId ?>);" style="float: right;">
-          <i class="fa fa-plus" aria-hidden="true"></i> Alimento
-        </button>   
+      <div class="panel-heading" style="padding: 0px;">
+        <h3 class="panel-title">
+        <input type="text" class="form-control input-sm" id="txtRecetaStrNombre_<?= $item->intId ?>" value="<?= $item->strNombre ?>" placeholder="Nombre..." maxlength="100" style="padding: 1px;width: 50%;display: inline-block;color: black;">        
         <button class="btn btn-warning btn-xs" onclick="fnViveMovimento_Receta_eliminar(<?= $item->intId ?>);" style="float: right;">
           <i class="fa fa-trash" aria-hidden="true"></i> Receta
+        </button>          
+        <button class="btn btn-info btn-xs" onclick="fnViveMovimento_Receta_editar(<?= $item->intId ?>);" style="float: right;">
+          <i class="fa fa-refresh" aria-hidden="true"></i> Nombre
         </button>          
       </h3>
     </div>
     <div class="panel-body" style="padding-left: 2px;padding-right: 2px;">
         <div class="row">
-          <div class="form-group col-md-4 col-xs-4 col-sm-4">
+          <div class="form-group col-md-4 col-xs-4 col-sm-4" style="margin: 0px;">
             <label for="txtRecetaCantidad_<?= $item->intId ?>">Porción:</label>
             <input type="number" class="form-control" id="txtRecetaCantidad_<?= $item->intId ?>" placeholder="1" value="1" min="0" max="999" step="0.01">
           </div>
-          <div class="form-group col-md-8 col-xs-8 col-sm-8" style="padding-left: 0px;">
+          <div class="form-group col-md-8 col-xs-8 col-sm-8" style="padding-left: 0px;margin: 0px;">
             <label for="cbRecetaAlimento_<?= $item->intId ?>">Alimento:</label>
               <select id="cbRecetaAlimento_<?= $item->intId ?>">
                 <option selected="true" disabled="disabled">Seleccionar alimento</option>
@@ -177,6 +263,11 @@ foreach ($listado as $item) {
                   <option value="<?= $alimento->intId ?>"><?= $strAlimento ?></option>
                 <?php } ?>
               </select>
+          </div>
+          <div class="col-md-12 col-xs-12 col-sm-12">
+            <button class="btn btn-success btn-block btn-xs" onclick="fnViveMovimento_Receta_Detalle_agregar(<?= $item->intId ?>);" style="float: right;">
+              <i class="fa fa-plus" aria-hidden="true"></i> Alimento
+            </button>   
           </div>
         </div>
 
@@ -216,7 +307,9 @@ foreach ($listado as $item) {
 
     </div>
   </div>
-</div>
+
+<?php if ($intReceta == 0) { ?> </div> <?php } ?>
+
 <?php
 $intCursor += 1;
 $intCursorRow += 1;
@@ -224,19 +317,60 @@ if ($intCursorRow % 3 == 0) {
   echo '<div class="col-md-12 col-xs-12 col-sm-12">.</div>';
 }
 } ?>
+
 <script>
-  function fnViveMovimento_Receta_agregar(){
+  function fnViveMovimentoRecetaListadoCore(intReceta){
     jQuery.ajax({
       type : "get",
       url : '<?= admin_url( 'admin-ajax.php' ) ?>',
       data : {
-        action: "fnViveMovimentoRecetaAgregar"
+        action: "fnViveMovimentoRecetaListadoCore",
+        intReceta: intReceta,
       },
       success: function(response) {
-        response = response.replace('"}0','"}');
+        $('#divRecetasCore_'+intReceta).html(response);
+        setTimeout(function(){ $('select').select2(); }, 500);
+     }
+   });
+  }
+  function fnViveMovimento_Receta_agregar(intReceta){
+    if($('#txtRecetaStrNombre_' + intReceta).val() == null || $('#txtRecetaStrNombre_' + intReceta).val() == ''){
+      return;
+    }
+    var strNombre = $('#txtRecetaStrNombre_' + intReceta).val();
+    jQuery.ajax({
+      type : "get",
+      url : '<?= admin_url( 'admin-ajax.php' ) ?>',
+      data : {
+        action: "fnViveMovimentoRecetaAgregar",
+        strNombre: strNombre
+      },
+      success: function(response) {
         var response = jQuery.parseJSON(response);
         if(response.type == "success") {
-          location = '/user/?action=tab_Paso_9';
+          fnViveMovimentoRecetaListadoCore(0);
+        }else {
+         alert(response.mnj);
+       }
+     }
+   });
+  }
+  function fnViveMovimento_Receta_clonar(){
+    if($('#cbRecetaAlimento_configurada').val() == null || $('#cbRecetaAlimento_configurada').val() == '' || $('#cbRecetaAlimento_configurada').val() == 0){
+      return;
+    }
+    var intClonar = $('#cbRecetaAlimento_configurada').val();
+    jQuery.ajax({
+      type : "get",
+      url : '<?= admin_url( 'admin-ajax.php' ) ?>',
+      data : {
+        action: "fnViveMovimentoRecetaClonar",
+        intClonar: intClonar
+      },
+      success: function(response) {
+        var response = jQuery.parseJSON(response);
+        if(response.type == "success") {
+          fnViveMovimentoRecetaListadoCore(0);
         }else {
          alert(response.mnj);
        }
@@ -252,10 +386,32 @@ if ($intCursorRow % 3 == 0) {
         ,intReceta: intReceta
       },
       success: function(response) {
-        response = response.replace('"}0','"}');
         var response = jQuery.parseJSON(response);
         if(response.type == "success") {
-          location = '/user/?action=tab_Paso_9';
+          fnViveMovimentoRecetaListadoCore(0);
+        }else {
+         alert(response.mnj);
+       }
+     }
+   });
+  }
+  function fnViveMovimento_Receta_editar(intReceta){
+    if($('#txtRecetaStrNombre_' + intReceta).val() == null || $('#txtRecetaStrNombre_' + intReceta).val() == ''){
+      return;
+    }
+    var strNombre = $('#txtRecetaStrNombre_' + intReceta).val();
+    jQuery.ajax({
+      type : "get",
+      url : '<?= admin_url( 'admin-ajax.php' ) ?>',
+      data : {
+        action: "fnViveMovimentoRecetaEditar"
+        ,intReceta: intReceta
+        ,strNombre: strNombre
+      },
+      success: function(response) {
+        var response = jQuery.parseJSON(response);
+        if(response.type == "success") {
+          fnViveMovimentoRecetaListadoCore(intReceta);
         }else {
          alert(response.mnj);
        }
@@ -280,10 +436,9 @@ if ($intCursorRow % 3 == 0) {
         ,decAlimento: decAlimento
       },
       success: function(response) {
-        response = response.replace('"}0','"}');
         var response = jQuery.parseJSON(response);
         if(response.type == "success") {
-          location = '/user/?action=tab_Paso_9';
+          fnViveMovimentoRecetaListadoCore(intReceta);
         }else {
          alert(response.mnj);
        }
@@ -304,10 +459,9 @@ if ($intCursorRow % 3 == 0) {
         ,decCantidad: intCantidad
       },
       success: function(response) {
-        response = response.replace('"}0','"}');
         var response = jQuery.parseJSON(response);
         if(response.type == "success") {
-          // location = '/user/?action=tab_Paso_9';
+          fnViveMovimentoRecetaListadoCore(intReceta);
         }else {
          alert(response.mnj);
        }
@@ -323,7 +477,6 @@ if ($intCursorRow % 3 == 0) {
         ,intReceta: intReceta
       },
       success: function(response) {
-        response = response.replace('"}0','"}');
         var response = jQuery.parseJSON(response);
         if(response.type == "success") {
           $('#txtRecetaCantidad_editar_' + intReceta).parent().parent().remove();
@@ -344,7 +497,6 @@ if ($intCursorRow % 3 == 0) {
         ,intTiempo: $('#intDiarioDet_Receta_Tiempo_' + decDiario).val()
       },
       success: function(response) {
-        response = response.replace('"}0','"}');
         var response = jQuery.parseJSON(response);
         if(response.type == "success") {
           setTimeout(function () {

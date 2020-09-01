@@ -143,12 +143,12 @@ function fnTab_bd_tabla($listAlimentos, $bitPermiso, $strUsuario){ ?>
     <table id="tblAlimentos" class="table table-striped table-condensed">
       <tr>
         <?php if($bitPermiso == true){ echo '<td class="col-md-1 col-xs-1 col-sm-1">Accion</td>'; } ?>
-        <th class="blanco">Porcion</th>
+        <th class="blanco" style="width: 20%;">Porcion</th>
         <th class="blanco">Alimento</th>
-        <th class="amarillo">Proteina</th>
-        <th class="naranja">Carbohidrato</th>
-        <th class="celeste">Grasa</th>
-        <th class="rosado">Libre</th>
+        <th class="amarillo" style="width: 10%;">Proteina</th>
+        <th class="naranja" style="width: 10%;">Carbohidrato</th>
+        <th class="celeste" style="width: 10%;">Grasa</th>
+        <th class="rosado" style="width: 10%;">Libre</th>
       </tr>
       <?php
       foreach ($listAlimentos as $item) {

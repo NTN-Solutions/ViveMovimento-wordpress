@@ -322,15 +322,20 @@ add_action("wp_ajax_fnViveMovimentoDiarioAgregar", "fnViveMovimentoDiarioAgregar
 add_action("wp_ajax_fnViveMovimentoDiarioEliminar", "fnViveMovimentoDiarioEliminar");
 add_action("wp_ajax_fnViveMovimentoDiarioDetalleTabla", "fnViveMovimentoDiarioDetalleTabla");
 
+add_action("wp_ajax_fnViveMovimentoRecetaClonar", "fnViveMovimentoRecetaClonar");
 add_action("wp_ajax_fnViveMovimentoRecetaAgregar", "fnViveMovimentoRecetaAgregar");
+add_action("wp_ajax_fnViveMovimentoRecetaEditar", "fnViveMovimentoRecetaEditar");
 add_action("wp_ajax_fnViveMovimentoRecetaEliminar", "fnViveMovimentoRecetaEliminar");
 add_action("wp_ajax_fnViveMovimentoRecetaListado", "fnViveMovimentoRecetaListado");
+add_action("wp_ajax_fnViveMovimentoRecetaListadoCore", "fnViveMovimentoRecetaListadoCore");
 
 add_action("wp_ajax_fnViveMovimentoRecetaDetalleAgregar", "fnViveMovimentoRecetaDetalleAgregar");
 add_action("wp_ajax_fnViveMovimentoRecetaDetalleEditar", "fnViveMovimentoRecetaDetalleEditar");
 add_action("wp_ajax_fnViveMovimentoRecetaDetalleEliminar", "fnViveMovimentoRecetaDetalleEliminar");
 
 add_action("wp_ajax_fnViveMovimentoRecetaJournalAgregar", "fnViveMovimentoRecetaJournalAgregar");
+
+add_action("wp_ajax_fnViveMovimentoPorcionesPropias", "fnViveMovimentoPorcionesPropias");
 
 function fnViveMovimentoRedireccionLuegoCompra( $order_id ){
     $order = wc_get_order( $order_id );

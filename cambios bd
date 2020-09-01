@@ -142,3 +142,13 @@ ALTER TABLE `wp_vivemov_recetas`
 ALTER TABLE `wp_vivemov_recetas_detalle`
   MODIFY `intId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
+
+
+
+
+
+
+
+
+
+ALTER TABLE `wp_vivemov_recetas` ADD `strNombre` VARCHAR(100) NOT NULL AFTER `bitActivo`;

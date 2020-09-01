@@ -117,6 +117,10 @@ function fnTab_4_save($strUsuario,$intMeta){
 }
 function fnTab_4_save_custom_porciones(){
   global $wpdb, $strUsuario;
+  $wpdb->get_results("UPDATE wp_vivemov_users_porciones as D
+                      SET D.bitActivo = 0
+                      WHERE D.strUsuario = '$strUsuario' AND D.bitActivo = 1;");
+
   $registro = array(
     'strUsuario'=>$strUsuario,
     'intProteina'=> intval($_POST['intCustomP']),
@@ -125,9 +129,6 @@ function fnTab_4_save_custom_porciones(){
     'bitActivo'=>1,
     'datCreacion'=>date('Y-m-d H:i:s')
   );
-  $wpdb->get_results("UPDATE wp_vivemov_users_porciones as D
-                      SET D.bitActivo = 0
-                      WHERE D.strUsuario = '$strUsuario' AND D.bitActivo = 1;");
   $response;
   if($_POST['txtCustomOpcion'] == 1){
     $response = $wpdb->insert("wp_vivemov_users_porciones", $registro);
@@ -233,7 +234,7 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
   global $intExperiencia;
   global $wpdb;
   $misPorciones = null;
-  if ($intExperiencia == 3) {
+  // if ($intExperiencia == 3) {
     $misPorciones = $wpdb->get_results("SELECT * FROM wp_vivemov_users_porciones WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     if (count($misPorciones) > 0) {
       $misPorciones = $misPorciones[0];
@@ -241,7 +242,7 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
     }else{
       $misPorciones = null;
     }
-  }
+  // }
 
   ?>
 

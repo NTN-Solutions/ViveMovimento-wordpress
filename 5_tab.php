@@ -306,6 +306,7 @@ function fnViveMovimentoDiarioAgregar(){
     if ($intIDDETALLE == null || $intIDDETALLE == 0) {
         fnDiario_AgregarDetalle();
     }
+    exit();
 }
 //ajax
 function fnViveMovimentoDiarioDetalleTabla(){
@@ -313,6 +314,7 @@ function fnViveMovimentoDiarioDetalleTabla(){
     $listadoDiario = fnListadoDiario(intval($_GET['intDiario']));
     $diario = $listadoDiario[0];
     fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos);
+    exit();
 }
 function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
     echo '<div id="div_vivemovimento_tabla_diario_'.$diario->intId.'"><table id="tblDiario_'.$diario->intId.'" class="tblDiario">';
@@ -370,6 +372,7 @@ function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
 }
 function fnViveMovimentoDiarioEliminar(){
     fnDiario_eliminar(intval($_GET['intEliminar']), intval($_GET['intEncabezado']));
+    exit();
 }
 function fnFoodJournalCore(){
     global $wpdb, $strUsuario;
@@ -438,12 +441,21 @@ function fnFoodJournalCore(){
     $intDiarioSiguiente = fnDiarioSiguiente();
 
     $listadoRECETAS = fnViveMovimentoRecetaListado();
+
+    $misPorciones = null;
+    $misPorciones = $wpdb->get_results("SELECT * FROM wp_vivemov_users_porciones WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
+    if (count($misPorciones) > 0) {
+      $misPorciones = $misPorciones[0];
+    }else{
+      $misPorciones = null;
+    }
+
 ?>
 
-  <div class="col-md-12 col-xs-12 col-sm-12 sinPadding">
-    <center><h2><small>Porciones del Dia</small></h2></center>
+  <div class="col-md-5 col-xs-5 col-sm-5 sinPadding">
+    <center><h2 style="margin: 0px;"><small>Porciones recomendades del Día</small></h2></center>
     <div class="table-responsive">
-      <table class="table table-striped table-condensed">
+      <table class="table table-striped table-condensed" style="margin: 0px;">
         <thead>
           <tr>
             <th class="amarillo">PROTEINAS</th>
@@ -461,6 +473,31 @@ function fnFoodJournalCore(){
       </table>
     </div>
   </div>
+  <div class="col-md-2 col-xs-2 col-sm-2">.
+  </div>
+<?php if ($misPorciones != null) { ?>
+  <div class="col-md-5 col-xs-5 col-sm-5 sinPadding">
+    <center><h2 style="margin: 0px;"><small>Tus propias porciones</small></h2></center>
+    <div class="table-responsive">
+      <table class="table table-striped table-condensed" style="margin: 0px;">
+        <thead>
+          <tr>
+            <th class="amarillo">PROTEINAS</th>
+            <th class="naranja">CARBOHIDRATOS</th>
+            <th class="celeste">GRASAS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th class="amarillo"><?php echo fnRedondearCUSTOMUP($misPorciones->intProteina); ?></th>
+            <th class="naranja"><?php echo fnRedondearCUSTOMUP($misPorciones->intCarbohidrato); ?></th>
+            <th class="celeste"><?php echo fnRedondearCUSTOMUP($misPorciones->intGrasa); ?></th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<?php } ?>
 
 <br/>
 
@@ -775,7 +812,6 @@ function fnFoodJournalCore(){
                 ,intIDDETALLE: null
             },
             success: function(response) {
-                response = response.replace('"}0','"}');
                 var response = jQuery.parseJSON(response);
                 if(response.type == "success") {
                     $('#intDiarioDet_Cantidad_hidden_' + decDiario).val(null);
@@ -800,7 +836,6 @@ function fnFoodJournalCore(){
                 ,intEncabezado: decDiario
             },
             success: function(response) {
-                response = response.replace('"}0','"}');
                 var response = jQuery.parseJSON(response);
                 if(response.type == "success") {
                     setTimeout(function () {
@@ -822,7 +857,6 @@ function fnFoodJournalCore(){
                 ,intDiario: decDiario                
             },
             success: function(response) {
-                response = response.replace('</div>0','</div>');
                 $('#div_vivemovimento_tabla_diario_'+ decDiario).html(response);
             }
         });

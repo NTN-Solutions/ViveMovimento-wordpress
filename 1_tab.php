@@ -211,37 +211,40 @@ function fnMiInformacion_form($strUsuario,$intEdad,$decAltura,$decPeso,$intSexo,
     bitTab1Finish = true;
   }
     $( document ).ready(function() {
-      $('input:radio[name="intSexo"]').filter('[value="<?php echo ($intSexo==1?'1':'0'); ?>"]').click();
-        $('.carousel').carousel();
-        setTimeout(function () { $('.carousel').carousel('pause'); }, 500);
-        setTimeout(function () { $('.carousel').carousel('pause'); }, 1000);
-        setTimeout(function () { $('.carousel').carousel('pause'); }, 1500);
-        setTimeout(function () {
-          $("#frm_tab_1").submit(function(e) {
-              e.preventDefault(); // avoid to execute the actual submit of the form.
-              var form = $(this);
-              var url = form.attr('action');
-              $.ajax({
-                     type: "POST",
-                     url: url,
-                     data: form.serialize(), // serializes the form's elements.
-                     success: function(data)
-                     {
-                      if (bitTab1Finish)fnTabNavRedirect(2);
-                        console.log('data'); // show response from the php script.
-                        // console.log(data); // show response from the php script.
-                     }
-                   });
-          });
-        }, 2000);        
-        $('#carousel-example-generic').on('slide.bs.carousel', function () {
-          $('#btnTab1_submit').click();
-          $('#carousel-example-generic').carousel('pause');
-        })
-        $('#carousel-example-generic').on('slid', '', checkitem);  // on caroussel move
-        $('#carousel-example-generic').on('slid.bs.carousel', '', checkitem); // on carousel move
+      if (window.location.href.toLowerCase().indexOf('tab_paso_1') !== -1) {
+        $('input:radio[name="intSexo"]').filter('[value="<?php echo ($intSexo==1?'1':'0'); ?>"]').click();
+          $('.carousel').carousel();
+          setTimeout(function () { $('.carousel').carousel('pause'); }, 500);
+          setTimeout(function () { $('.carousel').carousel('pause'); }, 1000);
+          setTimeout(function () { $('.carousel').carousel('pause'); }, 1500);
+          setTimeout(function () {
+            $("#frm_tab_1").submit(function(e) {
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+                var form = $(this);
+                var url = form.attr('action');
+                $.ajax({
+                       type: "POST",
+                       url: url,
+                       data: form.serialize(), // serializes the form's elements.
+                       success: function(data)
+                       {
+                        if (bitTab1Finish)fnTabNavRedirect(2);
+                          console.log('data'); // show response from the php script.
+                          // console.log(data); // show response from the php script.
+                       }
+                     });
+            });
+          }, 2000);        
+          $('#carousel-example-generic').on('slide.bs.carousel', function () {
+            $('#btnTab1_submit').click();
+            $('#carousel-example-generic').carousel('pause');
+          })
+          $('#carousel-example-generic').on('slid', '', checkitem);  // on caroussel move
+          $('#carousel-example-generic').on('slid.bs.carousel', '', checkitem); // on carousel move
 
-      checkitem();
+        checkitem();
+        
+      }
     });
 
     function checkitem()                        // check function
