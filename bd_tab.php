@@ -27,7 +27,7 @@ function fnTab_bd_cargar(){
           ELSE 1
       END intOrdenTipo
       FROM wp_vivemov_alimentos_porciones ap
-      INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1 and ap.strUsuario IN('svc9304','anamoralescpt','amms24')
+      INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1 and ap.strUsuario IN('anamoralescpt','amms24')
       UNION ALL
       SELECT DISTINCT ap.*, um.strUnidadMedida 
       ,CASE

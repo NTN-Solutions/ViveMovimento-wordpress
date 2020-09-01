@@ -74,7 +74,7 @@ function fnViveMovimentoRecetaListado(){
 }
 function fnViveMovimentoRecetaListadoAdmin(){  
   global $wpdb;
-  $list = $wpdb->get_results("SELECT * FROM wp_vivemov_recetas WHERE strUsuario IN('svc9304','anamoralescpt','amms24') ORDER BY strNombre ASC;");
+  $list = $wpdb->get_results("SELECT * FROM wp_vivemov_recetas WHERE strUsuario IN('anamoralescpt','amms24') ORDER BY strNombre ASC;");
   return $list;
 }
 
