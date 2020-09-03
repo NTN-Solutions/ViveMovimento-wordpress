@@ -695,6 +695,7 @@ function fnFoodJournalCore(){
                         
                         <div role="tabpanel" class="tab-pane" id="tab_food_journal_receta_'.$diario->intId.'">';                        
                         $intCursor = 1;
+                        $intCursorSinReceta = 1;
                         $intCursorRow = 1;
                         foreach ($listadoRECETAS as $item) {
                             if($item->bitActivo == 0){ $intCursor += 1; continue; } ?>
@@ -740,9 +741,10 @@ function fnFoodJournalCore(){
                             }
 
                             $intCursor += 1;
+                            $intCursorSinReceta += 1;
                             $intCursorRow += 1;
                         }
-                        if ($intCursor == 1) {
+                        if ($intCursorSinReceta == 1) {
                             echo '<div class="alert alert-info" role="alert"><strong>Sin Recetas!</strong> Debes agregar tus propias recetas para luego ingresarlas desde el journal. <a href="#" onClick="$('."'#tab_Paso_9_Ref'".').click();"; class="alert-link">Ver Mis Recetas</a></div>';
                         }
 
