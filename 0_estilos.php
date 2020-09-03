@@ -295,7 +295,7 @@
 					</li>
 					<li role="presentation" id="tab_core_6" class="tab_core_diario" style="display: none;">
 						<a href="#tab_Paso_9" id="tab_Paso_9_Ref" aria-controls="tab_Paso_9" role="tab" data-toggle="tab">
-							<i class="fas fa-list-ul"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo '<br/>';} ?> Recetas
+							<i class="fas fa-list-ul"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo '<br/>';} ?>Mis Recetas
 						</a>
 					</li>
 					<li role="presentation" id="tab_core_6" class="tab_core_diario" style="display: none;">

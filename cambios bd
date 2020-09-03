@@ -152,3 +152,24 @@ ALTER TABLE `wp_vivemov_recetas_detalle`
 
 
 ALTER TABLE `wp_vivemov_recetas` ADD `strNombre` VARCHAR(100) NOT NULL AFTER `bitActivo`;
+
+
+
+
+
+
+
+
+
+ALTER TABLE `wp_vivemov_users_porciones` CHANGE `intProteina` `intProteina` DECIMAL(10,2) NOT NULL;
+ALTER TABLE `wp_vivemov_users_porciones` CHANGE `intCarbohidrato` `intCarbohidrato` DECIMAL(10,2) NOT NULL;
+ALTER TABLE `wp_vivemov_users_porciones` CHANGE `intGrasa` `intGrasa` DECIMAL(10,2) NOT NULL;
+
+
+
+
+
+
+
+
+

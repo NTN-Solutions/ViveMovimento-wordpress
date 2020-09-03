@@ -489,9 +489,9 @@ function fnFoodJournalCore(){
         </thead>
         <tbody>
           <tr>
-            <th class="amarillo"><?php echo fnRedondearCUSTOMUP($misPorciones->intProteina); ?></th>
-            <th class="naranja"><?php echo fnRedondearCUSTOMUP($misPorciones->intCarbohidrato); ?></th>
-            <th class="celeste"><?php echo fnRedondearCUSTOMUP($misPorciones->intGrasa); ?></th>
+            <th class="amarillo"><?php echo str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones->intProteina)); ?></th>
+            <th class="naranja"><?php echo str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones->intCarbohidrato)); ?></th>
+            <th class="celeste"><?php echo str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones->intGrasa)); ?></th>
           </tr>
         </tbody>
       </table>
@@ -741,6 +741,9 @@ function fnFoodJournalCore(){
 
                             $intCursor += 1;
                             $intCursorRow += 1;
+                        }
+                        if ($intCursor == 1) {
+                            echo '<div class="alert alert-info" role="alert"><strong>Sin Recetas!</strong> Debes agregar tus propias recetas para luego ingresarlas desde el journal. <a href="#" onClick="$('."'#tab_Paso_9_Ref'".').click();"; class="alert-link">Ver Mis Recetas</a></div>';
                         }
 
                         echo'</div>

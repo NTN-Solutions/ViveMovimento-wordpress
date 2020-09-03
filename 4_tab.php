@@ -123,9 +123,10 @@ function fnTab_4_save_custom_porciones(){
 
   $registro = array(
     'strUsuario'=>$strUsuario,
-    'intProteina'=> intval($_POST['intCustomP']),
-    'intCarbohidrato'=> intval($_POST['intCustomC']),
-    'intGrasa'=> intval($_POST['intCustomG']),
+    // 'intProteina'=> floatval($_POST['intCustomP']),
+    'intProteina'=> ($_POST['intCustomP']),
+    'intCarbohidrato'=> ($_POST['intCustomC']),
+    'intGrasa'=> ($_POST['intCustomG']),
     'bitActivo'=>1,
     'datCreacion'=>date('Y-m-d H:i:s')
   );
@@ -283,7 +284,7 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
       </div>
   </div>
 
-  <div class="col-md-5 col-xs-12 col-sm-12 noMostrar">
+  <div class="col-md-4 col-xs-12 col-sm-12 noMostrar">
     <br/>
     <center><h2><small>Calorias</small></h2></center>
     <div class="table-responsive">
@@ -329,7 +330,7 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
       </table>
     </div>
   </div>
-  <div class="col-md-7 col-xs-12 col-sm-12" id="divTablaMisPorciones">
+  <div class="col-md-8 col-xs-12 col-sm-12" id="divTablaMisPorciones">
     <br/>
     <center><h2><small>Porciones</small></h2></center>
     <div class="table-responsive">
@@ -393,9 +394,9 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
                   <input type="hidden" name="intOpcion" value="2">
                   <input type="hidden" name="txtCustomOpcion" id="txtCustomOpcion" value="1">
                   <th>Tus Propias<br/>Porciones <i class="fas fa-chevron-right"></i></th>
-                  <th class="amarillo"><input type="number" name="intCustomP" class="form-control txtMisPorciones" value="<?= ($misPorciones != null ? $misPorciones->intProteina : '0') ?>" min="1" max="99"></th>
-                  <th class="naranja"><input type="number" name="intCustomC" class="form-control txtMisPorciones" value="<?= ($misPorciones != null ? $misPorciones->intCarbohidrato : '0') ?>" min="1" max="99"></th>
-                  <th class="celeste"><input type="number" name="intCustomG" class="form-control txtMisPorciones" value="<?= ($misPorciones != null ? $misPorciones->intGrasa : '0') ?>" min="1" max="99"></th>
+                  <th class="amarillo"><input type="number" name="intCustomP" class="form-control txtMisPorciones" step="0.01" value="<?= ($misPorciones != null ? str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones->intProteina)) : '0') ?>" min="1" max="99"></th>
+                  <th class="naranja"><input type="number" name="intCustomC" class="form-control txtMisPorciones" step="0.01" value="<?= ($misPorciones != null ? str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones->intCarbohidrato)) : '0') ?>" min="1" max="99"></th>
+                  <th class="celeste"><input type="number" name="intCustomG" class="form-control txtMisPorciones" step="0.01" value="<?= ($misPorciones != null ? str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones->intGrasa)) : '0') ?>" min="1" max="99"></th>
                   <th>
                     <div class="btn-group btn-group-lg" role="group" aria-label="...">
                       <button type="submit" class="btn btn-primary " onclick="$('#txtCustomOpcion').val(1);"><span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>

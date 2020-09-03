@@ -197,6 +197,9 @@ function fnRedondearCUSTOMUP($decValor)
     //     return ($whole + 1);
     // }
 }
+function fnRedondearCUSTOMUP_1($decValor){
+    return round($decValor, 1);
+}
 function fnUtils_core(){
     echo '
     <script>
