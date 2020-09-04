@@ -280,7 +280,12 @@ function fnDiario_Detalle_Validar($decCantidad,$decAlimento,$decTiempo){
     }
 }
 function fnTab_5(){
-    fnFoodJournalCore();
+    $intDiasSuscripcion = fnVerificarCombraDeSuscripcion();
+    if($intDiasSuscripcion < 30){
+        fnFoodJournalCore();
+    }else{
+        fnTab_4_alerta_Suscripcion();
+    }
 }
 //Ajax
 function fnViveMovimentoDiarioAgregar(){
