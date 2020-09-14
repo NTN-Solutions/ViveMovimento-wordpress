@@ -158,9 +158,30 @@ function fnDiario_Detalle($decDiario,$intTiempo){
     global $wpdb;
     $listado = $wpdb->get_results("
         SELECT T.strTiempo,T.bitPrincipal,DD.*, AP.strAlimento
+            ,um.strUnidadMedida
+            ,((AP.decPorcion /
+              (
+            CASE
+                WHEN AP.decProteina > 0 THEN AP.decProteina
+                WHEN AP.decCarbohidratos > 0 THEN AP.decCarbohidratos
+                WHEN AP.decGrasa > 0 THEN AP.decGrasa
+                WHEN AP.decVegetales > 0 THEN AP.decVegetales
+                WHEN AP.decLibre > 0 THEN AP.decLibre
+              END
+                  /
+             CASE
+                WHEN DD.intProteinas > 0 THEN DD.intProteinas
+                WHEN DD.intCarbohidratos > 0 THEN DD.intCarbohidratos
+                WHEN DD.intGrasas > 0 THEN DD.intGrasas
+                WHEN DD.intVegetales > 0 THEN DD.intVegetales
+                WHEN DD.intLibres > 0 THEN DD.intLibres
+              END
+             )
+            ) * 1) intCantidadTomado
         FROM wp_vivemov_alimentos_tiempo T
         INNER JOIN wp_vivemov_users_diario_detalle DD ON DD.intDiario = $decDiario AND DD.intTiempo = T.intId  
         INNER JOIN wp_vivemov_alimentos_porciones AP ON AP.intId = DD.intAlimentoPorcion
+        INNER JOIN wp_vivemov_alimentos_unidad_medida um on um.intId = AP.intUnidadMedida
         WHERE T.bitActivo = 1 AND T.intId = $intTiempo ORDER BY AP.strAlimento ASC");
     return $listado;
 }
@@ -328,6 +349,7 @@ function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
             if($tiempo->bitPrincipal == 0 && count($listDetalle) == 0){continue;}
             echo '<tr>
                 <td class="blanco" style="font-weight: bolder;" colspan=2>'.$tiempo->strTiempo.'</td>
+                <td style="font-weight: bolder;width: 10%;">Cantidad</td>
                 <td class="amarillo" style="font-weight: bolder;width: 10%;">Proteina</td>
                 <td class="naranja" style="font-weight: bolder;width: 10%;">Carbohidrato</td>
                 <td class="celeste" style="font-weight: bolder;width: 10%;">Grasa</td>
@@ -350,6 +372,7 @@ function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
                             </form>                            
                         </td>
                         <td>'.$det->strAlimento.'</td>
+                        <td>'.intval($det->intCantidadTomado).' '.$det->strUnidadMedida.'</td>
                         <td class="amarillo">'.$det->intProteinas.'</td>
                         <td class="naranja">'.$det->intCarbohidratos.'</td>
                         <td class="celeste">'.$det->intGrasas.'</td>
@@ -359,7 +382,7 @@ function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
               }
         }
     echo '<tr>
-        <td class="rojo" rowspan="2" style="font-weight: bolder;" colspan=2>Total</td>
+        <td class="rojo" rowspan="3" style="font-weight: bolder;" colspan=3>Total</td>
         <td class="rojo" style="font-weight: bolder;">Proteinas</td>
         <td class="rojo" style="font-weight: bolder;">Carbohidrato</td>
         <td class="rojo" style="font-weight: bolder;">Grasa</td>
