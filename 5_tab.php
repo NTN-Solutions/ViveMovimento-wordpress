@@ -376,6 +376,8 @@ function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
     echo '</table></div>';
 }
 function fnViveMovimentoDiarioEliminar(){
+    global $strUsuario;
+    $strUsuario = fnViveMovimento_usuario();
     fnDiario_eliminar(intval($_GET['intEliminar']), intval($_GET['intEncabezado']));
     exit();
 }
