@@ -1,5 +1,21 @@
 <?php
 function fnVerificarCombraDeSuscripcion() {
+  if (( in_array( 'administrator', wp_get_current_user()->roles, true ) ) == true) {
+    //si es el admin siempre tendra 30 dia, o si el admin esta viendo el diario de los clientes, tiene libre acceso
+    return 0;
+  }
+  global $wpdb, $strUsuario;
+  $strUsuario = fnViveMovimento_usuario();
+  $list = $wpdb->get_results("
+      SELECT *
+      FROM wp_vivemov_users_one_to_one D
+      WHERE strUsuario = '$strUsuario' AND bitActivo =1
+  ");
+  if (count($list) > 0 ) {
+    //devolvemos 30 dia, porque cliente es one to one
+    return 0;
+  }
+
   //https://stackoverflow.com/questions/38157176/how-to-get-purchase-date-from-woocommerce-order
   // Get All order of current user
   

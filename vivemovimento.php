@@ -340,6 +340,10 @@ add_action("wp_ajax_fnViveMovimentoRecetaJournalAgregar", "fnViveMovimentoReceta
 
 add_action("wp_ajax_fnViveMovimentoPorcionesPropias", "fnViveMovimentoPorcionesPropias");
 
+add_action("wp_ajax_fnViveMovimentoOneToOnetabla", "fnViveMovimentoOneToOnetabla");
+add_action("wp_ajax_fnViveMovimentoOneToOneAgregar", "fnViveMovimentoOneToOneAgregar");
+add_action("wp_ajax_fnViveMovimentoOneToOneEliminar", "fnViveMovimentoOneToOneEliminar");
+
 function fnViveMovimentoRedireccionLuegoCompra( $order_id ){
     $order = wc_get_order( $order_id );
     $url = '/shop';

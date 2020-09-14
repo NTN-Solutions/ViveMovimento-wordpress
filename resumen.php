@@ -1,4 +1,70 @@
 <?php
+
+  function fnViveMovimentoOneToOnetabla(){
+    global $wpdb;
+    $list = $wpdb->get_results("
+        SELECT *
+        FROM wp_vivemov_users_one_to_one D
+        WHERE bitActivo =1
+    ");
+    ?>
+        <table class="table table-striped">
+          <thead>
+              <tr>
+                <th>No.</th>
+                <th>Usuario One to One</th>
+                <th>Eliminar</th>
+              </tr>
+            </thead>
+          <tbody>
+            <?php
+              $intContadoronetoone = 1;
+              foreach ($list as $item) {
+                echo '<tr>';
+                echo '<td>';
+                echo $intContadoronetoone;
+                echo '</td>';
+                echo '<td>';
+                echo $item->strUsuario;
+                echo '</td>';
+                echo '<td>';
+                echo '<button type="button" class="btn btn-warning btn-block btn-xs" aria-label="Eliminar" onclick="fnUsuarioonetoone_Eliminar('."'".$item->strUsuario."'".');">
+              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </button>';
+                echo '</td>';
+                echo '</tr>';
+                $intContadoronetoone += 1;
+              }
+            ?>
+          </tbody>
+        </table>
+    <?php
+      exit();
+  }
+  function fnViveMovimentoOneToOneAgregar(){
+      global $wpdb;
+      $itemRow = array(
+          'strUsuario'            => $_GET['strUsuario'],
+          'bitActivo'             => 1,
+      );
+      $wpdb->insert("wp_vivemov_users_one_to_one", $itemRow);
+      $result['type'] = 'success';
+      $result['mnj'] = 'Listo, eliminado!';
+      $result = json_encode($result);
+      echo $result;
+      exit();
+  }
+  function fnViveMovimentoOneToOneEliminar(){
+      global $wpdb;
+      $wpdb->delete( 'wp_vivemov_users_one_to_one', array( 'strUsuario' => $_GET['strUsuario'] ) );
+      $result['type'] = 'success';
+      $result['mnj'] = 'Listo, eliminado!';
+      $result = json_encode($result);
+      echo $result;
+      exit();
+  }
+
+
   function fnViveMovimento_resumen_data(){
     setlocale(LC_ALL, 'es_ES').': ';
     global $wpdb, $strUsuario;
@@ -8,7 +74,7 @@
     $gDataPaso_2 = $wpdb->get_results("SELECT * FROM wp_vivemov_users_actividad_gasto_energetico WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     $gDataPaso_3 = $wpdb->get_results("SELECT * FROM wp_vivemov_users_meta WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
   }
-	function fnViveMovimento_resumen_init(){
+	function fnViveMovimento_resumen_init() {
     fnViveMovimento_usuario(true);
   		global $wpdb, $strUsuario;
       global $gDataPaso_1,$gDataPaso_2,$gDataPaso_3;
@@ -147,7 +213,6 @@
   }
 
   if ($bitPermisoAdmin == true) {
-
 ?>
 <div class="row">
   <div class="col-md-10 col-xs-12 col-sm-12  col-md-offset-1">
@@ -199,7 +264,6 @@
             echo '<option value="'.$info['nickname'][0].'">'.$info['nickname'][0].' - '.$info['first_name'][0].' '.$info['last_name'][0].' - '.$info['billing_email'][0].'</option>';
         }
 ?>
-
     </select>
   </div>
   <div class="col-md-2 col-xs-2 col-sm-2">
@@ -222,6 +286,103 @@
 
 
 <?php include( plugin_dir_path( __FILE__ ) . '/user_info.php'); ?>
+
+<br>
+<hr>
+<br>
+
+<div class="row">
+  <div class="col-md-8 col-xs-10 col-sm-10 col-md-offset-1">
+    <select id="cbUsuarioonetoone">
+      <option selected="true" disabled="disabled">Usuario One to One - nombres - correo</option>
+<?php
+    $users = get_users(['meta_key' => 'first_name','orderby' => 'meta_value','order' => 'ASC' ]);
+    foreach($users as $user){
+            $info = get_user_meta ( $user->ID);
+            echo '<option value="'.$info['nickname'][0].'">'.$info['nickname'][0].' - '.$info['first_name'][0].' '.$info['last_name'][0].' - '.$info['billing_email'][0].'</option>';
+        }
+?>
+    </select>
+  </div>
+  <div class="col-md-2 col-xs-2 col-sm-2">
+      <button type="button" class="btn btn-primary btn-block btn-xs" onclick="fnUsuarioonetoone_Agregar();">
+        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span> Agregar
+      </button>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-10 col-xs-12 col-sm-12  col-md-offset-1">
+      <div class="table-responsive" id="divonetooneTabla">
+      </div>
+  </div>
+</div>
+
+
+<script>
+  function fnUsuarioonetoone_Tabla(){
+    jQuery.ajax({
+        type : "GET",
+        // dataType : "json",
+        url : '<?= admin_url( 'admin-ajax.php' ) ?>',
+        data : {
+            action: "fnViveMovimentoOneToOnetabla"
+        },
+        success: function(response) {
+            $('#divonetooneTabla').html(response);
+        }
+    });
+  }
+  function fnUsuarioonetoone_Agregar(){
+    if($('#cbUsuarioonetoone').val() ==  null || $('#cbUsuarioonetoone').val() == '')return;
+      jQuery.ajax({
+          type : "GET",
+          // dataType : "json",
+          url : '<?= admin_url( 'admin-ajax.php' ) ?>',
+          data : {
+              action: "fnViveMovimentoOneToOneAgregar"
+              ,strUsuario: $('#cbUsuarioonetoone').val()
+          },
+          success: function(response) {
+              var response = jQuery.parseJSON(response);
+              if(response.type == "success") {
+                  setTimeout(function () {
+                      fnUsuarioonetoone_Tabla();
+                  }, 150);
+              }else {
+                 alert(response.mnj);
+              }
+          }
+      });
+  }
+  function fnUsuarioonetoone_Eliminar(strUsuario){
+    jQuery.ajax({
+            type : "GET",
+            // dataType : "json",
+            url : '<?= admin_url( 'admin-ajax.php' ) ?>',
+            data : {
+                action: "fnViveMovimentoOneToOneEliminar"
+                ,strUsuario: strUsuario
+            },
+            success: function(response) {
+                var response = jQuery.parseJSON(response);
+                if(response.type == "success") {
+                    setTimeout(function () {
+                        fnUsuarioonetoone_Tabla();
+                    }, 150);
+                }else {
+                   alert(response.mnj);
+                }
+            }
+        });
+  }
+  setTimeout(function(){
+    fnUsuarioonetoone_Tabla();
+  }, 2000);
+</script>
+
+
+
 
 <?php  } ?>
 

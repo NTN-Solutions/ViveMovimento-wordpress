@@ -173,3 +173,77 @@ ALTER TABLE `wp_vivemov_users_porciones` CHANGE `intGrasa` `intGrasa` DECIMAL(10
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- phpMyAdmin SQL Dump
+-- version 4.9.0.1
+-- https://www.phpmyadmin.net/
+--
+-- Servidor: localhost:8889
+-- Tiempo de generación: 14-09-2020 a las 15:07:58
+-- Versión del servidor: 5.7.26
+-- Versión de PHP: 7.3.8
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Base de datos: `vivemovimento`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `wp_vivemov_users_one_to_one`
+--
+
+CREATE TABLE `wp_vivemov_users_one_to_one` (
+  `decId` int(11) NOT NULL,
+  `strUsuario` varchar(200) NOT NULL,
+  `bitActivo` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `wp_vivemov_users_one_to_one`
+--
+ALTER TABLE `wp_vivemov_users_one_to_one`
+  ADD PRIMARY KEY (`decId`),
+  ADD KEY `strUsuario` (`strUsuario`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `wp_vivemov_users_one_to_one`
+--
+ALTER TABLE `wp_vivemov_users_one_to_one`
+  MODIFY `decId` int(11) NOT NULL AUTO_INCREMENT;
+
