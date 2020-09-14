@@ -344,6 +344,8 @@ add_action("wp_ajax_fnViveMovimentoOneToOnetabla", "fnViveMovimentoOneToOnetabla
 add_action("wp_ajax_fnViveMovimentoOneToOneAgregar", "fnViveMovimentoOneToOneAgregar");
 add_action("wp_ajax_fnViveMovimentoOneToOneEliminar", "fnViveMovimentoOneToOneEliminar");
 
+add_action("wp_ajax_fnViveMovimentoDiarioDetalleReceta", "fnViveMovimentoDiarioDetalleReceta");
+
 function fnViveMovimentoRedireccionLuegoCompra( $order_id ){
     $order = wc_get_order( $order_id );
     $url = '/shop';

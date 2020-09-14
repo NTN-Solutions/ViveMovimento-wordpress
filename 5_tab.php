@@ -381,6 +381,78 @@ function fnViveMovimentoDiarioEliminar(){
     fnDiario_eliminar(intval($_GET['intEliminar']), intval($_GET['intEncabezado']));
     exit();
 }
+function fnViveMovimentoDiarioDetalleReceta(){
+    fnViveMovimentoDiarioDetalleReceta_Core(intval($_GET['intEncabezado']));
+    exit();
+}
+function fnViveMovimentoDiarioDetalleReceta_Core($decDiario){
+    global $strUsuario;
+    $strUsuario = fnViveMovimento_usuario();
+
+    $intCursor = 1;
+    $intCursorSinReceta = 1;
+    $intCursorRow = 1;
+
+    $listadoDiario = fnListadoDiario($decDiario);
+    $diario = $listadoDiario[0];
+    $listTiempos = fnDiario_Tiempos();
+    $listadoRECETAS = fnViveMovimentoRecetaListado();
+    foreach ($listadoRECETAS as $item) {
+        if($item->bitActivo == 0){ $intCursor += 1; continue; } ?>
+        <div class="col-md-12 col-xs-12 col-sm-12" style="padding-left: 2px;padding-right: 2px;">
+            <button type="button" class="btn-info btn-xs btn-block" onclick="fnViveMovimentoDiarioDetalleReceta(<?= $decDiario ?>);">
+                <i class="fa fa-refresh" aria-hidden="true"></i> Refrescar recetas
+            </button>
+        </div>
+
+        <div class="col-md-4 col-xs-12 col-sm-12" style="padding-left: 2px;padding-right: 2px;">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-list-ul" aria-hidden="true"></i> Receta No. <?= $intCursor ?>
+                        <button type="button" class="btn btn-success btn-xs" onclick="fnViveMovimento_Receta_Journal_agregar(<?= $diario->intId ?>, <?= $item->intId ?>);" style="float: right;">
+                          <i class="fa fa-plus" aria-hidden="true"></i> Journal
+                        </button>
+                        <select class="intDiarioDet_Tiempo" id="intDiarioDet_Receta_Tiempo_<?= $diario->intId ?>">';
+                        <?php
+                        foreach ($listTiempos as $tiempo) {
+                            echo '<option value="'.$tiempo->intId.'">'.$tiempo->strTiempo.'</option>';
+                        } ?>
+                        </select>
+                    </h3>
+                </div>
+                <div class="panel-body" style="padding-left: 2px;padding-right: 2px;">
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 100px;">Porción</th>
+                                    <th>Alimento</th>
+                                </tr>
+                            </thead>
+                        <?php foreach ($item->detalle as $itemDetalle) { ?>
+                            <tr>
+                                <td style="padding-left: 0px;padding-right: 0px;"><?= $itemDetalle->decCantidad ?> <?= $itemDetalle->strUnidadMedida ?></td>
+                                <td><?= $itemDetalle->strAlimento ?></td>
+                            </tr>
+                        <?php } ?>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php
+        if ($intCursorRow % 3 == 0) {
+          echo '<div class="col-md-12 col-xs-12 col-sm-12">.</div>';
+        }
+
+        $intCursor += 1;
+        $intCursorSinReceta += 1;
+        $intCursorRow += 1;
+    }
+    if ($intCursorSinReceta == 1) {
+        echo '<div class="alert alert-info" role="alert"><strong>Sin Recetas!</strong> Debes agregar tus propias recetas para luego ingresarlas desde el journal. <a href="#" onClick="$('."'#tab_Paso_9_Ref'".').click();"; class="alert-link">Ver Mis Recetas</a></div>';
+    }
+}
 function fnFoodJournalCore(){
     global $wpdb, $strUsuario;
     global $decProteinas,$decCarbo,$decGrasas;
@@ -700,61 +772,8 @@ function fnFoodJournalCore(){
                                 </div>
                             </div>
                         
-                        <div role="tabpanel" class="tab-pane" id="tab_food_journal_receta_'.$diario->intId.'">';                        
-                        $intCursor = 1;
-                        $intCursorSinReceta = 1;
-                        $intCursorRow = 1;
-                        foreach ($listadoRECETAS as $item) {
-                            if($item->bitActivo == 0){ $intCursor += 1; continue; } ?>
-
-                            <div class="col-md-4 col-xs-12 col-sm-12" style="padding-left: 2px;padding-right: 2px;">
-                                <div class="panel panel-info">
-                                    <div class="panel-heading">
-                                        <h3 class="panel-title"><i class="fa fa-list-ul" aria-hidden="true"></i> Receta No. <?= $intCursor ?>
-                                            <button type="button" class="btn btn-success btn-xs" onclick="fnViveMovimento_Receta_Journal_agregar(<?= $diario->intId ?>, <?= $item->intId ?>);" style="float: right;">
-                                              <i class="fa fa-plus" aria-hidden="true"></i> Journal
-                                            </button>
-                                            <select class="intDiarioDet_Tiempo" id="intDiarioDet_Receta_Tiempo_<?= $diario->intId ?>">';
-                                            <?php
-                                            foreach ($listTiempos as $tiempo) {
-                                                echo '<option value="'.$tiempo->intId.'">'.$tiempo->strTiempo.'</option>';
-                                            } ?>
-                                            </select>
-                                        </h3>
-                                    </div>
-                                    <div class="panel-body" style="padding-left: 2px;padding-right: 2px;">
-                                        <div class="table-responsive">
-                                            <table class="table table-condensed table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width: 100px;">Porción</th>
-                                                        <th>Alimento</th>
-                                                    </tr>
-                                                </thead>
-                                            <?php foreach ($item->detalle as $itemDetalle) { ?>
-                                                <tr>
-                                                    <td style="padding-left: 0px;padding-right: 0px;"><?= $itemDetalle->decCantidad ?> <?= $itemDetalle->strUnidadMedida ?></td>
-                                                    <td><?= $itemDetalle->strAlimento ?></td>
-                                                </tr>
-                                            <?php } ?>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php
-                            if ($intCursorRow % 3 == 0) {
-                              echo '<div class="col-md-12 col-xs-12 col-sm-12">.</div>';
-                            }
-
-                            $intCursor += 1;
-                            $intCursorSinReceta += 1;
-                            $intCursorRow += 1;
-                        }
-                        if ($intCursorSinReceta == 1) {
-                            echo '<div class="alert alert-info" role="alert"><strong>Sin Recetas!</strong> Debes agregar tus propias recetas para luego ingresarlas desde el journal. <a href="#" onClick="$('."'#tab_Paso_9_Ref'".').click();"; class="alert-link">Ver Mis Recetas</a></div>';
-                        }
-
+                        <div role="tabpanel" class="tab-pane" id="tab_food_journal_receta_'.$diario->intId.'">';
+                        fnViveMovimentoDiarioDetalleReceta_Core($diario->intId);
                         echo'</div>
 
                         </div>
@@ -870,6 +889,22 @@ function fnFoodJournalCore(){
             },
             success: function(response) {
                 $('#div_vivemovimento_tabla_diario_'+ decDiario).html(response);
+            }
+        });
+    }
+    function fnViveMovimentoDiarioDetalleReceta(decDiario) {
+        $('#tab_food_journal_receta_'+decDiario).html('Cargando...');
+        jQuery.ajax({
+            type : "get",
+            // dataType : "json",
+            url : '<?= admin_url( 'admin-ajax.php' ) ?>',
+            data : {
+                action: "fnViveMovimentoDiarioDetalleReceta"
+                ,intEncabezado: decDiario
+            },
+            success: function(response) {
+                $('#tab_food_journal_receta_' + decDiario).html(response);
+                setTimeout(function(){ $('select').select2(); }, 500);
             }
         });
     }
