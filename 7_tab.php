@@ -17,7 +17,9 @@
 
 		if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_7' && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '1') { 
     		$reg_errors = new WP_Error;
-	        $decPeso = floatval($_POST['txtActualizarPeso']);
+    		/*** se cambia para que acepte decimales, float val no sirve, steven 15/setp/10 5:25pm */
+	        // $decPeso = floatval($_POST['txtActualizarPeso']);
+	        $decPeso = number_format($_POST['txtActualizarPeso'],2);
 			$lastUserINFO = $wpdb->get_results("
 			    	SELECT
 						(datRegistro) datRegistro
