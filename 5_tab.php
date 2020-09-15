@@ -372,7 +372,7 @@ function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
                             </form>                            
                         </td>
                         <td>'.$det->strAlimento.'</td>
-                        <td>'.intval($det->intCantidadTomado).' '.$det->strUnidadMedida.'</td>
+                        <td>'.fnRedondearCUSTOMUP_1($det->intCantidadTomado).' '.$det->strUnidadMedida.'</td>
                         <td class="amarillo">'.$det->intProteinas.'</td>
                         <td class="naranja">'.$det->intCarbohidratos.'</td>
                         <td class="celeste">'.$det->intGrasas.'</td>
