@@ -339,10 +339,12 @@ function fnViveMovimentoDiarioDetalleTabla(){
     $listTiempos = fnDiario_Tiempos();
     $listadoDiario = fnListadoDiario(intval($_GET['intDiario']));
     $diario = $listadoDiario[0];
-    fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos);
+    $strUsuario = fnViveMovimento_usuario();
+    $strURL = 'https://vivemovimento.com/user/'.$strUsuario.'/';
+    fnViveMovimentoDiarioDetalleTablaCore($strURL,$diario,$listTiempos);
     exit();
 }
-function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
+function fnViveMovimentoDiarioDetalleTablaCore($strURL,$diario,$listTiempos){
     echo '<div id="div_vivemovimento_tabla_diario_'.$diario->intId.'"><table id="tblDiario_'.$diario->intId.'" class="tblDiario">';
         foreach ($listTiempos as $tiempo) {
             $listDetalle = fnDiario_Detalle($diario->intId,$tiempo->intId);
@@ -359,13 +361,13 @@ function fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos){
               foreach ($listDetalle as $det) {
                 echo '<tr>
                         <td style="width: 90px;">
-                            <form action="/user/?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
+                            <form action="'.$strURL.'/?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
                                 <input type="hidden" name="intOp" value="3" />
                                 <input type="hidden" name="intEncabezado" value="'.$diario->intId.'" />
                                 <input type="hidden" name="intEliminar" value="'.$det->intId.'" />
                                 <button type="button" class="btn btn-link badge" role="button" href="#" style="color: white;" onClick="fnDiarioEliminarAjax('.$diario->intId.','.$det->intId.')"><i class="fas fa-trash-alt"></i></button>
                             </form>
-                            <form action="/user/?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
+                            <form action="'.$strURL.'/?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
                                 <input type="hidden" name="intOp" value="4" />
                                 <input type="hidden" name="intEditar" value="'.$det->intId.'" />
                                 <button type="submit" class="btn btn-link badge" role="button" href="#"><i class="fa fa-pencil"></i></button>
@@ -807,7 +809,7 @@ function fnFoodJournalCore(){
                 <hr/>
             <div class="table-responsive">
         ';
-        fnViveMovimentoDiarioDetalleTablaCore($diario,$listTiempos);
+        fnViveMovimentoDiarioDetalleTablaCore(strtok($_SERVER["REQUEST_URI"],'?'),$diario,$listTiempos);
         echo '</div></div>';
         $intDiaContador -= 1;
     }
