@@ -340,7 +340,7 @@ function fnViveMovimentoDiarioDetalleTabla(){
     $listadoDiario = fnListadoDiario(intval($_GET['intDiario']));
     $diario = $listadoDiario[0];
     $strUsuario = fnViveMovimento_usuario();
-    $strURL = 'https://vivemovimento.com/user/'.$strUsuario.'/';
+    $strURL = 'https://vivemovimento.com/user/'.$strUsuario.'';
     fnViveMovimentoDiarioDetalleTablaCore($strURL,$diario,$listTiempos);
     exit();
 }
@@ -361,13 +361,13 @@ function fnViveMovimentoDiarioDetalleTablaCore($strURL,$diario,$listTiempos){
               foreach ($listDetalle as $det) {
                 echo '<tr>
                         <td style="width: 90px;">
-                            <form action="'.$strURL.'/?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
+                            <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
                                 <input type="hidden" name="intOp" value="3" />
                                 <input type="hidden" name="intEncabezado" value="'.$diario->intId.'" />
                                 <input type="hidden" name="intEliminar" value="'.$det->intId.'" />
                                 <button type="button" class="btn btn-link badge" role="button" href="#" style="color: white;" onClick="fnDiarioEliminarAjax('.$diario->intId.','.$det->intId.')"><i class="fas fa-trash-alt"></i></button>
                             </form>
-                            <form action="'.$strURL.'/?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
+                            <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
                                 <input type="hidden" name="intOp" value="4" />
                                 <input type="hidden" name="intEditar" value="'.$det->intId.'" />
                                 <button type="submit" class="btn btn-link badge" role="button" href="#"><i class="fa fa-pencil"></i></button>
@@ -553,6 +553,7 @@ function fnFoodJournalCore(){
     }else{
       $misPorciones = null;
     }
+    $strURL = 'https://vivemovimento.com/user/'.$strUsuario.'';
 
 ?>
 
@@ -718,7 +719,7 @@ function fnFoodJournalCore(){
                         </button>
                     </div>
 
-                    <form action="/user/?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post">
+                    <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post">
                         <input type="hidden" name="intOp" value="5" />
                         <input type="hidden" name="intDiario" value="'.$diario->intId.'" />
                         <div class="col-xs-10 col-sm-10 col-md-10" style="padding-left: 0px;padding-right: 0px;">
@@ -734,7 +735,7 @@ function fnFoodJournalCore(){
                     <hr/>
                     </div>
 
-                    <form action="/user/?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" id="frm_diario_'.$diario->intId.'" method="post" class="" style="margin-bottom: 0px;">
+                    <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" id="frm_diario_'.$diario->intId.'" method="post" class="" style="margin-bottom: 0px;">
                         <input type="hidden" name="intIDDETALLE" id="intIDDETALLE_'.$diario->intId.'" value="0" />
                         <input type="hidden" name="intOp" value="2" />
                         
