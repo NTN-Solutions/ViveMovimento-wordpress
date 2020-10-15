@@ -11,7 +11,7 @@
         // $nickname   =   sanitize_number_field( $_POST['nickname'] );
         // $bio        =   esc_textarea( $_POST['bio'] );
 
-        $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_informacion WHERE strUsuario = '$strUsuario' LIMIT 1;");
+        $buscar = get_results("SELECT * FROM wp_vivemov_users_informacion WHERE strUsuario = '$strUsuario' LIMIT 1;");
         if(count($buscar) == 0){
             if($_SESSION["intFormulario"] == 1){
                 $_SESSION["intFormulario"] = 0;

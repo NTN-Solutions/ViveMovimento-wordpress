@@ -2,7 +2,7 @@
 
   function fnViveMovimentoOneToOnetabla(){
     global $wpdb;
-    $list = $wpdb->get_results("
+    $list = get_results("
         SELECT *
         FROM wp_vivemov_users_one_to_one D
         WHERE bitActivo =1
@@ -47,7 +47,7 @@
           'strUsuario'            => $_GET['strUsuario'],
           'bitActivo'             => 1,
       );
-      $wpdb->insert("wp_vivemov_users_one_to_one", $itemRow);
+      insert("wp_vivemov_users_one_to_one", $itemRow);
       $result['type'] = 'success';
       $result['mnj'] = 'Listo, eliminado!';
       $result = json_encode($result);
@@ -56,7 +56,7 @@
   }
   function fnViveMovimentoOneToOneEliminar(){
       global $wpdb;
-      $wpdb->delete( 'wp_vivemov_users_one_to_one', array( 'strUsuario' => $_GET['strUsuario'] ) );
+      delete( 'wp_vivemov_users_one_to_one', array( 'strUsuario' => $_GET['strUsuario'] ) );
       $result['type'] = 'success';
       $result['mnj'] = 'Listo, eliminado!';
       $result = json_encode($result);
@@ -70,9 +70,9 @@
     global $wpdb, $strUsuario;
     global $gDataPaso_1,$gDataPaso_2,$gDataPaso_3;
     $strUsuario = fnViveMovimento_usuario();
-    $gDataPaso_1 = $wpdb->get_results("SELECT * FROM wp_vivemov_users_informacion WHERE strUsuario = '$strUsuario' ORDER BY intId DESC LIMIT 1;");
-    $gDataPaso_2 = $wpdb->get_results("SELECT * FROM wp_vivemov_users_actividad_gasto_energetico WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
-    $gDataPaso_3 = $wpdb->get_results("SELECT * FROM wp_vivemov_users_meta WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
+    $gDataPaso_1 = get_results("SELECT * FROM wp_vivemov_users_informacion WHERE strUsuario = '$strUsuario' ORDER BY intId DESC LIMIT 1;");
+    $gDataPaso_2 = get_results("SELECT * FROM wp_vivemov_users_actividad_gasto_energetico WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
+    $gDataPaso_3 = get_results("SELECT * FROM wp_vivemov_users_meta WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
   }
 	function fnViveMovimento_resumen_init() {
     fnViveMovimento_usuario(true);
@@ -98,17 +98,17 @@
         $strAyuda_6 = $_POST['strAyuda_6'];
         $strAyuda_7 = $_POST['strAyuda_7'];
 
-        $wpdb->get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_1', D.strAyudaLink = '$strAyuda_1' WHERE D.decId = 1");
-        $wpdb->get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_2', D.strAyudaLink = '$strAyuda_2' WHERE D.decId = 2");
-        $wpdb->get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_3', D.strAyudaLink = '$strAyuda_3' WHERE D.decId = 3");
-        $wpdb->get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_4', D.strAyudaLink = '$strAyuda_4' WHERE D.decId = 4");
-        $wpdb->get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_5', D.strAyudaLink = '$strAyuda_5' WHERE D.decId = 5");
-        $wpdb->get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_6', D.strAyudaLink = '$strAyuda_6' WHERE D.decId = 6");
-        $wpdb->get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_7', D.strAyudaLink = '$strAyuda_7' WHERE D.decId = 7");
+        get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_1', D.strAyudaLink = '$strAyuda_1' WHERE D.decId = 1");
+        get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_2', D.strAyudaLink = '$strAyuda_2' WHERE D.decId = 2");
+        get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_3', D.strAyudaLink = '$strAyuda_3' WHERE D.decId = 3");
+        get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_4', D.strAyudaLink = '$strAyuda_4' WHERE D.decId = 4");
+        get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_5', D.strAyudaLink = '$strAyuda_5' WHERE D.decId = 5");
+        get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_6', D.strAyudaLink = '$strAyuda_6' WHERE D.decId = 6");
+        get_results("UPDATE wp_vivemov_pasos_videos as D SET D.strURL = '$strURL_paso_7', D.strAyudaLink = '$strAyuda_7' WHERE D.decId = 7");
       }
 
-      $bitPermisoAdmin = ( in_array( 'administrator', wp_get_current_user()->roles, true ) );
-      $listPasosVideos = $wpdb->get_results("SELECT * FROM wp_vivemov_pasos_videos ORDER BY decId ASC;");
+      $bitPermisoAdmin = wp_get_current_user()['user_admin'];
+      $listPasosVideos = get_results("SELECT * FROM wp_vivemov_pasos_videos ORDER BY decId ASC;");
 
 ?>
 
@@ -285,7 +285,7 @@
 ?>
 
 
-<?php include( plugin_dir_path( __FILE__ ) . '/user_info.php'); ?>
+<?php include('user_info.php'); ?>
 
 <br>
 <hr>

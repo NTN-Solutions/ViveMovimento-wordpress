@@ -19,7 +19,7 @@ function fnViveMovimentoRecetaEditar(){
   global $wpdb;
   $intReceta = intval($_GET['intReceta']);
   $strNombre = $_GET['strNombre'];
-  $wpdb->get_results("UPDATE wp_vivemov_recetas as D SET D.strNombre = '$strNombre' WHERE D.intId = $intReceta; ");
+  get_results("UPDATE wp_vivemov_recetas as D SET D.strNombre = '$strNombre' WHERE D.intId = $intReceta; ");
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, actualizado!';
   echo json_encode($result);
@@ -29,14 +29,14 @@ function fnViveMovimentoRecetaClonar(){
   global $wpdb;
   $strUsuario = fnViveMovimento_usuario();
   $intClonar = intval($_GET['intClonar']);
-  $insertPadre = $wpdb->get_results("
+  $insertPadre = get_results("
       INSERT INTO wp_vivemov_recetas(strUsuario,datCreacion,bitActivo,strNombre)
       SELECT '$strUsuario',now(),1,strNombre
       FROM wp_vivemov_recetas
       WHERE intId = $intClonar;
       ");
   $decReceta = $wpdb->insert_id;
-  $wpdb->get_results("
+  get_results("
       INSERT INTO wp_vivemov_recetas_detalle(intReceta,decCantidad,decAlimento,bitActivo)
       SELECT $decReceta,decCantidad,decAlimento,bitActivo
       FROM wp_vivemov_recetas_detalle
@@ -51,7 +51,7 @@ function fnViveMovimentoRecetaClonar(){
 function fnViveMovimentoRecetaEliminar(){  
   global $wpdb;
   $intReceta = intval($_GET['intReceta']);
-  $wpdb->get_results("UPDATE wp_vivemov_recetas as D SET D.bitActivo = 0 WHERE D.intId = $intReceta; ");
+  get_results("UPDATE wp_vivemov_recetas as D SET D.bitActivo = 0 WHERE D.intId = $intReceta; ");
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, eliminado!';
   echo json_encode($result);
@@ -61,33 +61,43 @@ function fnViveMovimentoRecetaListado(){
   global $wpdb,$intReceta;
   $strUsuario = fnViveMovimento_usuario();
   if ($intReceta == 0) {
-    $list = $wpdb->get_results("SELECT * FROM wp_vivemov_recetas WHERE strUsuario = '$strUsuario' ORDER BY strNombre ASC;");    
+    $list = get_results("SELECT * FROM wp_vivemov_recetas WHERE strUsuario = '$strUsuario' ORDER BY strNombre ASC;");    
   }else{
-    $list = $wpdb->get_results("SELECT * FROM wp_vivemov_recetas WHERE strUsuario = '$strUsuario' AND intId = $intReceta ORDER BY strNombre ASC;");
+    $list = get_results("SELECT * FROM wp_vivemov_recetas WHERE strUsuario = '$strUsuario' AND intId = $intReceta ORDER BY strNombre ASC;");
   }
   foreach ($list as $item) {
-    if($item->bitActivo == 1){
-      $item->detalle = fnViveMovimentoRecetaListadoDetalle($item->intId);      
+
+  echo '-------------=';
+  print_r($item);
+  echo '=-------------';
+  
+    if($item['bitActivo'] == 1){
+      $item['detalle'] = fnViveMovimentoRecetaListadoDetalle($item['intId']);      
     }
   }
   return $list;
 }
 function fnViveMovimentoRecetaListadoAdmin(){  
   global $wpdb;
-  $list = $wpdb->get_results("SELECT * FROM wp_vivemov_recetas WHERE strUsuario IN('anamoralescpt','amms24') ORDER BY strNombre ASC;");
+  $list = get_results("SELECT * FROM wp_vivemov_recetas WHERE strUsuario IN('anamoralescpt','amms24') ORDER BY strNombre ASC;");
   return $list;
 }
 
 function fnViveMovimentoRecetaListadoDetalle($intReceta){
   global $wpdb;
   $strUsuario = fnViveMovimento_usuario();
-  $list = $wpdb->get_results("
+  $list = get_results("
     SELECT D.*, A.strAlimento, um.strUnidadMedida
     FROM wp_vivemov_recetas_detalle D
     INNER JOIN wp_vivemov_alimentos_porciones A ON A.intId = D.decAlimento
     INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = A.intUnidadMedida
     WHERE D.intReceta = $intReceta AND D.bitActivo = 1
     ORDER BY A.strAlimento ASC;");
+  
+  echo '-------=';
+  print_r($list);
+  echo '=-------';
+  
   return $list;
 }
 function fnViveMovimentoRecetaDetalleAgregar(){  
@@ -111,7 +121,7 @@ function fnViveMovimentoRecetaDetalleEditar(){
   global $wpdb;
   $intReceta = intval($_GET['intReceta']);
   $decCantidad = floatval($_GET['decCantidad']);
-  $wpdb->get_results("UPDATE wp_vivemov_recetas_detalle as D SET D.decCantidad = $decCantidad WHERE D.intId = $intReceta; ");
+  get_results("UPDATE wp_vivemov_recetas_detalle as D SET D.decCantidad = $decCantidad WHERE D.intId = $intReceta; ");
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, actualizado!';
   echo json_encode($result);
@@ -120,7 +130,7 @@ function fnViveMovimentoRecetaDetalleEditar(){
 function fnViveMovimentoRecetaDetalleEliminar(){
   global $wpdb;
   $intReceta = intval($_GET['intReceta']);
-  $wpdb->get_results("UPDATE wp_vivemov_recetas_detalle as D SET D.bitActivo = 0 WHERE D.intId = $intReceta; ");
+  get_results("UPDATE wp_vivemov_recetas_detalle as D SET D.bitActivo = 0 WHERE D.intId = $intReceta; ");
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, eliminado!';
   echo json_encode($result);
@@ -132,7 +142,7 @@ function fnViveMovimentoRecetaJournalAgregar(){
   $decDiario = intval($_GET['decDiario']);
   $intReceta = intval($_GET['intReceta']);
   $intTiempo = intval($_GET['intTiempo']);
-  $wpdb->get_results("
+  get_results("
     INSERT INTO wp_vivemov_users_diario_detalle(intDiario,strUsuario,intTiempo,intAlimentoPorcion,devCantidad,strDescripcion,intProteinas,intCarbohidratos,intGrasas,intVegetales,intLibres,datModificado)
     SELECT $decDiario
     ,'$strUsuario'
@@ -173,7 +183,7 @@ function fnTab_9_core($intR){
   $intReceta = $intR;
   $listado = fnViveMovimentoRecetaListado($intReceta);
   $listadoAdmin = fnViveMovimentoRecetaListadoAdmin();
-  $listAlimentos = $wpdb->get_results("SELECT ap.*, um.strUnidadMedida FROM wp_vivemov_alimentos_porciones ap INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1 ORDER BY ap.strAlimento ASC ");
+  $listAlimentos = get_results("SELECT ap.*, um.strUnidadMedida FROM wp_vivemov_alimentos_porciones ap INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1 ORDER BY ap.strAlimento ASC ");
 
   if ($intReceta == 0) { ?>
 </br>
@@ -212,21 +222,21 @@ function fnTab_9_core($intR){
 $intCursor = 1;
 $intCursorRow = 1;
 foreach ($listado as $item) {
-  if($item->bitActivo == 0){ $intCursor += 1; continue; }
+  if($item['bitActivo'] == 0){ $intCursor += 1; continue; }
   
   if ($intReceta == 0) { ?>
-  <div class="col-md-4 col-xs-12 col-sm-12" style="padding-left: 2px;padding-right: 2px;" id="divRecetasCore_<?= $item->intId ?>">
+  <div class="col-md-4 col-xs-12 col-sm-12" style="padding-left: 2px;padding-right: 2px;" id="divRecetasCore_<?= $item['intId'] ?>">
 <?php 
   }
 ?>
     <div class="panel panel-info">
       <div class="panel-heading" style="padding: 0px;">
         <h3 class="panel-title">
-        <input type="text" class="form-control input-sm" id="txtRecetaStrNombre_<?= $item->intId ?>" value="<?= $item->strNombre ?>" placeholder="Nombre..." maxlength="100" style="padding: 1px;width: 50%;display: inline-block;color: black;">        
-        <button class="btn btn-warning btn-xs" onclick="fnViveMovimento_Receta_eliminar(<?= $item->intId ?>);" style="float: right;">
+        <input type="text" class="form-control input-sm" id="txtRecetaStrNombre_<?= $item['intId'] ?>" value="<?= $item['strNombre'] ?>" placeholder="Nombre..." maxlength="100" style="padding: 1px;width: 50%;display: inline-block;color: black;">        
+        <button class="btn btn-warning btn-xs" onclick="fnViveMovimento_Receta_eliminar(<?= $item['intId'] ?>);" style="float: right;">
           <i class="fa fa-trash" aria-hidden="true"></i> Receta
         </button>          
-        <button class="btn btn-info btn-xs" onclick="fnViveMovimento_Receta_editar(<?= $item->intId ?>);" style="float: right;">
+        <button class="btn btn-info btn-xs" onclick="fnViveMovimento_Receta_editar(<?= $item['intId'] ?>);" style="float: right;">
           <i class="fa fa-refresh" aria-hidden="true"></i> Nombre
         </button>          
       </h3>
@@ -234,14 +244,18 @@ foreach ($listado as $item) {
     <div class="panel-body" style="padding-left: 2px;padding-right: 2px;">
         <div class="row">
           <div class="form-group col-md-4 col-xs-4 col-sm-4" style="margin: 0px;">
-            <label for="txtRecetaCantidad_<?= $item->intId ?>">Porción:</label>
-            <input type="number" class="form-control" id="txtRecetaCantidad_<?= $item->intId ?>" placeholder="1" value="1" min="0" max="999" step="0.01">
+            <label for="txtRecetaCantidad_<?= $item['intId'] ?>">Porción:</label>
+            <input type="number" class="form-control" id="txtRecetaCantidad_<?= $item['intId'] ?>" placeholder="1" value="1" min="0" max="999" step="0.01">
           </div>
           <div class="form-group col-md-8 col-xs-8 col-sm-8" style="padding-left: 0px;margin: 0px;">
-            <label for="cbRecetaAlimento_<?= $item->intId ?>">Alimento:</label>
-              <select id="cbRecetaAlimento_<?= $item->intId ?>">
+            <label for="cbRecetaAlimento_<?= $item['intId'] ?>">Alimento:</label>
+              <select id="cbRecetaAlimento_<?= $item['intId'] ?>">
                 <option selected="true" disabled="disabled">Seleccionar alimento</option>
-                <?php foreach ($listAlimentos as $alimento) {
+                <?php
+                  foreach ($listAlimentos as $alimento) {
+                    if(!isset($alimento->decProteina)){
+                      continue;
+                    }
                   $strPCGVL = '';
                   if($alimento->decProteina>0){
                       $strPCGVL = ($alimento->decProteina + 0).'P';
@@ -265,7 +279,7 @@ foreach ($listado as $item) {
               </select>
           </div>
           <div class="col-md-12 col-xs-12 col-sm-12">
-            <button class="btn btn-success btn-block btn-xs" onclick="fnViveMovimento_Receta_Detalle_agregar(<?= $item->intId ?>);" style="float: right;">
+            <button class="btn btn-success btn-block btn-xs" onclick="fnViveMovimento_Receta_Detalle_agregar(<?= $item['intId'] ?>);" style="float: right;">
               <i class="fa fa-plus" aria-hidden="true"></i> Alimento
             </button>   
           </div>
@@ -282,7 +296,7 @@ foreach ($listado as $item) {
           <th style="width: 15px;"></th>
         </tr>
       </thead>
-<?php foreach ($item->detalle as $itemDetalle) { ?>
+<?php if (isset($item['detalle'])){ foreach ($item['detalle'] as $itemDetalle) { ?>
   <tr>
     <td>
         <button class="btn btn-info btn-xs" onclick="fnViveMovimento_Receta_Detalle_editar(<?= $itemDetalle->intId ?>);">
@@ -300,7 +314,7 @@ foreach ($listado as $item) {
         </button>
     </td>
   </tr>
-<?php } ?>
+<?php } } ?>
   </table>
 </div>
 

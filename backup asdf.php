@@ -3,12 +3,12 @@
 function fnListadoDiario(){
     global $wpdb, $strUsuario;
     $strUsuario = fnViveMovimento_usuario();
-    $list = $wpdb->get_results("SELECT intId,datFecha, SUM(intProteinas) intProteinas,SUM(intCarbohidratos) intCarbohidratos,SUM(intGrasas) intGrasas,SUM(intVegetales) intVegetales,SUM(intLibres) intLibres FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' GROUP BY intId,datFecha ORDER BY datFecha DESC");
+    $list = get_results("SELECT intId,datFecha, SUM(intProteinas) intProteinas,SUM(intCarbohidratos) intCarbohidratos,SUM(intGrasas) intGrasas,SUM(intVegetales) intVegetales,SUM(intLibres) intLibres FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' GROUP BY intId,datFecha ORDER BY datFecha DESC");
     return $list;
 }
 function fnDiario_Tiempos(){
     global $wpdb;
-    $listado = $wpdb->get_results("SELECT * FROM wp_vivemov_alimentos_tiempo T WHERE T.bitActivo = 1 ORDER BY decOrden ASC");
+    $listado = get_results("SELECT * FROM wp_vivemov_alimentos_tiempo T WHERE T.bitActivo = 1 ORDER BY decOrden ASC");
     return $listado;
 }
 
@@ -16,7 +16,7 @@ function fnDiario_Agregar(){
     global $wpdb, $strUsuario;
     $datSiguiente = null;
 
-    $datMaximo = $wpdb->get_results("SELECT DATE_ADD(MAX(datFecha), INTERVAL 1 DAY) datFecha FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario';");
+    $datMaximo = get_results("SELECT DATE_ADD(MAX(datFecha), INTERVAL 1 DAY) datFecha FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario';");
     if ($datMaximo == null) {
         $datSiguiente = date('Y-m-d');
     }else if($datMaximo[0]->datFecha > date('Y-m-d') == 1){ //si la ultima fecha mas 1 dia, es mayor igual a hoy, continuamos para delante
@@ -40,7 +40,7 @@ function fnDiario_Agregar(){
     );
     if($_SESSION["intFormulario"] == 1){
         $_SESSION["intFormulario"] = 0;
-        // $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' AND datFecha = '".$datSiguiente."' LIMIT 1;");
+        // $buscar = get_results("SELECT * FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' AND datFecha = '".$datSiguiente."' LIMIT 1;");
         // if(count($buscar) == 0){
             $responseDiario = $wpdb->insert("wp_vivemov_users_diario", $itemRow);
             if($responseDiario) {
@@ -60,7 +60,7 @@ function fnDiario_clonar(){
 
     $datSiguiente = null;
 
-    $datMaximo = $wpdb->get_results("SELECT DATE_ADD(MAX(datFecha), INTERVAL 1 DAY) datFecha FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario';");
+    $datMaximo = get_results("SELECT DATE_ADD(MAX(datFecha), INTERVAL 1 DAY) datFecha FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario';");
     if ($datMaximo == null) {
         $datSiguiente = date('Y-m-d');
     }else if($datMaximo[0]->datFecha > date('Y-m-d') == 1){ //si la ultima fecha mas 1 dia, es mayor igual a hoy, continuamos para delante
@@ -84,12 +84,12 @@ function fnDiario_clonar(){
     );
     if($_SESSION["intFormulario"] == 1){
         $_SESSION["intFormulario"] = 0;
-        // $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' AND datFecha = '".$datSiguiente."' LIMIT 1;");
+        // $buscar = get_results("SELECT * FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' AND datFecha = '".$datSiguiente."' LIMIT 1;");
         // if(count($buscar) == 0){
             $responseDiario = $wpdb->insert("wp_vivemov_users_diario", $itemRow);
             $nuedoDiarioClonado = $wpdb->insert_id;
             if($responseDiario) {
-                $clonar = $wpdb->get_results("
+                $clonar = get_results("
                     INSERT INTO wp_vivemov_users_diario_detalle(intDiario,strUsuario,intTiempo,intAlimentoPorcion,devCantidad,strDescripcion,intProteinas,intCarbohidratos,intGrasas,intVegetales,intLibres,datModificado)
                     SELECT $nuedoDiarioClonado, strUsuario,intTiempo,intAlimentoPorcion,devCantidad,strDescripcion,intProteinas,intCarbohidratos,intGrasas,intVegetales,intLibres,NOW()
                     FROM wp_vivemov_users_diario_detalle D
@@ -105,7 +105,7 @@ function fnDiario_clonar(){
 }
 function fnDiario_Detalle($decDiario,$intTiempo){
     global $wpdb;
-    $listado = $wpdb->get_results("
+    $listado = get_results("
         SELECT T.strTiempo,T.bitPrincipal,DD.*, AP.strAlimento
         FROM wp_vivemov_alimentos_tiempo T
         INNER JOIN wp_vivemov_users_diario_detalle DD ON DD.intDiario = $decDiario AND DD.intTiempo = T.intId  
@@ -148,7 +148,7 @@ function fnDiario_AgregarDetalle(){
             $responseDiario = $wpdb->insert("wp_vivemov_users_diario_detalle", $itemRow);
             if($responseDiario) {
                 echo fnMensaje(1,'Listo, agregado!');
-                $wpdb->get_results("
+                get_results("
                     UPDATE wp_vivemov_users_diario_detalle as D
                     INNER JOIN wp_vivemov_alimentos_porciones AP ON AP.intId = D.intAlimentoPorcion
                     /* SET D.intProteinas = (D.devCantidad/AP.decPorcion) * AP.decProteina
@@ -163,7 +163,7 @@ function fnDiario_AgregarDetalle(){
                     ,D.intLibres = D.devCantidad * AP.decLibre
                     WHERE D.strUsuario = '$strUsuario';
                     ");
-                $wpdb->get_results("
+                get_results("
                     UPDATE wp_vivemov_users_diario as E
                     SET intProteinas = (SELECT SUM(D.intProteinas) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
                     ,intCarbohidratos = (SELECT SUM(D.intCarbohidratos) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
@@ -242,7 +242,7 @@ function fnTab_5(){
     }
 
     $listTiempos = fnDiario_Tiempos();
-    $listAlimentos = $wpdb->get_results("SELECT ap.*, um.strUnidadMedida FROM wp_vivemov_alimentos_porciones ap INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1");
+    $listAlimentos = get_results("SELECT ap.*, um.strUnidadMedida FROM wp_vivemov_alimentos_porciones ap INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1");
 ?>
 
   <div class="col-md-12 col-xs-12 col-sm-12">

@@ -3,11 +3,11 @@ function fnListadoDiario($decDiario){
     global $wpdb, $strUsuario;
     $strUsuario = fnViveMovimento_usuario();
     if ($decDiario == null || $decDiario == 0) {
-        $list = $wpdb->get_results("SELECT intId,datFecha, SUM(intProteinas) intProteinas,SUM(intCarbohidratos) intCarbohidratos,SUM(intGrasas) intGrasas,SUM(intVegetales) intVegetales,SUM(intLibres) intLibres,strNota
+        $list = get_results("SELECT intId,datFecha, SUM(intProteinas) intProteinas,SUM(intCarbohidratos) intCarbohidratos,SUM(intGrasas) intGrasas,SUM(intVegetales) intVegetales,SUM(intLibres) intLibres,strNota
             FROM wp_vivemov_users_diario
             WHERE strUsuario = '$strUsuario' GROUP BY intId,datFecha,strNota ORDER BY datFecha DESC");
     }else{
-        $list = $wpdb->get_results("SELECT intId,datFecha, SUM(intProteinas) intProteinas,SUM(intCarbohidratos) intCarbohidratos,SUM(intGrasas) intGrasas,SUM(intVegetales) intVegetales,SUM(intLibres) intLibres,strNota
+        $list = get_results("SELECT intId,datFecha, SUM(intProteinas) intProteinas,SUM(intCarbohidratos) intCarbohidratos,SUM(intGrasas) intGrasas,SUM(intVegetales) intVegetales,SUM(intLibres) intLibres,strNota
         FROM wp_vivemov_users_diario
         WHERE strUsuario = '$strUsuario' AND intId = $decDiario GROUP BY intId,datFecha,strNota ORDER BY datFecha DESC");
     }
@@ -17,15 +17,16 @@ function fnTiempoSiguiente(){
     global $wpdb, $strUsuario;
     $strUsuario = fnViveMovimento_usuario();
 //        SELECT CASE WHEN MAX(T.intId) + 1 <= 3 THEN (MAX(T.intId) + 1) ELSE MAX(T.intId) END intTiempoSiguiente
-    $list = $wpdb->get_results("
+    $list = get_results("
         SELECT MAX(T.intId) intTiempoSiguiente
         FROM wp_vivemov_users_diario_detalle D
         INNER JOIN wp_vivemov_alimentos_tiempo T ON T.intId = D.intTiempo
         WHERE 
             strUsuario = '$strUsuario' AND CAST(D.datModificado AS DATE) = CAST(NOW() AS DATE)
     ");
+        
     if (count($list) > 0 ) {
-        return ($list[0]->intTiempoSiguiente != null && $list[0]->intTiempoSiguiente > 0 ? $list[0]->intTiempoSiguiente : 1);
+        return (isset($list[0]->intTiempoSiguiente) && $list[0]->intTiempoSiguiente != null && $list[0]->intTiempoSiguiente > 0 ? $list[0]->intTiempoSiguiente : 1);
     }else{
 
     }
@@ -34,20 +35,20 @@ function fnTiempoSiguiente(){
 function fnDiarioSiguiente(){
     global $wpdb, $strUsuario;
     $strUsuario = fnViveMovimento_usuario();
-    $list = $wpdb->get_results("        
+    $list = get_results("        
         SELECT MAX(D.intId) intDiario
         FROM wp_vivemov_users_diario D
         WHERE 
             strUsuario = '$strUsuario' AND CAST(D.datFecha AS DATE) <= CAST(NOW() AS DATE)
     ");
     if (count($list) > 0 ) {
-        return $list[0]->intDiario;        
+        return (isset($list[0]->intDiario) ? $list[0]->intDiario : 0);        
     }
     return 0;
 }
 function fnDiario_Tiempos(){
     global $wpdb;
-    $listado = $wpdb->get_results("SELECT * FROM wp_vivemov_alimentos_tiempo T WHERE T.bitActivo = 1 ORDER BY decOrden ASC");
+    $listado = get_results("SELECT * FROM wp_vivemov_alimentos_tiempo T WHERE T.bitActivo = 1 ORDER BY decOrden ASC");
     return $listado;
 }
 function fnDiario_Agregar($txtFechaDiario){
@@ -57,8 +58,8 @@ function fnDiario_Agregar($txtFechaDiario){
     $listArreglo = explode('/', $txtFechaDiario);
     $fechaFormato = $listArreglo[2].'-'.$listArreglo[1].'-'.$listArreglo[0]; 
 
-    $datPorFecha = $wpdb->get_results("SELECT datFecha FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' AND datFecha = '".$fechaFormato."';");
-    $datMaximo = $wpdb->get_results("SELECT DATE_ADD(MAX(datFecha), INTERVAL 1 DAY) datFecha FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario';");
+    $datPorFecha = get_results("SELECT datFecha FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' AND datFecha = '".$fechaFormato."';");
+    $datMaximo = get_results("SELECT DATE_ADD(MAX(datFecha), INTERVAL 1 DAY) datFecha FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario';");
     if ($datPorFecha == null) {
         $datSiguiente = $fechaFormato;            
         $strUsuario = fnViveMovimento_usuario();
@@ -76,7 +77,7 @@ function fnDiario_Agregar($txtFechaDiario){
         );
         if($_SESSION["intFormulario"] == 1){
             $_SESSION["intFormulario"] = 0;
-            // $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' AND datFecha = '".$datSiguiente."' LIMIT 1;");
+            // $buscar = get_results("SELECT * FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' AND datFecha = '".$datSiguiente."' LIMIT 1;");
             // if(count($buscar) == 0){
                 $responseDiario = $wpdb->insert("wp_vivemov_users_diario", $itemRow);
                 if($responseDiario) {
@@ -111,7 +112,7 @@ function fnDiario_clonar(){
 
     $datSiguiente = null;
 
-    $datMaximo = $wpdb->get_results("SELECT DATE_ADD(MAX(datFecha), INTERVAL 1 DAY) datFecha FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario';");
+    $datMaximo = get_results("SELECT DATE_ADD(MAX(datFecha), INTERVAL 1 DAY) datFecha FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario';");
     if ($datMaximo == null) {
         $datSiguiente = date('Y-m-d');
     }else if($datMaximo[0]->datFecha > date('Y-m-d') == 1){ //si la ultima fecha mas 1 dia, es mayor igual a hoy, continuamos para delante
@@ -135,12 +136,12 @@ function fnDiario_clonar(){
     );
     if($_SESSION["intFormulario"] == 1){
         $_SESSION["intFormulario"] = 0;
-        // $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' AND datFecha = '".$datSiguiente."' LIMIT 1;");
+        // $buscar = get_results("SELECT * FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' AND datFecha = '".$datSiguiente."' LIMIT 1;");
         // if(count($buscar) == 0){
             $responseDiario = $wpdb->insert("wp_vivemov_users_diario", $itemRow);
             $nuedoDiarioClonado = $wpdb->insert_id;
             if($responseDiario) {
-                $clonar = $wpdb->get_results("
+                $clonar = get_results("
                     INSERT INTO wp_vivemov_users_diario_detalle(intDiario,strUsuario,intTiempo,intAlimentoPorcion,devCantidad,strDescripcion,intProteinas,intCarbohidratos,intGrasas,intVegetales,intLibres,datModificado)
                     SELECT $nuedoDiarioClonado, strUsuario,intTiempo,intAlimentoPorcion,devCantidad,strDescripcion,intProteinas,intCarbohidratos,intGrasas,intVegetales,intLibres,NOW()
                     FROM wp_vivemov_users_diario_detalle D
@@ -156,7 +157,7 @@ function fnDiario_clonar(){
 }
 function fnDiario_Detalle($decDiario,$intTiempo){
     global $wpdb;
-    $listado = $wpdb->get_results("
+    $listado = get_results("
         SELECT T.strTiempo,T.bitPrincipal,DD.*, AP.strAlimento
             ,um.strUnidadMedida
             ,((AP.decPorcion /
@@ -243,7 +244,7 @@ function fnDiario_AgregarDetalle(){
     echo $result;
 }
 function fnDiarioDetalleCalcular_P_CH_G_V($wpdb,$strUsuario,$detEncabezado){
-    $wpdb->get_results("
+    get_results("
         UPDATE wp_vivemov_users_diario_detalle as D
         INNER JOIN wp_vivemov_alimentos_porciones AP ON AP.intId = D.intAlimentoPorcion
         /* SET D.intProteinas = (D.devCantidad/AP.decPorcion) * AP.decProteina
@@ -258,7 +259,7 @@ function fnDiarioDetalleCalcular_P_CH_G_V($wpdb,$strUsuario,$detEncabezado){
         ,D.intLibres = D.devCantidad * AP.decLibre
         WHERE D.intDiario = $detEncabezado AND D.strUsuario = '$strUsuario';
         ");
-    $wpdb->get_results("
+    get_results("
         UPDATE wp_vivemov_users_diario as E
         SET intProteinas = (SELECT SUM(D.intProteinas) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
         ,intCarbohidratos = (SELECT SUM(D.intCarbohidratos) FROM wp_vivemov_users_diario_detalle D WHERE D.intDiario = $detEncabezado GROUP BY D.intDiario)
@@ -271,7 +272,7 @@ function fnDiarioDetalleCalcular_P_CH_G_V($wpdb,$strUsuario,$detEncabezado){
 function fnDiario_ActualizarDetalle(){
     global $wpdb, $intDiarioDet_Cantidad, $detAlimento, $detTiempo, $intIDDETALLE, $strUsuario,$detEncabezado;
     echo fnMensaje(1,'Listo, editado!');
-    $wpdb->get_results('
+    get_results('
         UPDATE wp_vivemov_users_diario_detalle as D
         SET
             D.intTiempo = '.$detTiempo.'
@@ -345,12 +346,12 @@ function fnViveMovimentoDiarioDetalleTabla(){
     exit();
 }
 function fnViveMovimentoDiarioDetalleTablaCore($strURL,$diario,$listTiempos){
-    echo '<div id="div_vivemovimento_tabla_diario_'.$diario->intId.'"><table id="tblDiario_'.$diario->intId.'" class="tblDiario">';
+    echo '<div id="div_vivemovimento_tabla_diario_'.$diario['intId'].'"><table id="tblDiario_'.$diario['intId'].'" class="tblDiario">';
         foreach ($listTiempos as $tiempo) {
-            $listDetalle = fnDiario_Detalle($diario->intId,$tiempo->intId);
-            if($tiempo->bitPrincipal == 0 && count($listDetalle) == 0){continue;}
+            $listDetalle = fnDiario_Detalle($diario['intId'],$tiempo['intId']);
+            if($tiempo['bitPrincipal'] == 0 && count($listDetalle) == 0){continue;}
             echo '<tr>
-                <td class="blanco" style="font-weight: bolder;" colspan=2>'.$tiempo->strTiempo.'</td>
+                <td class="blanco" style="font-weight: bolder;" colspan=2>'.$tiempo['strTiempo'].'</td>
                 <td style="font-weight: bolder;width: 10%;">Cantidad</td>
                 <td class="amarillo" style="font-weight: bolder;width: 10%;">Proteina</td>
                 <td class="naranja" style="font-weight: bolder;width: 10%;">Carbohidrato</td>
@@ -359,15 +360,16 @@ function fnViveMovimentoDiarioDetalleTablaCore($strURL,$diario,$listTiempos){
                 <td class="morado" style="font-weight: bolder;width: 10%;">Libre</td>
               </tr>';
               foreach ($listDetalle as $det) {
+                if (isset($det->intId)){
                 echo '<tr>
                         <td style="width: 90px;">
-                            <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
+                            <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario['intId'].'" method="post" style="display: inline-block;">
                                 <input type="hidden" name="intOp" value="3" />
-                                <input type="hidden" name="intEncabezado" value="'.$diario->intId.'" />
+                                <input type="hidden" name="intEncabezado" value="'.$diario['intId'].'" />
                                 <input type="hidden" name="intEliminar" value="'.$det->intId.'" />
-                                <button type="button" class="btn btn-link badge" role="button" href="#" style="color: white;" onClick="fnDiarioEliminarAjax('.$diario->intId.','.$det->intId.')"><i class="fas fa-trash-alt"></i></button>
+                                <button type="button" class="btn btn-link badge" role="button" href="#" style="color: white;" onClick="fnDiarioEliminarAjax('.$diario['intId'].','.$det->intId.')"><i class="fas fa-trash-alt"></i></button>
                             </form>
-                            <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
+                            <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario['intId'].'" method="post" style="display: inline-block;">
                                 <input type="hidden" name="intOp" value="4" />
                                 <input type="hidden" name="intEditar" value="'.$det->intId.'" />
                                 <button type="submit" class="btn btn-link badge" role="button" href="#"><i class="fa fa-pencil"></i></button>
@@ -382,6 +384,7 @@ function fnViveMovimentoDiarioDetalleTablaCore($strURL,$diario,$listTiempos){
                         <td class="morado">'.$det->intLibres.'</td>
                       </tr>';
               }
+          }
         }
     echo '<tr>
         <td class="rojo" rowspan="3" style="font-weight: bolder;" colspan=3>Total</td>
@@ -392,11 +395,11 @@ function fnViveMovimentoDiarioDetalleTablaCore($strURL,$diario,$listTiempos){
         <td class="rojo" style="font-weight: bolder;">Libre</td>
       </tr>
       <tr>
-        <td class="rojo" style="font-weight: bolder;">'.$diario->intProteinas.'</td>
-        <td class="rojo" style="font-weight: bolder;">'.$diario->intCarbohidratos.'</td>
-        <td class="rojo" style="font-weight: bolder;">'.$diario->intGrasas.'</td>
-        <td class="rojo" style="font-weight: bolder;">'.$diario->intVegetales.'</td>
-        <td class="rojo" style="font-weight: bolder;">'.$diario->intLibres.'</td>
+        <td class="rojo" style="font-weight: bolder;">'.$diario['intProteinas'].'</td>
+        <td class="rojo" style="font-weight: bolder;">'.$diario['intCarbohidratos'].'</td>
+        <td class="rojo" style="font-weight: bolder;">'.$diario['intGrasas'].'</td>
+        <td class="rojo" style="font-weight: bolder;">'.$diario['intVegetales'].'</td>
+        <td class="rojo" style="font-weight: bolder;">'.$diario['intLibres'].'</td>
       </tr>';
     echo '</table></div>';
 }
@@ -423,7 +426,7 @@ function fnViveMovimentoDiarioDetalleReceta_Core($decDiario){
     $listTiempos = fnDiario_Tiempos();
     $listadoRECETAS = fnViveMovimentoRecetaListado();
     foreach ($listadoRECETAS as $item) {
-        if($item->bitActivo == 0){ $intCursor += 1; continue; } ?>
+        if($item['bitActivo'] == 0){ $intCursor += 1; continue; } ?>
         <div class="col-md-12 col-xs-12 col-sm-12" style="padding-left: 2px;padding-right: 2px;">
             <button type="button" class="btn-info btn-xs btn-block" onclick="fnViveMovimentoDiarioDetalleReceta(<?= $decDiario ?>);">
                 <i class="fa fa-refresh" aria-hidden="true"></i> Refrescar recetas
@@ -434,13 +437,13 @@ function fnViveMovimentoDiarioDetalleReceta_Core($decDiario){
             <div class="panel panel-info">
                 <div class="panel-heading">
                     <h3 class="panel-title"><i class="fa fa-list-ul" aria-hidden="true"></i> Receta No. <?= $intCursor ?>
-                        <button type="button" class="btn btn-success btn-xs" onclick="fnViveMovimento_Receta_Journal_agregar(<?= $diario->intId ?>, <?= $item->intId ?>);" style="float: right;">
+                        <button type="button" class="btn btn-success btn-xs" onclick="fnViveMovimento_Receta_Journal_agregar(<?= $diario['intId'] ?>, <?= $item['intId'] ?>);" style="float: right;">
                           <i class="fa fa-plus" aria-hidden="true"></i> Journal
                         </button>
-                        <select class="intDiarioDet_Tiempo" id="intDiarioDet_Receta_Tiempo_<?= $diario->intId ?>">';
+                        <select class="intDiarioDet_Tiempo" id="intDiarioDet_Receta_Tiempo_<?= $diario['intId'] ?>">';
                         <?php
                         foreach ($listTiempos as $tiempo) {
-                            echo '<option value="'.$tiempo->intId.'">'.$tiempo->strTiempo.'</option>';
+                            echo '<option value="'.$tiempo['intId'].'">'.$tiempo['strTiempo'].'</option>';
                         } ?>
                         </select>
                     </h3>
@@ -454,12 +457,12 @@ function fnViveMovimentoDiarioDetalleReceta_Core($decDiario){
                                     <th>Alimento</th>
                                 </tr>
                             </thead>
-                        <?php foreach ($item->detalle as $itemDetalle) { ?>
+                        <?php if (isset($item['detalle'])) { foreach ($item['detalle'] as $itemDetalle) { ?>
                             <tr>
-                                <td style="padding-left: 0px;padding-right: 0px;"><?= $itemDetalle->decCantidad ?> <?= $itemDetalle->strUnidadMedida ?></td>
-                                <td><?= $itemDetalle->strAlimento ?></td>
+                                <td style="padding-left: 0px;padding-right: 0px;"><?= $itemDetalle['decCantidad'] ?> <?= $itemDetalle['strUnidadMedida'] ?></td>
+                                <td><?= $itemDetalle['strAlimento'] ?></td>
                             </tr>
-                        <?php } ?>
+                        <?php } } ?>
                         </table>
                     </div>
                 </div>
@@ -513,12 +516,12 @@ function fnFoodJournalCore(){
         fnDiario_eliminar(intval($_POST['intEliminar']), intval($_POST['intEncabezado']));
     }else if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_5' && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '4') {
         $intEditar = intval($_POST['intEditar']);
-        $itemEditar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_diario_detalle WHERE intId = ".$intEditar);        
+        $itemEditar = get_results("SELECT * FROM wp_vivemov_users_diario_detalle WHERE intId = ".$intEditar);        
         // fnDiario_eliminar(intval($_POST['intEditar']));
     }else if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_5' && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '5') {
         $intDiario = intval($_POST['intDiario']);
         $txtNota = $_POST['txtNota'];
-        $wpdb->get_results("UPDATE wp_vivemov_users_diario as D SET D.strNota = '$txtNota' WHERE D.intId = $intDiario");
+        get_results("UPDATE wp_vivemov_users_diario as D SET D.strNota = '$txtNota' WHERE D.intId = $intDiario");
         echo fnMensaje(1,'Listo, nota guardada!');
     
     }
@@ -533,13 +536,13 @@ function fnFoodJournalCore(){
     }
 
     if($listadoDiario != null){        
-        $decPorcionDia[0] = $listadoDiario[0]->intProteinas;
-        $decPorcionDia[1] = $listadoDiario[0]->intCarbohidratos;
-        $decPorcionDia[2] = $listadoDiario[0]->intGrasas;
+        $decPorcionDia[0] = $listadoDiario[0]['intProteinas'];
+        $decPorcionDia[1] = $listadoDiario[0]['intCarbohidratos'];
+        $decPorcionDia[2] = $listadoDiario[0]['intGrasas'];
     }
 
     $listTiempos = fnDiario_Tiempos();
-    $listAlimentos = $wpdb->get_results("SELECT ap.*, um.strUnidadMedida FROM wp_vivemov_alimentos_porciones ap INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1");
+    $listAlimentos = get_results("SELECT ap.*, um.strUnidadMedida FROM wp_vivemov_alimentos_porciones ap INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1");
 
     $intTiempoSiguiente = fnTiempoSiguiente();
     $intDiarioSiguiente = fnDiarioSiguiente();
@@ -547,7 +550,7 @@ function fnFoodJournalCore(){
     $listadoRECETAS = fnViveMovimentoRecetaListado();
 
     $misPorciones = null;
-    $misPorciones = $wpdb->get_results("SELECT * FROM wp_vivemov_users_porciones WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
+    $misPorciones = get_results("SELECT * FROM wp_vivemov_users_porciones WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     if (count($misPorciones) > 0) {
       $misPorciones = $misPorciones[0];
     }else{
@@ -594,9 +597,9 @@ function fnFoodJournalCore(){
         </thead>
         <tbody>
           <tr>
-            <th class="amarillo"><?php echo str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones->intProteina)); ?></th>
-            <th class="naranja"><?php echo str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones->intCarbohidrato)); ?></th>
-            <th class="celeste"><?php echo str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones->intGrasa)); ?></th>
+            <th class="amarillo"><?php echo str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones['intProteina'])); ?></th>
+            <th class="naranja"><?php echo str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones['intCarbohidrato'])); ?></th>
+            <th class="celeste"><?php echo str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones['intGrasa'])); ?></th>
           </tr>
         </tbody>
       </table>
@@ -667,7 +670,7 @@ function fnFoodJournalCore(){
     $intDiaContador = count($listadoDiario);
     echo '<div class="row">';    
     foreach ($listadoDiario as $diario) {
-        $datFechaDiario = new DateTime($diario->datFecha);
+        $datFechaDiario = new DateTime($diario['datFecha']);
         if ($intContadorFolder >= (4) && $bitFolderAbierto == false) {
             $bitFolderAbierto = true;
             //se habilita nuevamente los badges de fechas, steven 22/jun/2020 09:40 pm
@@ -682,7 +685,7 @@ function fnFoodJournalCore(){
         //se habilita nuevamente los badges de fechas, steven 22/jun/2020 09:40 pm
         // echo '<div class="col-md-3 col-xs-12 col-sm-12 sinPadding" style="display: none;">';
         echo '<div class="col-md-3 col-xs-12 col-sm-12 sinPadding">';
-        echo '  <a class="btn btn-link badge" role="button" data-toggle="collapse" href="#collapseDiario_'.$diario->intId.'" aria-expanded="false" aria-controls="collapseDiario_'.$diario->intId.'">';
+        echo '  <a class="btn btn-link badge" role="button" data-toggle="collapse" href="#collapseDiario_'.$diario['intId'].'" aria-expanded="false" aria-controls="collapseDiario_'.$diario['intId'].'">';
         echo '      <i class="fas fa-calendar-day"></i> Dia '.$intDiaContador.' ('.$datFechaDiario->format('D, d-M-Y').')';
         echo '  </a>';
         echo '</div>';
@@ -699,31 +702,31 @@ function fnFoodJournalCore(){
     date_default_timezone_set('America/Costa_Rica');
 
     foreach ($listadoDiario as $diario) {
-        $datFechaDiario = new DateTime($diario->datFecha);
+        $datFechaDiario = new DateTime($diario['datFecha']);
         if ((new DateTime())->format('d/m/Y') == $datFechaDiario->format('d/m/Y')) {
-            $intDiarioDelDia = $diario->intId;
+            $intDiarioDelDia = $diario['intId'];
         }
-        echo '<script>arrayFechas.push(["'.$datFechaDiario->format('d/m/Y').'",'.$diario->intId.']);</script>';
+        echo '<script>arrayFechas.push(["'.$datFechaDiario->format('d/m/Y').'",'.$diario['intId'].']);</script>';
         echo '
-            <div class="collapse col-md-12 col-xs-12 col-sm-12 sinPadding" id="collapseDiario_'.$diario->intId.'">
+            <div class="collapse col-md-12 col-xs-12 col-sm-12 sinPadding" id="collapseDiario_'.$diario['intId'].'">
                 <div class="row">
                     <div class="col-md-6 col-xs-12 col-sm-12 sinPadding">
                         <center><h2 style="margin: 0px;"><small><i class="fas fa-calendar-day"></i> Dia '.$intDiaContador.' - '.$datFechaDiario->format('D, d-M-Y').'</small></h2></center>
                     </div>
                     <div class="col-md-4 col-xs-6 col-sm-6 sinPadding">
-                        <input onClick="$('."'#txtClonar_".$diario->intId."'".').val('.$diario->intId.'); setTimeout(function(){ $('."'#btnForm_diario_".$diario->intId."'".').click(); }, 500);" type="submit" name="submit" value="Clonar diario en siguiente día" class="btn btn-block btn-xs" style="padding-bottom: 0px;padding-top: 0px;"/>
+                        <input onClick="$('."'#txtClonar_".$diario['intId']."'".').val('.$diario['intId'].'); setTimeout(function(){ $('."'#btnForm_diario_".$diario['intId']."'".').click(); }, 500);" type="submit" name="submit" value="Clonar diario en siguiente día" class="btn btn-block btn-xs" style="padding-bottom: 0px;padding-top: 0px;"/>
                     </div>
                     <div class="col-md-2 col-xs-6 col-sm-6 sinPadding">
-                        <button class="btn btn-block btn-xs" onClick="$('."'".'#collapseDiario_'.$diario->intId."'".').collapse('."'".'hide'."'".')" style="color:white !important;">
+                        <button class="btn btn-block btn-xs" onClick="$('."'".'#collapseDiario_'.$diario['intId']."'".').collapse('."'".'hide'."'".')" style="color:white !important;">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cerrar
                         </button>
                     </div>
 
-                    <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post">
+                    <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario['intId'].'" method="post">
                         <input type="hidden" name="intOp" value="5" />
-                        <input type="hidden" name="intDiario" value="'.$diario->intId.'" />
+                        <input type="hidden" name="intDiario" value="'.$diario['intId'].'" />
                         <div class="col-xs-10 col-sm-10 col-md-10" style="padding-left: 0px;padding-right: 0px;">
-                            <textarea name="txtNota" class="form-control" rows="2" placeholder="Nota del día...">'.$diario->strNota.'</textarea>
+                            <textarea name="txtNota" class="form-control" rows="2" placeholder="Nota del día...">'.$diario['strNota'].'</textarea>
                         </div>
                         <div class="col-xs-2 col-sm-2 col-md-2" style="padding-left: 0px;padding-right: 0px;">
                             <button type="submit" name="submit" value="Guardar Nota" class="btn btn-block btn-xs" style="padding-bottom: 0px;padding-top: 0px;color: white;"><i class="fa fa-floppy-o" aria-hidden="true"></i> Guardar Nota</button>
@@ -735,71 +738,71 @@ function fnFoodJournalCore(){
                     <hr/>
                     </div>
 
-                    <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" id="frm_diario_'.$diario->intId.'" method="post" class="" style="margin-bottom: 0px;">
-                        <input type="hidden" name="intIDDETALLE" id="intIDDETALLE_'.$diario->intId.'" value="0" />
+                    <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario['intId'].'" id="frm_diario_'.$diario['intId'].'" method="post" class="" style="margin-bottom: 0px;">
+                        <input type="hidden" name="intIDDETALLE" id="intIDDETALLE_'.$diario['intId'].'" value="0" />
                         <input type="hidden" name="intOp" value="2" />
                         
                           <ul class="nav nav-tabs nav-justified" role="tablist">
-                            <li role="presentation" class="active"><a href="#tab_food_journal_'.$diario->intId.'" aria-controls="tab_food_journal_'.$diario->intId.'" role="tab" data-toggle="tab"><i class="fas fa-utensils"></i><i class="fas fa-book"></i> Por Alimento</a></li>
-                            <li role="presentation"><a href="#tab_food_journal_receta_'.$diario->intId.'" aria-controls="tab_food_journal_receta_'.$diario->intId.'" role="tab" data-toggle="tab"><i class="fas fa-list-ul"></i> Por Receta</a></li>
+                            <li role="presentation" class="active"><a href="#tab_food_journal_'.$diario['intId'].'" aria-controls="tab_food_journal_'.$diario['intId'].'" role="tab" data-toggle="tab"><i class="fas fa-utensils"></i><i class="fas fa-book"></i> Por Alimento</a></li>
+                            <li role="presentation"><a href="#tab_food_journal_receta_'.$diario['intId'].'" aria-controls="tab_food_journal_receta_'.$diario['intId'].'" role="tab" data-toggle="tab"><i class="fas fa-list-ul"></i> Por Receta</a></li>
                           </ul>
                           <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active" id="tab_food_journal_'.$diario->intId.'">
+                            <div role="tabpanel" class="tab-pane active" id="tab_food_journal_'.$diario['intId'].'">
 
                                 <div class="col-md-3 col-xs-6 col-sm-6 sinPadding" style="display: grid;">
                                     <label for="intDiarioDet_Tiempo"><i class="fa fa-clock-o" aria-hidden="true"></i> Tiempo <strong>*</strong></label>
-                                    <select name="intDiarioDet_Tiempo" class="intDiarioDet_Tiempo" id="intDiarioDet_Tiempo_'.$diario->intId.'">';
+                                    <select name="intDiarioDet_Tiempo" class="intDiarioDet_Tiempo" id="intDiarioDet_Tiempo_'.$diario['intId'].'">';
                                     $bitPrimero = false;
-                                    foreach ($listTiempos as $tiempo) { echo '<option value="'.$tiempo->intId.'"'.(!$bitPrimero?' selected ':'').'>'.$tiempo->strTiempo.'</option>';$bitPrimero = true; }
+                                    foreach ($listTiempos as $tiempo) { echo '<option value="'.$tiempo['intId'].'"'.(!$bitPrimero?' selected ':'').'>'.$tiempo['strTiempo'].'</option>';$bitPrimero = true; }
                                 echo '</select>
                                 </div>
                                 <div class="col-md-3 col-xs-6 col-sm-6 sinPadding" style="display: grid;">
-                                    <label for="intDiarioDet_Cantidad_'.$diario->intId.'"><span id="span_porcion_'.$diario->intId.'"><i class="fa fa-list-ol" aria-hidden="true"></i> Porcion</span> <strong>*</strong></label>
-                                    <input type="number" id="intDiarioDet_Cantidad_'.$diario->intId.'" value="1" min="0" max="999" step="0.01" onChange="fnAlimentoSeleccionado('.$diario->intId.');" onkeyup="fnAlimentoSeleccionado('.$diario->intId.');" >
-                                    <input type="hidden"id="intDiarioDet_Cantidad_hidden_'.$diario->intId.'" name="intDiarioDet_Cantidad" value="1" min="0" max="999" step="0.01">
+                                    <label for="intDiarioDet_Cantidad_'.$diario['intId'].'"><span id="span_porcion_'.$diario['intId'].'"><i class="fa fa-list-ol" aria-hidden="true"></i> Porcion</span> <strong>*</strong></label>
+                                    <input type="number" id="intDiarioDet_Cantidad_'.$diario['intId'].'" value="1" min="0" max="999" step="0.01" onChange="fnAlimentoSeleccionado('.$diario['intId'].');" onkeyup="fnAlimentoSeleccionado('.$diario['intId'].');" >
+                                    <input type="hidden"id="intDiarioDet_Cantidad_hidden_'.$diario['intId'].'" name="intDiarioDet_Cantidad" value="1" min="0" max="999" step="0.01">
                                 </div>
                                 <div class="col-md-4 col-xs-12 col-sm-12 sinPadding" style="display: grid;">
                                     <label for="intDiarioDet_Alimento"><i class="fa fa-cutlery" aria-hidden="true"></i> Alimento <strong>*</strong></label>
-                                    <select name="intDiarioDet_Alimento" id="intDiarioDet_Alimento_'.$diario->intId.'" onChange="fnAlimentoSeleccionado('.$diario->intId.');">
+                                    <select name="intDiarioDet_Alimento" id="intDiarioDet_Alimento_'.$diario['intId'].'" onChange="fnAlimentoSeleccionado('.$diario['intId'].');">
                                         <option selected="true" disabled="disabled">Seleccionar el alimento</option>
                                     ';
                                     foreach ($listAlimentos as $alimento) {
                                         $strPCGVL = '';
-                                        if($alimento->decProteina>0){
-                                            $strPCGVL = ($alimento->decProteina + 0).'P';
+                                        if($alimento['decProteina']>0){
+                                            $strPCGVL = ($alimento['decProteina'] + 0).'P';
                                         }
-                                        if($alimento->decCarbohidratos>0){
-                                            $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decCarbohidratos + 0).'C';
+                                        if($alimento['decCarbohidratos']>0){
+                                            $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento['decCarbohidratos'] + 0).'C';
                                         }
-                                        if($alimento->decGrasa>0){
-                                            $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decGrasa + 0).'G';
+                                        if($alimento['decGrasa']>0){
+                                            $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento['decGrasa'] + 0).'G';
                                         }
-                                        if($alimento->decVegetales>0){
-                                            $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decVegetales + 0).'V';
+                                        if($alimento['decVegetales']>0){
+                                            $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento['decVegetales'] + 0).'V';
                                         }
-                                        if($alimento->decLibre>0){
-                                            $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decLibre + 0).'L';
+                                        if($alimento['decLibre']>0){
+                                            $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento['decLibre'] + 0).'L';
                                         }
-                                        echo '<option value="'.$alimento->intId.'">'.($alimento->decPorcion + 0).' '.$alimento->strUnidadMedida.' de '.$alimento->strAlimento.' ('.$strPCGVL.')</option>'; }
+                                        echo '<option value="'.$alimento['intId'].'">'.($alimento['decPorcion'] + 0).' '.$alimento['strUnidadMedida'].' de '.$alimento['strAlimento'].' ('.$strPCGVL.')</option>'; }
                                 echo '</select>
                                 </div>
                                 <div class="col-md-2 col-xs-12 col-sm-12 sinPadding" style="display: grid;padding-left: 0px;">
-                                    <input type="hidden" name="intDiarioDet_Enc" value="'.$diario->intId.'"/>
+                                    <input type="hidden" name="intDiarioDet_Enc" value="'.$diario['intId'].'"/>
                                     <input type="hidden" name="intDiarioDet_Descripcion" value="..."/>';
                                     if ($itemEditar == null) {
-                                        echo '<button onClick="fnDiarioGuardarAjax('.$diario->intId.');" type="button" value="'.($itemEditar == null? 'Agregar': 'Editar').'" class="btn btn-block btn-xs"id="btnForm_diario_'.$diario->intId.'" style="margin-top: 20px;color: white;height: 40px;"><i class="fa fa-plus" aria-hidden="true"></i>'.($itemEditar == null? 'Agregar': 'Editar').'</button>';
+                                        echo '<button onClick="fnDiarioGuardarAjax('.$diario['intId'].');" type="button" value="'.($itemEditar == null? 'Agregar': 'Editar').'" class="btn btn-block btn-xs"id="btnForm_diario_'.$diario['intId'].'" style="margin-top: 20px;color: white;height: 40px;"><i class="fa fa-plus" aria-hidden="true"></i>'.($itemEditar == null? 'Agregar': 'Editar').'</button>';
                                     }else{
-                                        echo '<button type="submit" name="submit" value="'.($itemEditar == null? 'Agregar': 'Editar').'" class="btn btn-block btn-xs"id="btnForm_diario_'.$diario->intId.'" style="margin-top: 20px;color: white;height: 40px;"><i class="fa fa-plus" aria-hidden="true"></i>'.($itemEditar == null? 'Agregar': 'Editar').'</button>';
+                                        echo '<button type="submit" name="submit" value="'.($itemEditar == null? 'Agregar': 'Editar').'" class="btn btn-block btn-xs"id="btnForm_diario_'.$diario['intId'].'" style="margin-top: 20px;color: white;height: 40px;"><i class="fa fa-plus" aria-hidden="true"></i>'.($itemEditar == null? 'Agregar': 'Editar').'</button>';
                                     }
                                 echo '
                                 </div>
                                 <div style="display: none;">
-                                    <input type="hidden" name="txtClonar" id="txtClonar_'.$diario->intId.'" value="0"/>                    
+                                    <input type="hidden" name="txtClonar" id="txtClonar_'.$diario['intId'].'" value="0"/>                    
                                 </div>
                             </div>
                         
-                        <div role="tabpanel" class="tab-pane" id="tab_food_journal_receta_'.$diario->intId.'">';
-                        fnViveMovimentoDiarioDetalleReceta_Core($diario->intId);
+                        <div role="tabpanel" class="tab-pane" id="tab_food_journal_receta_'.$diario['intId'].'">';
+                        fnViveMovimentoDiarioDetalleReceta_Core($diario['intId']);
                         echo'</div>
 
                         </div>

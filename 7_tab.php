@@ -20,7 +20,7 @@
     		/*** se cambia para que acepte decimales, float val no sirve, steven 15/setp/10 5:25pm */
 	        // $decPeso = floatval($_POST['txtActualizarPeso']);
 	        $decPeso = number_format($_POST['txtActualizarPeso'],2);
-			$lastUserINFO = $wpdb->get_results("
+			$lastUserINFO = get_results("
 			    	SELECT
 						(datRegistro) datRegistro
 						,(intEdad) intEdad
@@ -137,7 +137,7 @@
 		    }
     	}
 
-    $list = $wpdb->get_results("
+    $list = get_results("
     	SELECT
 			MAX(datRegistro) datRegistro
 			,MAX(decAltura) decAltura
@@ -150,7 +150,7 @@
 		ORDER BY datRegistro DESC
     	");
 
-    $listGrafica = $wpdb->get_results("
+    $listGrafica = get_results("
     	SELECT
 			MAX(datRegistro) datRegistro
 			,MAX(decPeso) decPeso
@@ -163,11 +163,11 @@
     	");
    	foreach ($listGrafica as $item) {
    		if ($arrayGraficaPesoLabels == ''){
-   			$arrayGraficaPesoLabels = "'".(new DateTime($item->datRegistro))->format('d-M')."'";
-   			$arrayGraficaPesoValues = $item->decPeso;
+   			$arrayGraficaPesoLabels = "'".(new DateTime($item['datRegistro']))->format('d-M')."'";
+   			$arrayGraficaPesoValues = $item['decPeso'];
    		}else{
-   			$arrayGraficaPesoLabels .= ", '".(new DateTime($item->datRegistro))->format('d-M')."'";
-   			$arrayGraficaPesoValues .= ', '.$item->decPeso;
+   			$arrayGraficaPesoLabels .= ", '".(new DateTime($item['datRegistro']))->format('d-M')."'";
+   			$arrayGraficaPesoValues .= ', '.$item['decPeso'];
    		}
    	}
 ?>
@@ -243,41 +243,41 @@
 		$strTipo_3 = 'info';
 		$item = $list[$i];
 		if (($i + 1) < count($list)) {
-			if ($item->decPeso <= $list[(($i + 1))]->decPeso) {
+			if ($item['decPeso'] <= $list[(($i + 1))]['decPeso']) {
 				$strTipo_1 = 'success';
 			}else{
 				$strTipo_1 = 'warning';				
 			}
-			if ($item->decGrasa <= $list[(($i + 1))]->decGrasa) {
+			if ($item['decGrasa'] <= $list[(($i + 1))]['decGrasa']) {
 				$strTipo_2 = 'success';
 			}else{
 				$strTipo_2 = 'warning';				
 			}
-			if ($item->decMetabolismo <= $list[(($i + 1))]->decMetabolismo) {
+			if ($item['decMetabolismo'] <= $list[(($i + 1))]['decMetabolismo']) {
 				$strTipo_3 = 'success';
 			}else{
 				$strTipo_3 = 'warning';				
 			}
 		}
 	  	echo '<tr>
-		  <td class="info">'.(new DateTime($item->datRegistro))->format('D, d-M-Y h:m a').'</td>
-		  <td class="'.$strTipo_1.'">'.$item->decPeso.'</td>
-		  <td class="'.$strTipo_2.'">'.$item->decGrasa.'</td>
+		  <td class="info">'.(new DateTime($item['datRegistro']))->format('D, d-M-Y h:m a').'</td>
+		  <td class="'.$strTipo_1.'">'.$item['decPeso'].'</td>
+		  <td class="'.$strTipo_2.'">'.$item['decGrasa'].'</td>
 		  <td>';
-		    $strRutaImagen = $strRutaImagenMadre.'/'.(new DateTime($item->datRegistro))->format('yy-m-d');
+		    $strRutaImagen = $strRutaImagenMadre.'/'.(new DateTime($item['datRegistro']))->format('yy-m-d');
 		    if (!file_exists($strRutaImagen)) {
 		    	echo '-';
 			}else{
 		    	$fileList = glob($strRutaImagen.'/*');
 		    	$intContadorImagen = 0;
 				foreach($fileList as $filename){
-				  	echo '<img id="img_foto_'.(new DateTime($item->datRegistro))->format('yy-m-d').$intContadorImagen.'" width=50 src="'.str_replace($_SERVER['DOCUMENT_ROOT'],'',$filename).'" alt="Foto" class="img_foto img-responsive img-thumbnail" style="cursor: pointer;" onclick="fnMostrarFoto(\'img_foto_'.(new DateTime($item->datRegistro))->format('yy-m-d').$intContadorImagen.'\',\''.str_replace($_SERVER['DOCUMENT_ROOT'],'',$filename).'\');">';
+				  	echo '<img id="img_foto_'.(new DateTime($item['datRegistro']))->format('yy-m-d').$intContadorImagen.'" width=50 src="'.str_replace($_SERVER['DOCUMENT_ROOT'],'',$filename).'" alt="Foto" class="img_foto img-responsive img-thumbnail" style="cursor: pointer;" onclick="fnMostrarFoto(\'img_foto_'.(new DateTime($item['datRegistro']))->format('yy-m-d').$intContadorImagen.'\',\''.str_replace($_SERVER['DOCUMENT_ROOT'],'',$filename).'\');">';
 				  	$intContadorImagen += 1;
 				}
 			}
 		echo'
 		  </td>
-		  <!-- <td class="'.$strTipo_3.'">'.$item->decMetabolismo.'</td>-->
+		  <!-- <td class="'.$strTipo_3.'">'.$item['decMetabolismo'].'</td>-->
 		</tr>';
 	}
 ?>

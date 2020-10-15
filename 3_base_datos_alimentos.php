@@ -28,7 +28,7 @@ function fnBDAlimentos_save(){
                 $_SESSION["intFormulario"] = 1;
             }            
         }else{
-            $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_alimentos_porciones WHERE intId = ".$intA_Id);
+            $buscar = get_results("SELECT * FROM wp_vivemov_alimentos_porciones WHERE intId = ".$intA_Id);
             $buscar = $buscar[0];
             $where = array(
                 'intId' => $intA_Id
@@ -121,7 +121,7 @@ $strReponseBDAlimentos = $strReponseBDAlimentos.'<option value="'.$um->intId.'" 
 function fnBDAlimentos_1(){
     global $wpdb, $strUsuario;
     $strUsuario = fnViveMovimento_usuario();
-    $bitPermiso = ( in_array( 'administrator', wp_get_current_user()->roles, true ) );
+    $bitPermiso = wp_get_current_user()['user_admin'];
 
     global $intA_Id,$intA_Cantidad,$intA_UM,$strA_Alimento,$decA_Proteina,$decA_Carbs,$decA_Grasa,$decA_Libre;
     $intA_Id = 0;
@@ -139,7 +139,7 @@ function fnBDAlimentos_1(){
         $decA_Libre = $_POST['decA_Libre'];
         fnBDAlimentos_save();
     }else if (isset($_GET['action']) && $_GET['action'] == 'editarAlimento' && isset($_POST['submit'] ) ) {
-        $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_alimentos_porciones WHERE intId = ".$_POST['intId']);
+        $buscar = get_results("SELECT * FROM wp_vivemov_alimentos_porciones WHERE intId = ".$_POST['intId']);
         $buscar = $buscar[0];
 
         $intA_Id = $buscar->intId;
@@ -161,13 +161,13 @@ function fnBDAlimentos_1(){
             echo fnMensaje(1,'Alimento, eliminado!');
     }
     if($bitPermiso == true){
-        $listUM = $wpdb->get_results("SELECT * FROM wp_vivemov_alimentos_unidad_medida WHERE bitActivo = 1 ORDER BY strUnidadMedida ASC;");
+        $listUM = get_results("SELECT * FROM wp_vivemov_alimentos_unidad_medida WHERE bitActivo = 1 ORDER BY strUnidadMedida ASC;");
         fnBDAlimentos_nuevo($listUM);
         if (isset($_GET['action']) && ($_GET['action'] == 'nuevoalimento' || $_GET['action'] == 'editarAlimento' || $_GET['action'] == 'eliminarAlimento')) {
             echo '<script>setTimeout(function(){ $("#tablist1-tab3").click();  }, 1000);</script>';
         }
     }
-    $listAlimentos = $wpdb->get_results("SELECT ap.*, um.strUnidadMedida FROM wp_vivemov_alimentos_porciones ap INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1");
+    $listAlimentos = get_results("SELECT ap.*, um.strUnidadMedida FROM wp_vivemov_alimentos_porciones ap INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1");
     fnBDAlimentos_tabla($listAlimentos, $bitPermiso);
 }
 

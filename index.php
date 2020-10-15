@@ -209,33 +209,19 @@ function fnUtils_core(){
     </script>';
 }
 
-include( plugin_dir_path( __FILE__ ) . '/resumen.php');
-include( plugin_dir_path( __FILE__ ) . '/0_estilos.php');
-include( plugin_dir_path( __FILE__ ) . '/1_tab.php');
-include( plugin_dir_path( __FILE__ ) . '/2_tab.php');
-include( plugin_dir_path( __FILE__ ) . '/2_tab_1.php');
-include( plugin_dir_path( __FILE__ ) . '/2_tab_2.php');
-include( plugin_dir_path( __FILE__ ) . '/3_tab.php');
-include( plugin_dir_path( __FILE__ ) . '/4_tab.php');
-include( plugin_dir_path( __FILE__ ) . '/5_tab.php');
-// include( plugin_dir_path( __FILE__ ) . '/2_informacion_corporal.php');
-// include( plugin_dir_path( __FILE__ ) . '/3_base_datos_alimentos.php');
-include( plugin_dir_path( __FILE__ ) . '/bd_tab.php');
-include( plugin_dir_path( __FILE__ ) . '/7_tab.php');
-include( plugin_dir_path( __FILE__ ) . '/8_tab.php');
-include( plugin_dir_path( __FILE__ ) . '/9_tab.php');
-
-// Register a new shortcode: [cr_custom_registration]
-// add_shortcode( 'cr_custom_registration', 'custom_registration_shortcode' );
-// add_shortcode( 'cr_fnMiInformacion', 'fnMiInformacion_0' );
-// add_shortcode( 'cr_fnTabla1', 'fnTabla' );
-// add_shortcode( 'cr_fnBDAlimentos', 'fnBDAlimentos' );
-// add_shortcode( 'cr_fnDiario', 'fnDiario' );
-// add_shortcode( 'cr_fnUtils', 'fnUtils' );
-
-add_shortcode( 'cr_fnViveMovimento', 'fnViveMovimento' );
-add_shortcode( 'vv_login_top', 'fnViveMovimento_topbar' );
-add_shortcode( 'vv_resumen', 'fnViveMovimento_resumen' );
+include('resumen.php');
+include('0_estilos.php');
+include('1_tab.php');
+include('2_tab.php');
+include('2_tab_1.php');
+include('2_tab_2.php');
+include('3_tab.php');
+include('4_tab.php');
+include('5_tab.php');
+include('bd_tab.php');
+include('7_tab.php');
+include('8_tab.php');
+include('9_tab.php');
 
 function fnUsuarioLogeadoViveMovimento() {
     $user = wp_get_current_user(); 
@@ -313,39 +299,6 @@ function fnFontawesome2() {
     endif;
 }
 
-add_action( 'admin_head', 'fnFontawesome' );
-add_action( 'wp_head', 'fnFontawesome' );
-
-add_action( 'wp_footer', 'fnFontawesome2' );
-add_action( 'admin_footer', 'fnFontawesome2' );
-
-add_action( 'woocommerce_thankyou', 'fnViveMovimentoRedireccionLuegoCompra');
-  
-add_action("wp_ajax_fnViveMovimentoDiarioAgregar", "fnViveMovimentoDiarioAgregar");
-add_action("wp_ajax_fnViveMovimentoDiarioEliminar", "fnViveMovimentoDiarioEliminar");
-add_action("wp_ajax_fnViveMovimentoDiarioDetalleTabla", "fnViveMovimentoDiarioDetalleTabla");
-
-add_action("wp_ajax_fnViveMovimentoRecetaClonar", "fnViveMovimentoRecetaClonar");
-add_action("wp_ajax_fnViveMovimentoRecetaAgregar", "fnViveMovimentoRecetaAgregar");
-add_action("wp_ajax_fnViveMovimentoRecetaEditar", "fnViveMovimentoRecetaEditar");
-add_action("wp_ajax_fnViveMovimentoRecetaEliminar", "fnViveMovimentoRecetaEliminar");
-add_action("wp_ajax_fnViveMovimentoRecetaListado", "fnViveMovimentoRecetaListado");
-add_action("wp_ajax_fnViveMovimentoRecetaListadoCore", "fnViveMovimentoRecetaListadoCore");
-
-add_action("wp_ajax_fnViveMovimentoRecetaDetalleAgregar", "fnViveMovimentoRecetaDetalleAgregar");
-add_action("wp_ajax_fnViveMovimentoRecetaDetalleEditar", "fnViveMovimentoRecetaDetalleEditar");
-add_action("wp_ajax_fnViveMovimentoRecetaDetalleEliminar", "fnViveMovimentoRecetaDetalleEliminar");
-
-add_action("wp_ajax_fnViveMovimentoRecetaJournalAgregar", "fnViveMovimentoRecetaJournalAgregar");
-
-add_action("wp_ajax_fnViveMovimentoPorcionesPropias", "fnViveMovimentoPorcionesPropias");
-
-add_action("wp_ajax_fnViveMovimentoOneToOnetabla", "fnViveMovimentoOneToOnetabla");
-add_action("wp_ajax_fnViveMovimentoOneToOneAgregar", "fnViveMovimentoOneToOneAgregar");
-add_action("wp_ajax_fnViveMovimentoOneToOneEliminar", "fnViveMovimentoOneToOneEliminar");
-
-add_action("wp_ajax_fnViveMovimentoDiarioDetalleReceta", "fnViveMovimentoDiarioDetalleReceta");
-
 function fnViveMovimentoRedireccionLuegoCompra( $order_id ){
     $order = wc_get_order( $order_id );
     $url = '/shop';
@@ -381,46 +334,115 @@ function redirect_admin( $redirect_to, $request, $user ){
     }
     return $redirect_to;
 }
-add_filter( 'login_redirect', 'redirect_admin', 10, 3 );
 
 function fnViveMovimento() {
     ob_start();
     fnViveMovimento_Init();
     return ob_get_clean();
 }
+function wp_get_current_user(){
+    $current_user_info = array();
+    $current_user_info = array(
+        'user_login' => (isset($_SESSION['strUsuario']) ? $_SESSION['strUsuario'] : ""),
+        'user_mail' => (isset($_SESSION['strCorreo']) ? $_SESSION['strCorreo'] : ""),
+        'user_admin' => (isset($_SESSION['bitAdmin']) ? ($_SESSION['bitAdmin'] == 1 ? true : false) : ""),
+        'teste' => 'asdf'
+    );
+    return $current_user_info;
+}
+function fnViveMovimento_INIT_SISTEMA(){
+    ob_start();
+    session_start();
 
-// function fnMiInformacion_0() {
-//     ob_start();
-//     echo '<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>';
-//     fnMiInformacion_1();
-//     return ob_get_clean();
-// }
-// function fnTabla() {
-//     ob_start();
-//     // fnTabla_1();
-//     return ob_get_clean();
-// }
-// function fnBDAlimentos() {
-//     ob_start();
-//     // fnBDAlimentos_1();
-//     return ob_get_clean();
-// }
-// function fnDiario() {
-//     ob_start();
-//     // fnDiario_1();
-//     fnUtils_core();
-//     return ob_get_clean();
-// }
-// function fnUtils(){
-//     ob_start();
-//     fnUtils_core();
-//     return ob_get_clean();
-// }
+    if (isset($_GET['login_api_usr']) && $_GET['login_api_usr'] != null && $_GET['login_api_usr'] != '') {
+        $_SESSION['strUsuario'] = $_GET['login_api_usr'];
+        $_SESSION['strCorreo'] = $_GET['login_api_email'];
+        $_SESSION['bitAdmin'] = $_GET['login_api_admin'];
+        fnViveMovimento_Init();
+    }else if (isset($_GET['login_api_out']) && $_GET['login_api_out'] != null && $_GET['login_api_out'] != '') {
+       session_start();
+       unset($_SESSION["strUsuario"]);
+       unset($_SESSION["strCorreo"]);
+       unset($_SESSION["bitAdmin"]);
+    }else{
+        fnViveMovimento_Init();
+    }
+}
+function get_results($strQuery){
+    $servername = "localhost";
+    $username = "vivemovimento_own";
+    $password = "vivemovimento123";
+    $dbname = "vivemovimento";
 
-// function custom_registration_shortcode() {
-//     // ob_start();
-//     // return custom_registration_function();
-//     // return ob_get_clean();
-// }
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
 
+    $sql = $strQuery;
+    $result = $conn->query($sql);
 
+    $datos = array();
+    $intFila = 0;
+    if ($result->num_rows > 0) {
+        // echo "<table><tr><th>ID</th><th>Name</th></tr>";
+        // // output data of each row
+        while($row = $result->fetch_assoc()) {
+            $datos[$intFila] = $row;
+            $intFila += 1;
+            // echo "<tr><td>".$row["id"]."</td><td>".$row["firstname"]." ".$row["lastname"]."</td></tr>";
+        }
+        // echo "</table>";
+        // $datos = $result->fetch_assoc();
+        // print_r($datos);
+    } else {
+        $datos = array();
+    }
+    $conn->close();
+    return $datos;
+}
+function admin_url($strFuncion){
+    // $strURL = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] .'/'. $strFuncion;
+    $strURL = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    return $strURL;
+}
+?>
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Vivemovimento</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+
+    <script src="/js/pdfobject.min.js"></script>
+
+    <script src="/datepicker/js/bootstrap-datepicker.min.js"></script>
+
+  </head>
+  <body>
+<?php
+    //INICIAR SISTEMA
+    fnViveMovimento_INIT_SISTEMA();
+?>
+  </body>
+</html>

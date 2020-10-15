@@ -3,10 +3,10 @@ function fnTab_3_cargar(){
   global $wpdb,$intMeta;
   $strUsuario = fnViveMovimento_usuario();
   try {
-    $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_meta WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
+    $buscar = get_results("SELECT * FROM wp_vivemov_users_meta WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     if (count($buscar) > 0) {
       $buscar = $buscar[0];
-      $intMeta = $buscar->intMeta;
+      $intMeta = $buscar['intMeta'];
     }else{
       $intMeta = 1;
     }

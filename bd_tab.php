@@ -1,7 +1,7 @@
 <?php
 function fnTab_bd_cargar(){
   global $wpdb,$listAlimentos,$listUM,$strUsuario;
-  // $listAlimentos = $wpdb->get_results("SELECT DISTINCT ap.*, um.strUnidadMedida FROM wp_vivemov_alimentos_porciones ap INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1 ORDER BY ap.strAlimento asc");
+  // $listAlimentos = get_results("SELECT DISTINCT ap.*, um.strUnidadMedida FROM wp_vivemov_alimentos_porciones ap INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1 ORDER BY ap.strAlimento asc");
 
   //   proteina  amarillo
   // carbs naranja
@@ -11,7 +11,7 @@ function fnTab_bd_cargar(){
   // carbs + grasa verde
   // Proteina + carbs + grasa  gris
   // libre rosado
-  $listAlimentos = $wpdb->get_results("SELECT DISTINCT *
+  $listAlimentos = get_results("SELECT DISTINCT *
     FROM (
       SELECT DISTINCT ap.*, um.strUnidadMedida
       ,CASE
@@ -46,7 +46,7 @@ function fnTab_bd_cargar(){
       INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1 and ap.strUsuario IN('".$strUsuario."')
   )ap
   ORDER BY intOrdenTipo ASC, ap.strAlimento ASC");
-  $listUM = $wpdb->get_results("SELECT * FROM wp_vivemov_alimentos_unidad_medida WHERE bitActivo = 1 ORDER BY strUnidadMedida ASC;");
+  $listUM = get_results("SELECT * FROM wp_vivemov_alimentos_unidad_medida WHERE bitActivo = 1 ORDER BY strUnidadMedida ASC;");
 }
 function fnTab_bd_save(){
   global $wpdb,$intA_Id,$intA_Cantidad,$intA_UM,$strA_Alimento,$decA_Proteina,$decA_Carbs,$decA_Grasa,$decA_Libre,$strUsuario;
@@ -75,7 +75,7 @@ function fnTab_bd_save(){
         $_POST = array();
       }
   }else{
-    $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_alimentos_porciones WHERE intId = ".$intA_Id);
+    $buscar = get_results("SELECT * FROM wp_vivemov_alimentos_porciones WHERE intId = ".$intA_Id);
     $buscar = $buscar[0];
     $where = array(
       'intId' => $intA_Id
@@ -113,7 +113,7 @@ function fnTab_BD(){
     $decA_Libre = null;
 
   }else if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_6' && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '2') {
-    $bdItem = $wpdb->get_results("SELECT * FROM wp_vivemov_alimentos_porciones WHERE intId = ".$_POST['intId']);
+    $bdItem = get_results("SELECT * FROM wp_vivemov_alimentos_porciones WHERE intId = ".$_POST['intId']);
     $bdItem = $bdItem[0];
 
     $intA_Id = $bdItem->intId;
@@ -152,6 +152,9 @@ function fnTab_bd_tabla($listAlimentos, $bitPermiso, $strUsuario){ ?>
       </tr>
       <?php
       foreach ($listAlimentos as $item) {
+        if(!isset($item->decProteina)){
+          continue;
+        }
         $strColor = '';        
         if($item->decProteina > 0 && $item->decCarbohidratos > 0 && $item->decGrasa > 0){
           $strColor = 'gris';
@@ -233,7 +236,9 @@ function fnTab_bd_tabla($listAlimentos, $bitPermiso, $strUsuario){ ?>
         <select name="intA_UM" style="width: 100%">
           <?php
           foreach ($listUM as $um) {
-            echo '<option value="'.$um->intId.'" '.($um->intId == $intA_UM? 'selected' : '').'>'.$um->strUnidadMedida.'</option>';
+            if (isset($um->intId)){
+              echo '<option value="'.$um->intId.'" '.($um->intId == $intA_UM? 'selected' : '').'>'.$um->strUnidadMedida.'</option>';
+            }
           }
           ?>
         </select>

@@ -1,12 +1,12 @@
 <?php
 function fnVerificarCombraDeSuscripcion() {
-  if (( in_array( 'administrator', wp_get_current_user()->roles, true ) ) == true) {
+  if (wp_get_current_user()['user_admin'] == true) {
     //si es el admin siempre tendra 30 dia, o si el admin esta viendo el diario de los clientes, tiene libre acceso
     return 0;
   }
   global $wpdb, $strUsuario;
   $strUsuario = fnViveMovimento_usuario();
-  $list = $wpdb->get_results("
+  $list = get_results("
       SELECT *
       FROM wp_vivemov_users_one_to_one D
       WHERE strUsuario = '$strUsuario' AND bitActivo =1
@@ -106,10 +106,10 @@ function fnTab_4_cargar(){
   global $wpdb,$intMeta;
   $strUsuario = fnViveMovimento_usuario();
   try {
-    $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_meta WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
+    $buscar = get_results("SELECT * FROM wp_vivemov_users_meta WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     if (count($buscar) > 0) {
       $buscar = $buscar[0];
-      $intMeta = $buscar->intMeta;
+      $intMeta = $buscar['intMeta'];
     }else{
       $intMeta = 1;
     }
@@ -133,7 +133,7 @@ function fnTab_4_save($strUsuario,$intMeta){
 }
 function fnTab_4_save_custom_porciones(){
   global $wpdb, $strUsuario;
-  $wpdb->get_results("UPDATE wp_vivemov_users_porciones as D
+  get_results("UPDATE wp_vivemov_users_porciones as D
                       SET D.bitActivo = 0
                       WHERE D.strUsuario = '$strUsuario' AND D.bitActivo = 1;");
 
@@ -252,7 +252,7 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
   global $wpdb;
   $misPorciones = null;
   // if ($intExperiencia == 3) {
-    $misPorciones = $wpdb->get_results("SELECT * FROM wp_vivemov_users_porciones WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
+    $misPorciones = get_results("SELECT * FROM wp_vivemov_users_porciones WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     if (count($misPorciones) > 0) {
       $misPorciones = $misPorciones[0];
       // echo print_r($misPorciones);
@@ -410,9 +410,9 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
                   <input type="hidden" name="intOpcion" value="2">
                   <input type="hidden" name="txtCustomOpcion" id="txtCustomOpcion" value="1">
                   <th>Tus Propias<br/>Porciones <i class="fas fa-chevron-right"></i></th>
-                  <th class="amarillo"><input type="number" name="intCustomP" class="form-control txtMisPorciones" step="0.01" value="<?= ($misPorciones != null ? str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones->intProteina)) : '0') ?>" min="1" max="99"></th>
-                  <th class="naranja"><input type="number" name="intCustomC" class="form-control txtMisPorciones" step="0.01" value="<?= ($misPorciones != null ? str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones->intCarbohidrato)) : '0') ?>" min="1" max="99"></th>
-                  <th class="celeste"><input type="number" name="intCustomG" class="form-control txtMisPorciones" step="0.01" value="<?= ($misPorciones != null ? str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones->intGrasa)) : '0') ?>" min="1" max="99"></th>
+                  <th class="amarillo"><input type="number" name="intCustomP" class="form-control txtMisPorciones" step="0.01" value="<?= ($misPorciones != null ? str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones['intProteina'])) : '0') ?>" min="1" max="99"></th>
+                  <th class="naranja"><input type="number" name="intCustomC" class="form-control txtMisPorciones" step="0.01" value="<?= ($misPorciones != null ? str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones['intCarbohidrato'])) : '0') ?>" min="1" max="99"></th>
+                  <th class="celeste"><input type="number" name="intCustomG" class="form-control txtMisPorciones" step="0.01" value="<?= ($misPorciones != null ? str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones['intGrasa'])) : '0') ?>" min="1" max="99"></th>
                   <th>
                     <div class="btn-group btn-group-lg" role="group" aria-label="...">
                       <button type="submit" class="btn btn-primary " onclick="$('#txtCustomOpcion').val(1);"><span class="glyphicon glyphicon-floppy-saved" aria-hidden="true"></span></button>

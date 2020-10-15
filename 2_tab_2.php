@@ -3,10 +3,10 @@ function fnTab_22_cargar(){
   global $wpdb,$intEjercicio;
   $strUsuario = fnViveMovimento_usuario();
   try {
-    $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_ejercicio WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
+    $buscar = get_results("SELECT * FROM wp_vivemov_users_ejercicio WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     if (count($buscar) > 0) {
       $buscar = $buscar[0];
-      $intEjercicio = $buscar->intEjercicio;
+      $intEjercicio = $buscar['intEjercicio'];
     }else{
       $intEjercicio = 1;
     }

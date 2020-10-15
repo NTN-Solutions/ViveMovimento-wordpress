@@ -1,20 +1,20 @@
 <?php
 function fnMiInformacion_validar($strUsuario,$intEdad,$decAltura,$decPeso){
     global $reg_errors;
-    $reg_errors = new WP_Error;
+    $reg_errors = array();
     if ( empty( $strUsuario ) || empty($intEdad) || empty($decAltura) || empty($decPeso) ) {
-        $reg_errors->add('field', 'Todos los campos son requeridos');
+        array_push($reg_errors, 'Todos los campos son requeridos');
     }
     if ( empty($intEdad) ) {
-        $reg_errors->add('field', 'Ingresar Edad!');
+        array_push($reg_errors, 'Ingresar Edad!');
     }
     if ( empty($decAltura) ) {
-        $reg_errors->add('field', 'Ingresar Altura (cm)');
+        array_push($reg_errors, 'Ingresar Altura (cm)');
     }
     if ( empty($decPeso) ) {
-        $reg_errors->add('field', 'Ingresar Peso (lbs)');
+        array_push($reg_errors, 'Ingresar Peso (lbs)');
     }
-    if ( is_wp_error( $reg_errors ) ) { 
+    if ( count( $reg_errors ) > 0 ) { 
         $strMensaje = '';
         foreach ( $reg_errors->get_error_messages() as $error ) {        
             $strMensaje = $strMensaje.'<br/>'.$error;
@@ -73,7 +73,7 @@ function fnGuardarMiInformacion_save() {
     'intSexo'       =>   $intSexo,
     'decMetabolismo'=>   $decMetabolismo
 );
-  if (count($reg_errors->get_error_messages()) == 0) {
+  if (count($reg_errors) == 0) {
     global $wpdb;
     $response = $wpdb->insert("wp_vivemov_users_informacion", $registro);
     if($response) {
@@ -87,15 +87,15 @@ function fnGuardarMiInformacion_save() {
 function fnMiInformacion_cargar($strUsuario){
     global $wpdb,$intEdad,$decAltura,$decPeso,$intSexo,$decGrasa,$decMetabolismo,$decIMC;
     try {
-       $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_informacion WHERE strUsuario = '$strUsuario' ORDER BY intId DESC LIMIT 1;");
+       $buscar = get_results("SELECT * FROM wp_vivemov_users_informacion WHERE strUsuario = '$strUsuario' ORDER BY intId DESC LIMIT 1;");
        if (count($buscar) > 0) {
           $buscar = $buscar[0];
-          $intEdad = $buscar->intEdad;
-          $decAltura = $buscar->decAltura;
-          $decPeso = $buscar->decPeso;
-          $intSexo = $buscar->intSexo;
-          $decGrasa = $buscar->decGrasa;
-          $decMetabolismo = $buscar->decMetabolismo;    
+          $intEdad = $buscar['intEdad'];
+          $decAltura = $buscar['decAltura'];
+          $decPeso = $buscar['decPeso'];
+          $intSexo = $buscar['intSexo'];
+          $decGrasa = $buscar['decGrasa'];
+          $decMetabolismo = $buscar['decMetabolismo'];    
           $decIMC = (($decPeso / 2.2) / (($decAltura/100) * ($decAltura/100)));
 
       }

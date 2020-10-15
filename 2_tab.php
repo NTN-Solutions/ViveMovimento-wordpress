@@ -3,10 +3,10 @@ function fnTab_2_cargar(){
   global $wpdb,$intActividadTipo;
   $strUsuario = fnViveMovimento_usuario();
   try {
-    $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_actividad_gasto_energetico WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
+    $buscar = get_results("SELECT * FROM wp_vivemov_users_actividad_gasto_energetico WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     if (count($buscar) > 0) {
       $buscar = $buscar[0];
-      $intActividadTipo = $buscar->intActividad;
+      $intActividadTipo = $buscar['intActividad'];
     }else{
       $intActividadTipo = 1;
     }

@@ -3,10 +3,10 @@ function fnTab_21_cargar(){
   global $wpdb,$intExperiencia;
   $strUsuario = fnViveMovimento_usuario();
   try {
-    $buscar = $wpdb->get_results("SELECT * FROM wp_vivemov_users_experiencia WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
+    $buscar = get_results("SELECT * FROM wp_vivemov_users_experiencia WHERE strUsuario = '$strUsuario' ORDER BY decId DESC LIMIT 1;");
     if (count($buscar) > 0) {
       $buscar = $buscar[0];
-      $intExperiencia = $buscar->intExperiencia;
+      $intExperiencia = $buscar['intExperiencia'];
     }else{
       $intExperiencia = 1;
     }
