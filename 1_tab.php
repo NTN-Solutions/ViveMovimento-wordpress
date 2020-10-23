@@ -75,7 +75,7 @@ function fnGuardarMiInformacion_save() {
 );
   if (count($reg_errors) == 0) {
     global $wpdb;
-    $response = $wpdb->insert("wp_vivemov_users_informacion", $registro);
+    $response = fn_insert("wp_vivemov_users_informacion", $registro);
     if($response) {
        $_POST = array();
        echo fnMensaje(1,'Listo, guardado!');

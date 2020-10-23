@@ -123,7 +123,7 @@ function fnTab_4_save($strUsuario,$intMeta){
     'intMeta'  =>   $intMeta
   );
   global $wpdb;
-  $response = $wpdb->insert("wp_vivemov_users_meta", $registro);
+  $response = fn_insert("wp_vivemov_users_meta", $registro);
   if($response) {
     $_POST = array();
     echo fnMensaje(1,'Listo, guardado!');
@@ -147,13 +147,13 @@ function fnTab_4_save_custom_porciones(){
     'datCreacion'=>date('Y-m-d H:i:s')
   );
   $response;
-  if($_POST['txtCustomOpcion'] == 1){
-    $response = $wpdb->insert("wp_vivemov_users_porciones", $registro);
+  if(isset($_POST['txtCustomOpcion']) && $_POST['txtCustomOpcion'] == 1){
+    $response = fn_insert("wp_vivemov_users_porciones", $registro);
   }
-  if($response || $_POST['txtCustomOpcion'] == 2) {
+  if($response || (isset($_POST['txtCustomOpcion']) && $_POST['txtCustomOpcion'] == 2)) {
     $_POST = array();
     echo fnMensaje(1,'Listo, '.($_POST['txtCustomOpcion'] == 1 ? 'guardado' : 'eliminado').'!');
-  } else {
+  } else if (isset($_POST['txtCustomOpcion'])){
     echo fnMensaje(2,'Inconvenientes, datos no guardados!');
   }
 

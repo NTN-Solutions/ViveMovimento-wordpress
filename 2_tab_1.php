@@ -20,7 +20,7 @@ function fnTab_21_save($strUsuario,$intExperiencia){
         'intExperiencia'  =>   $intExperiencia
     );
     global $wpdb;
-    $response = $wpdb->insert("wp_vivemov_users_experiencia", $registro);
+    $response = fn_insert("wp_vivemov_users_experiencia", $registro);
     if($response) {
       $_POST = array();
       echo fnMensaje(1,'Listo, guardado!');

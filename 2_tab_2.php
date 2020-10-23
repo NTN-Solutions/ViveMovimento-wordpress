@@ -20,7 +20,7 @@ function fnTab_22_save($strUsuario,$intEjercicio){
         'intEjercicio'  =>   $intEjercicio
     );
     global $wpdb;
-    $response = $wpdb->insert("wp_vivemov_users_ejercicio", $registro);
+    $response = fn_insert("wp_vivemov_users_ejercicio", $registro);
     if($response) {
       $_POST = array();
       echo fnMensaje(1,'Listo, guardado!');

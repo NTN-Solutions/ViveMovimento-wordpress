@@ -20,7 +20,7 @@ function fnTab_2_save($strUsuario,$intActividadTipo){
         'intActividad'  =>   $intActividadTipo
     );
     global $wpdb;
-    $response = $wpdb->insert("wp_vivemov_users_actividad_gasto_energetico", $registro);
+    $response = fn_insert("wp_vivemov_users_actividad_gasto_energetico", $registro);
     if($response) {
       $_POST = array();
       echo fnMensaje(1,'Listo, guardado!');

@@ -62,7 +62,7 @@ function fnTab_bd_save(){
     'strUsuario'         => $strUsuario,
   );
   if($intA_Id == 0){
-      $response = $wpdb->insert("wp_vivemov_alimentos_porciones", $registro);
+      $response = fn_insert("wp_vivemov_alimentos_porciones", $registro);
       if($response) {
         $intA_Id = null;
         $intA_Cantidad = null;

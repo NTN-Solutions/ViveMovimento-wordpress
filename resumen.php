@@ -78,7 +78,7 @@
     fnViveMovimento_usuario(true);
   		global $wpdb, $strUsuario;
       global $gDataPaso_1,$gDataPaso_2,$gDataPaso_3;
-    	$strUsuario = fnViveMovimento_usuario();
+      $strUsuario = fnViveMovimento_usuario();
       fnViveMovimento_resumen_data();
         //$datFechaDiario = new DateTime();
       if (isset($_GET['action']) && $_GET['action'] == 'dashboard' && isset($_POST['intOpcion']) && $_POST['intOpcion'] != null && $_POST['intOpcion'] == '1') {
@@ -202,16 +202,15 @@
 </div>
 
 <?php 
-  if (!isset($_GET['infoUsuario']) || $_GET['infoUsuario'] == null || $_GET['infoUsuario'] == '') {
-    if ($gDataPaso_1 == null) {
-      echo '<script>window.location.href = "/user/?action=tab_Paso_1";</script>';
-    }else if ($gDataPaso_2 == null) {
-      echo '<script>window.location.href = "/user/?action=tab_Paso_2";</script>';
-    }else if ($gDataPaso_3 == null) {
-      echo '<script>window.location.href = "/user/?action=tab_Paso_3";</script>';
-    }
-  }
-
+  // if (!isset($_GET['infoUsuario']) || $_GET['infoUsuario'] == null || $_GET['infoUsuario'] == '') {
+  //   if ($gDataPaso_1 == null) {
+  //     echo '<script>window.location.href = "/user/?action=tab_Paso_1";</script>';
+  //   }else if ($gDataPaso_2 == null) {
+  //     echo '<script>window.location.href = "/user/?action=tab_Paso_2";</script>';
+  //   }else if ($gDataPaso_3 == null) {
+  //     echo '<script>window.location.href = "/user/?action=tab_Paso_3";</script>';
+  //   }
+  // }
   if ($bitPermisoAdmin == true) {
 ?>
 <div class="row">

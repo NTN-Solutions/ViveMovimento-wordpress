@@ -9,7 +9,7 @@ function fnViveMovimentoRecetaAgregar(){
     'datCreacion' => date('Y-m-d H:i:s'),
     'bitActivo'   => 1
   );
-  $responseDiario = $wpdb->insert("wp_vivemov_recetas", $itemRow);  
+  $responseDiario = fn_insert("wp_vivemov_recetas", $itemRow);  
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, agregado!';
   echo json_encode($result);
@@ -35,7 +35,7 @@ function fnViveMovimentoRecetaClonar(){
       FROM wp_vivemov_recetas
       WHERE intId = $intClonar;
       ");
-  $decReceta = $wpdb->insert_id;
+  $decReceta = fn_insert_id;
   get_results("
       INSERT INTO wp_vivemov_recetas_detalle(intReceta,decCantidad,decAlimento,bitActivo)
       SELECT $decReceta,decCantidad,decAlimento,bitActivo
@@ -67,9 +67,9 @@ function fnViveMovimentoRecetaListado(){
   }
   foreach ($list as $item) {
 
-  echo '-------------=';
-  print_r($item);
-  echo '=-------------';
+  // echo '-------------=';
+  // print_r($item);
+  // echo '=-------------';
   
     if($item['bitActivo'] == 1){
       $item['detalle'] = fnViveMovimentoRecetaListadoDetalle($item['intId']);      
@@ -94,9 +94,9 @@ function fnViveMovimentoRecetaListadoDetalle($intReceta){
     WHERE D.intReceta = $intReceta AND D.bitActivo = 1
     ORDER BY A.strAlimento ASC;");
   
-  echo '-------=';
-  print_r($list);
-  echo '=-------';
+  // echo '-------=';
+  // print_r($list);
+  // echo '=-------';
   
   return $list;
 }
@@ -111,7 +111,7 @@ function fnViveMovimentoRecetaDetalleAgregar(){
     'decAlimento'  => $decAlimento,
     'bitActivo'   => 1
   );
-  $responseDiario = $wpdb->insert("wp_vivemov_recetas_detalle", $itemRow);  
+  $responseDiario = fn_insert("wp_vivemov_recetas_detalle", $itemRow);  
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, agregado!';
   echo json_encode($result);
@@ -360,8 +360,8 @@ if ($intCursorRow % 3 == 0) {
         strNombre: strNombre
       },
       success: function(response) {
-        var response = jQuery.parseJSON(response);
-        if(response.type == "success") {
+        // var response = jQuery.parseJSON(response);
+        if(response.toLocaleLowerCase().indexOf('listo') !== -1 || response.toLocaleLowerCase().indexOf('exit') !== -1) {
           fnViveMovimentoRecetaListadoCore(0);
         }else {
          alert(response.mnj);
@@ -382,8 +382,8 @@ if ($intCursorRow % 3 == 0) {
         intClonar: intClonar
       },
       success: function(response) {
-        var response = jQuery.parseJSON(response);
-        if(response.type == "success") {
+        // var response = jQuery.parseJSON(response);
+        if(response.toLocaleLowerCase().indexOf('listo') !== -1 || response.toLocaleLowerCase().indexOf('exit') !== -1) {
           fnViveMovimentoRecetaListadoCore(0);
         }else {
          alert(response.mnj);
@@ -400,8 +400,8 @@ if ($intCursorRow % 3 == 0) {
         ,intReceta: intReceta
       },
       success: function(response) {
-        var response = jQuery.parseJSON(response);
-        if(response.type == "success") {
+        // var response = jQuery.parseJSON(response);
+        if(response.toLocaleLowerCase().indexOf('listo') !== -1 || response.toLocaleLowerCase().indexOf('exit') !== -1) {
           fnViveMovimentoRecetaListadoCore(0);
         }else {
          alert(response.mnj);
@@ -423,8 +423,8 @@ if ($intCursorRow % 3 == 0) {
         ,strNombre: strNombre
       },
       success: function(response) {
-        var response = jQuery.parseJSON(response);
-        if(response.type == "success") {
+        // var response = jQuery.parseJSON(response);
+        if(response.toLocaleLowerCase().indexOf('listo') !== -1 || response.toLocaleLowerCase().indexOf('exit') !== -1) {
           fnViveMovimentoRecetaListadoCore(intReceta);
         }else {
          alert(response.mnj);
@@ -450,8 +450,8 @@ if ($intCursorRow % 3 == 0) {
         ,decAlimento: decAlimento
       },
       success: function(response) {
-        var response = jQuery.parseJSON(response);
-        if(response.type == "success") {
+        // var response = jQuery.parseJSON(response);
+        if(response.toLocaleLowerCase().indexOf('listo') !== -1 || response.toLocaleLowerCase().indexOf('exit') !== -1) {
           fnViveMovimentoRecetaListadoCore(intReceta);
         }else {
          alert(response.mnj);
@@ -473,8 +473,8 @@ if ($intCursorRow % 3 == 0) {
         ,decCantidad: intCantidad
       },
       success: function(response) {
-        var response = jQuery.parseJSON(response);
-        if(response.type == "success") {
+        // var response = jQuery.parseJSON(response);
+        if(response.toLocaleLowerCase().indexOf('listo') !== -1 || response.toLocaleLowerCase().indexOf('exit') !== -1) {
           fnViveMovimentoRecetaListadoCore(intReceta);
         }else {
          alert(response.mnj);
@@ -491,8 +491,8 @@ if ($intCursorRow % 3 == 0) {
         ,intReceta: intReceta
       },
       success: function(response) {
-        var response = jQuery.parseJSON(response);
-        if(response.type == "success") {
+        // var response = jQuery.parseJSON(response);
+        if(response.toLocaleLowerCase().indexOf('listo') !== -1 || response.toLocaleLowerCase().indexOf('exit') !== -1) {
           $('#txtRecetaCantidad_editar_' + intReceta).parent().parent().remove();
         }else {
          alert(response.mnj);
@@ -511,8 +511,8 @@ if ($intCursorRow % 3 == 0) {
         ,intTiempo: $('#intDiarioDet_Receta_Tiempo_' + decDiario).val()
       },
       success: function(response) {
-        var response = jQuery.parseJSON(response);
-        if(response.type == "success") {
+        // var response = jQuery.parseJSON(response);
+        if(response.toLocaleLowerCase().indexOf('listo') !== -1 || response.toLocaleLowerCase().indexOf('exit') !== -1) {
           setTimeout(function () {
               fnViveMovimentoDiarioDetalleTabla(decDiario);
           }, 150);

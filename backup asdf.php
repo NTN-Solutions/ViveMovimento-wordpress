@@ -42,7 +42,7 @@ function fnDiario_Agregar(){
         $_SESSION["intFormulario"] = 0;
         // $buscar = get_results("SELECT * FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' AND datFecha = '".$datSiguiente."' LIMIT 1;");
         // if(count($buscar) == 0){
-            $responseDiario = $wpdb->insert("wp_vivemov_users_diario", $itemRow);
+            $responseDiario = fn_insert("wp_vivemov_users_diario", $itemRow);
             if($responseDiario) {
                 echo fnMensaje(1,'Listo, dia('.$datSiguiente.') agregado!');
             } else {
@@ -86,8 +86,8 @@ function fnDiario_clonar(){
         $_SESSION["intFormulario"] = 0;
         // $buscar = get_results("SELECT * FROM wp_vivemov_users_diario WHERE strUsuario = '$strUsuario' AND datFecha = '".$datSiguiente."' LIMIT 1;");
         // if(count($buscar) == 0){
-            $responseDiario = $wpdb->insert("wp_vivemov_users_diario", $itemRow);
-            $nuedoDiarioClonado = $wpdb->insert_id;
+            $responseDiario = fn_insert("wp_vivemov_users_diario", $itemRow);
+            $nuedoDiarioClonado = fn_insert_id;
             if($responseDiario) {
                 $clonar = get_results("
                     INSERT INTO wp_vivemov_users_diario_detalle(intDiario,strUsuario,intTiempo,intAlimentoPorcion,devCantidad,strDescripcion,intProteinas,intCarbohidratos,intGrasas,intVegetales,intLibres,datModificado)
@@ -145,7 +145,7 @@ function fnDiario_AgregarDetalle(){
         $_SESSION["intFormulario"] = 0;
         if ( 1 > count( $reg_errors->get_error_messages() ) ) {
             global $wpdb;
-            $responseDiario = $wpdb->insert("wp_vivemov_users_diario_detalle", $itemRow);
+            $responseDiario = fn_insert("wp_vivemov_users_diario_detalle", $itemRow);
             if($responseDiario) {
                 echo fnMensaje(1,'Listo, agregado!');
                 get_results("

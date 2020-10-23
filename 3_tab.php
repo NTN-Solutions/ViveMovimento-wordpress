@@ -20,7 +20,7 @@ function fnTab_3_save($strUsuario,$intMeta){
         'intMeta'  =>   $intMeta
     );
     global $wpdb;
-    $response = $wpdb->insert("wp_vivemov_users_meta", $registro);
+    $response = fn_insert("wp_vivemov_users_meta", $registro);
     if($response) {
       $_POST = array();
       echo fnMensaje(1,'Listo, guardado!');

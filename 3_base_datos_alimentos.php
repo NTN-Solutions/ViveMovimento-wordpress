@@ -18,7 +18,7 @@ function fnBDAlimentos_save(){
         if($intA_Id == 0){
             if($_SESSION["intFormulario"] == 1){
                 $_SESSION["intFormulario"] = 0;
-                $response = $wpdb->insert("wp_vivemov_alimentos_porciones", $registro);
+                $response = fn_insert("wp_vivemov_alimentos_porciones", $registro);
                 if($response) {
                     echo fnMensaje(1,'Listo, nuevo alimento guardado!');
                 } else {

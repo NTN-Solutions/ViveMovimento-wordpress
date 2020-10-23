@@ -208,7 +208,6 @@ function fnUtils_core(){
         $(".wpb_text_column.wpb_content_element").hide();
     </script>';
 }
-
 include('resumen.php');
 include('0_estilos.php');
 include('1_tab.php');
@@ -222,7 +221,6 @@ include('bd_tab.php');
 include('7_tab.php');
 include('8_tab.php');
 include('9_tab.php');
-
 function fnUsuarioLogeadoViveMovimento() {
     $user = wp_get_current_user(); 
     return $user->exists();
@@ -341,6 +339,7 @@ function fnViveMovimento() {
     return ob_get_clean();
 }
 function wp_get_current_user(){
+    // session_start();
     $current_user_info = array();
     $current_user_info = array(
         'user_login' => (isset($_SESSION['strUsuario']) ? $_SESSION['strUsuario'] : ""),
@@ -348,25 +347,84 @@ function wp_get_current_user(){
         'user_admin' => (isset($_SESSION['bitAdmin']) ? ($_SESSION['bitAdmin'] == 1 ? true : false) : ""),
         'teste' => 'asdf'
     );
+    // echo '===========>';
+    // print_r($current_user_info);
+    // echo '<===========';
     return $current_user_info;
 }
 function fnViveMovimento_INIT_SISTEMA(){
     ob_start();
     session_start();
-
     if (isset($_GET['login_api_usr']) && $_GET['login_api_usr'] != null && $_GET['login_api_usr'] != '') {
         $_SESSION['strUsuario'] = $_GET['login_api_usr'];
         $_SESSION['strCorreo'] = $_GET['login_api_email'];
         $_SESSION['bitAdmin'] = $_GET['login_api_admin'];
-        fnViveMovimento_Init();
+        // fnViveMovimento_Init();
+        $url = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+        if (strpos($url,'tab_Paso_') !== false) {
+            fnViveMovimento_Init();
+        } else if (strpos($url,'cuenta') !== false){
+            fnViveMovimento_resumen_init();
+        }
     }else if (isset($_GET['login_api_out']) && $_GET['login_api_out'] != null && $_GET['login_api_out'] != '') {
        session_start();
        unset($_SESSION["strUsuario"]);
        unset($_SESSION["strCorreo"]);
        unset($_SESSION["bitAdmin"]);
     }else{
-        fnViveMovimento_Init();
+        // fnViveMovimento_Init();
+        $url = 'http://' . $_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+        if (strpos($url,'tab_Paso_') !== false) {
+            fnViveMovimento_Init();
+        } else if (strpos($url,'cuenta') !== false){
+            fnViveMovimento_resumen_init();
+        }
     }
+}
+function fn_insert($strTabla, $registro){
+    //wp_vivemov_users_informacion
+    $servername = "localhost";
+    $username = "vivemovimento_own";
+    $password = "vivemovimento123";
+    $dbname = "vivemovimento";
+
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+       die("Connection failed: " . $conn->connect_error);
+    } 
+    // echo '======>';
+    // print_r($registro);
+    // echo '<======';
+    
+    $strColumnas = '';
+    $strValores = '';
+    foreach($registro as $key=>$data) {
+        if ($strColumnas == '') {
+            $strColumnas = $key;
+        }else{
+            $strColumnas = $strColumnas.','.$key;
+        }
+        $data = str_replace(",", ".", $data);
+        if ($strValores == '') {
+            $strValores = "'".$data."'";
+        }else{
+            $strValores = $strValores.",'".$data."'";
+        }
+    }
+    $sql = "INSERT INTO $strTabla($strColumnas)VALUES ($strValores)";
+    $bitSuccess = false;
+    if (mysqli_query($conn, $sql)) {
+        $bitSuccess = true;
+        echo "New record created successfully";
+    } else {
+        $bitSuccess = false;
+        echo "Error: " . $sql . "" . mysqli_error($conn);
+    }
+    $conn->close();
+    return $bitSuccess;
 }
 function get_results($strQuery){
     $servername = "localhost";
@@ -408,41 +466,112 @@ function admin_url($strFuncion){
     $strURL = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     return $strURL;
 }
+
+$bitNormal = true;
+$url = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+if (strpos($url,'&action=fnViveMovimento') === false) {
+    $bitNormal = true;
+} else {
+    $bitNormal = false;
+}
+
+if ($bitNormal == true) {
 ?>
+    <!doctype html>
+    <html lang="es">
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <title>Vivemovimento</title>
 
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Vivemovimento</title>
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+        <script src="/js/pdfobject.min.js"></script>
 
-    <script src="/js/pdfobject.min.js"></script>
+        <script src="/datepicker/js/bootstrap-datepicker.min.js"></script>
 
-    <script src="/datepicker/js/bootstrap-datepicker.min.js"></script>
-
-  </head>
-  <body>
-<?php
-    //INICIAR SISTEMA
-    fnViveMovimento_INIT_SISTEMA();
+      </head>
+      <body>
+    <?php
+        //INICIAR SISTEMA
+        fnViveMovimento_INIT_SISTEMA();
+    ?>
+      </body>
+    </html>
+<?php 
+}else{
+    if (strpos($url,'fnViveMovimentoDiarioAgregar') !== false){
+        session_start();
+        fnViveMovimentoDiarioAgregar();
+    }else if (strpos($url,'fnViveMovimentoDiarioAgregar') !== false){
+        session_start();
+        fnViveMovimentoDiarioAgregar();
+    }else if (strpos($url,'fnViveMovimentoDiarioEliminar') !== false){
+        session_start();
+        fnViveMovimentoDiarioEliminar();
+    }else if (strpos($url,'fnViveMovimentoDiarioDetalleTabla') !== false){
+        session_start();
+        fnViveMovimentoDiarioDetalleTabla();
+    }else if (strpos($url,'fnViveMovimentoRecetaClonar') !== false){
+        session_start();
+        fnViveMovimentoRecetaClonar();
+    }else if (strpos($url,'fnViveMovimentoRecetaAgregar') !== false){
+        session_start();
+        fnViveMovimentoRecetaAgregar();
+    }else if (strpos($url,'fnViveMovimentoRecetaEditar') !== false){
+        session_start();
+        fnViveMovimentoRecetaEditar();
+    }else if (strpos($url,'fnViveMovimentoRecetaEliminar') !== false){
+        session_start();
+        fnViveMovimentoRecetaEliminar();
+    }else if (strpos($url,'fnViveMovimentoRecetaListado') !== false){
+        session_start();
+        fnViveMovimentoRecetaListado();
+    }else if (strpos($url,'fnViveMovimentoRecetaListadoCore') !== false){
+        session_start();
+        fnViveMovimentoRecetaListadoCore();
+    }else if (strpos($url,'fnViveMovimentoRecetaDetalleAgregar') !== false){
+        session_start();
+        fnViveMovimentoRecetaDetalleAgregar();
+    }else if (strpos($url,'fnViveMovimentoRecetaDetalleEditar') !== false){
+        session_start();
+        fnViveMovimentoRecetaDetalleEditar();
+    }else if (strpos($url,'fnViveMovimentoRecetaDetalleEliminar') !== false){
+        session_start();
+        fnViveMovimentoRecetaDetalleEliminar();
+    }else if (strpos($url,'fnViveMovimentoRecetaJournalAgregar') !== false){
+        session_start();
+        fnViveMovimentoRecetaJournalAgregar();
+    }else if (strpos($url,'fnViveMovimentoPorcionesPropias') !== false){
+        session_start();
+        fnViveMovimentoPorcionesPropias();
+    }else if (strpos($url,'fnViveMovimentoOneToOnetabla') !== false){
+        session_start();
+        fnViveMovimentoOneToOnetabla();
+    }else if (strpos($url,'fnViveMovimentoOneToOneAgregar') !== false){
+        session_start();
+        fnViveMovimentoOneToOneAgregar();
+    }else if (strpos($url,'fnViveMovimentoOneToOneEliminar') !== false){
+        session_start();
+        fnViveMovimentoOneToOneEliminar();
+    }else if (strpos($url,'fnViveMovimentoDiarioDetalleReceta') !== false){
+        session_start();
+        fnViveMovimentoDiarioDetalleReceta();
+    }
+}
 ?>
-  </body>
-</html>

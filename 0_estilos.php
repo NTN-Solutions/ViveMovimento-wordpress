@@ -1,5 +1,8 @@
 <?php
 	function fnViveMovimento_usuario($bitMensaje = null){
+		// echo '===============>';
+		// echo wp_get_current_user()['user_login'];
+		// echo '<===============';
 		if (isset($_GET['infoUsuario']) && $_GET['infoUsuario'] != null && $_GET['infoUsuario'] != '') {
 			if ( wp_get_current_user()['user_admin'] == true) {
 				if($bitMensaje != null && $bitMensaje == true){
@@ -221,6 +224,10 @@
 	}
 	input[type="submit"]{
     	padding: 0px !important; 
+	}
+	.btn{
+    	color: white;
+	    background-color: black;
 	}
 	/*.carousel .item {
 	  height: 300px;
