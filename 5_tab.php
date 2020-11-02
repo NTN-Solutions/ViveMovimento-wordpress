@@ -184,11 +184,14 @@ function fnDiario_Detalle($decDiario,$intTiempo){
         INNER JOIN wp_vivemov_alimentos_porciones AP ON AP.intId = DD.intAlimentoPorcion
         INNER JOIN wp_vivemov_alimentos_unidad_medida um on um.intId = AP.intUnidadMedida
         WHERE T.bitActivo = 1 AND T.intId = $intTiempo ORDER BY AP.strAlimento ASC");
+    // echo '<br/>==============> fnDiario_Detalle('.$decDiario.')<br/>';
+    // echo print_r($listado);
+    // echo '<br/>==============> fnDiario_Detalle';
     return $listado;
 }
 function fnDiario_eliminar($intDetalle,$detEncabezado){
     global $wpdb,$strUsuario;
-    $wpdb->delete( 'wp_vivemov_users_diario_detalle', array( 'intId' => $intDetalle ) );
+    delete( 'wp_vivemov_users_diario_detalle', 'intId', $intDetalle );
     fnDiarioDetalleCalcular_P_CH_G_V($wpdb,$strUsuario,$detEncabezado);
     $result['type'] = 'success';
     $result['mnj'] = 'Listo, eliminado!';
@@ -342,6 +345,7 @@ function fnViveMovimentoDiarioDetalleTabla(){
     $diario = $listadoDiario[0];
     $strUsuario = fnViveMovimento_usuario();
     $strURL = 'https://vivemovimento.com/user/'.$strUsuario.'';
+    // $strURL = 'http://localhost:8888/user/'.$strUsuario.'';
     fnViveMovimentoDiarioDetalleTablaCore($strURL,$diario,$listTiempos);
     exit();
 }
@@ -360,28 +364,28 @@ function fnViveMovimentoDiarioDetalleTablaCore($strURL,$diario,$listTiempos){
                 <td class="morado" style="font-weight: bolder;width: 10%;">Libre</td>
               </tr>';
               foreach ($listDetalle as $det) {
-                if (isset($det->intId)){
+                if (isset($det['intId'])){
                 echo '<tr>
                         <td style="width: 90px;">
                             <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario['intId'].'" method="post" style="display: inline-block;">
                                 <input type="hidden" name="intOp" value="3" />
                                 <input type="hidden" name="intEncabezado" value="'.$diario['intId'].'" />
-                                <input type="hidden" name="intEliminar" value="'.$det->intId.'" />
-                                <button type="button" class="btn btn-link badge" role="button" href="#" style="color: white;" onClick="fnDiarioEliminarAjax('.$diario['intId'].','.$det->intId.')"><i class="fas fa-trash-alt"></i></button>
+                                <input type="hidden" name="intEliminar" value="'.$det['intId'].'" />
+                                <button type="button" class="btn btn-link badge" role="button" href="#" style="color: white;" onClick="fnDiarioEliminarAjax('.$diario['intId'].','.$det['intId'].')"><i class="glyphicon glyphicon-trash"></i></button>
                             </form>
                             <form action="'.$strURL.'?action=tab_Paso_5&tab_Diario_'.$diario['intId'].'" method="post" style="display: inline-block;">
                                 <input type="hidden" name="intOp" value="4" />
-                                <input type="hidden" name="intEditar" value="'.$det->intId.'" />
-                                <button type="submit" class="btn btn-link badge" role="button" href="#"><i class="fa fa-pencil"></i></button>
+                                <input type="hidden" name="intEditar" value="'.$det['intId'].'" />
+                                <button type="submit" class="btn btn-link badge" role="button" href="#"><i class="glyphicon glyphicon-edit"></i></button>
                             </form>                            
                         </td>
-                        <td>'.$det->strAlimento.'</td>
-                        <td>'.fnRedondearCUSTOMUP_1($det->intCantidadTomado).' '.$det->strUnidadMedida.'</td>
-                        <td class="amarillo">'.$det->intProteinas.'</td>
-                        <td class="naranja">'.$det->intCarbohidratos.'</td>
-                        <td class="celeste">'.$det->intGrasas.'</td>
-                        <td class="verde">'.$det->intVegetales.'</td>
-                        <td class="morado">'.$det->intLibres.'</td>
+                        <td>'.$det['strAlimento'].'</td>
+                        <td>'.fnRedondearCUSTOMUP_1($det['intCantidadTomado']).' '.$det['strUnidadMedida'].'</td>
+                        <td class="amarillo">'.$det['intProteinas'].'</td>
+                        <td class="naranja">'.$det['intCarbohidratos'].'</td>
+                        <td class="celeste">'.$det['intGrasas'].'</td>
+                        <td class="verde">'.$det['intVegetales'].'</td>
+                        <td class="morado">'.$det['intLibres'].'</td>
                       </tr>';
               }
           }
@@ -422,9 +426,13 @@ function fnViveMovimentoDiarioDetalleReceta_Core($decDiario){
     $intCursorRow = 1;
 
     $listadoDiario = fnListadoDiario($decDiario);
+
     $diario = $listadoDiario[0];
     $listTiempos = fnDiario_Tiempos();
     $listadoRECETAS = fnViveMovimentoRecetaListado();
+    // echo '<br/>==============>';
+    // echo print_r($listadoRECETAS);
+    // echo '<br/>==============>';
     foreach ($listadoRECETAS as $item) {
         if($item['bitActivo'] == 0){ $intCursor += 1; continue; } ?>
         <div class="col-md-12 col-xs-12 col-sm-12" style="padding-left: 2px;padding-right: 2px;">
@@ -436,7 +444,7 @@ function fnViveMovimentoDiarioDetalleReceta_Core($decDiario){
         <div class="col-md-4 col-xs-12 col-sm-12" style="padding-left: 2px;padding-right: 2px;">
             <div class="panel panel-info">
                 <div class="panel-heading">
-                    <h3 class="panel-title"><i class="fa fa-list-ul" aria-hidden="true"></i> Receta No. <?= $intCursor ?>
+                    <h3 class="panel-title"><i class="fa fa-list-ul" aria-hidden="true"></i> Receta: <?= $item['strNombre'] ?>
                         <button type="button" class="btn btn-success btn-xs" onclick="fnViveMovimento_Receta_Journal_agregar(<?= $diario['intId'] ?>, <?= $item['intId'] ?>);" style="float: right;">
                           <i class="fa fa-plus" aria-hidden="true"></i> Journal
                         </button>
@@ -457,7 +465,9 @@ function fnViveMovimentoDiarioDetalleReceta_Core($decDiario){
                                     <th>Alimento</th>
                                 </tr>
                             </thead>
-                        <?php if (isset($item['detalle'])) { foreach ($item['detalle'] as $itemDetalle) { ?>
+                        <?php
+                            $item['detalle'] = fnViveMovimentoRecetaListadoDetalle($item['intId']);
+                        if (isset($item['detalle'])) { foreach ($item['detalle'] as $itemDetalle) { ?>
                             <tr>
                                 <td style="padding-left: 0px;padding-right: 0px;"><?= $itemDetalle['decCantidad'] ?> <?= $itemDetalle['strUnidadMedida'] ?></td>
                                 <td><?= $itemDetalle['strAlimento'] ?></td>
@@ -557,6 +567,7 @@ function fnFoodJournalCore(){
       $misPorciones = null;
     }
     $strURL = 'https://vivemovimento.com/user/'.$strUsuario.'';
+    // $strURL = 'http://localhost:8888/user/'.$strUsuario.'';
 
 ?>
 
@@ -624,10 +635,10 @@ function fnFoodJournalCore(){
     <div class="row">
         <form action="<?php echo strtok($_SERVER["REQUEST_URI"],'?') ?>?action=tab_Paso_5" method="post">
             <div class="col-md-3 col-xs-6 col-sm-6 sinPadding">
-                <h3 class="panel-title" style="margin-top: 15px;"><i class="fas fa-calendar-day"></i> Food Journal</h3>
+                <h3 class="panel-title" style="margin-top: 15px;"><i class="fa fa-calendar-day"></i> Food Journal</h3>
             </div>
             <div class="col-md-3 col-xs-6 col-sm-6 sinPadding">
-                <label><i class="fas fa-calendar-day"></i> Calendario:</label>
+                <label><i class="fa fa-calendar-day"></i> Calendario:</label>
                 <div class="input-group date">
                   <input id="txtFechaDiario" name="txtFechaDiario" type="text" class="form-control datepicker"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                 </div>
@@ -637,23 +648,23 @@ function fnFoodJournalCore(){
                 <div class="btn-group btn-group-justified" role="group" aria-label="...">
                   <div class="btn-group" role="group">
                     <button type="button" class="btn" onclick="fnTabNav(4);" style="color: white;display: none;">
-                      <i class="fas fa-angle-left"></i> Anterior
+                      <i class="fa fa-angle-left"></i> Anterior
                     </button>
 
                     <button type="button" class="btn" onclick="fnCargarDiario();" style="color: white !important;margin-top: 15px;">
-                        <i class="fas fa-search"></i> Buscar
+                        <i class="fa fa-search"></i> Buscar
                     </button>
                   </div>
                   <div class="btn-group" role="group">
                         <input type="hidden" name="intOp" value="1">
                         <button type="submit" style="color: white;margin-top: 15px;" class="btn" <?php  echo ($intDia == 0 ? 'disabled="disabled"': ''); ?> >
-                          <!-- <i class="fas fa-plus"></i> <?php echo ($intDia > 0 ? ' Agregar Dia '.$intDia : 'Dia actual ya fue agregado'); ?> -->
-                          <i class="fas fa-plus"></i> Agregar Dia
+                          <!-- <i class="fa fa-plus"></i> <?php echo ($intDia > 0 ? ' Agregar Dia '.$intDia : 'Dia actual ya fue agregado'); ?> -->
+                          <i class="fa fa-plus"></i> Agregar Dia
                         </button>
                   </div>
                   <div class="btn-group" role="group" style="display: none;">
                     <button type="button" class="btn" onclick="fnTabNav(6);" style="color: white;">
-                      Siguiente <i class="fas fa-angle-right"></i>
+                      Siguiente <i class="fa fa-angle-right"></i>
                     </button>
                   </div>
                 </div>
@@ -677,7 +688,7 @@ function fnFoodJournalCore(){
             // echo '<div class="col-md-12 col-xs-12 col-sm-12 sinPadding" style="display: none;"><br/>';
             echo '<div class="col-md-12 col-xs-12 col-sm-12 sinPadding"><br/>';
             echo '  <a class="btn btn-link badge" role="button" data-toggle="collapse" href="#collapseFOLDER" aria-expanded="false" aria-controls="collapseFOLDER">';
-            echo '      <i class="fas fa-calendar-day"></i> Folder de dias anteriores';
+            echo '      <i class="fa fa-calendar-day"></i> Folder de dias anteriores';
             echo '  </a>';
             echo '</div>';
             echo '<div class="collapse col-md-12 col-xs-12 col-sm-12 sinPadding" id="collapseFOLDER">';
@@ -686,7 +697,7 @@ function fnFoodJournalCore(){
         // echo '<div class="col-md-3 col-xs-12 col-sm-12 sinPadding" style="display: none;">';
         echo '<div class="col-md-3 col-xs-12 col-sm-12 sinPadding">';
         echo '  <a class="btn btn-link badge" role="button" data-toggle="collapse" href="#collapseDiario_'.$diario['intId'].'" aria-expanded="false" aria-controls="collapseDiario_'.$diario['intId'].'">';
-        echo '      <i class="fas fa-calendar-day"></i> Dia '.$intDiaContador.' ('.$datFechaDiario->format('D, d-M-Y').')';
+        echo '      <i class="fa fa-calendar-day"></i> Dia '.$intDiaContador.' ('.$datFechaDiario->format('D, d-M-Y').')';
         echo '  </a>';
         echo '</div>';
         $intDiaContador -= 1;
@@ -711,7 +722,7 @@ function fnFoodJournalCore(){
             <div class="collapse col-md-12 col-xs-12 col-sm-12 sinPadding" id="collapseDiario_'.$diario['intId'].'">
                 <div class="row">
                     <div class="col-md-6 col-xs-12 col-sm-12 sinPadding">
-                        <center><h2 style="margin: 0px;"><small><i class="fas fa-calendar-day"></i> Dia '.$intDiaContador.' - '.$datFechaDiario->format('D, d-M-Y').'</small></h2></center>
+                        <center><h2 style="margin: 0px;"><small><i class="fa fa-calendar-day"></i> Dia '.$intDiaContador.' - '.$datFechaDiario->format('D, d-M-Y').'</small></h2></center>
                     </div>
                     <div class="col-md-4 col-xs-6 col-sm-6 sinPadding">
                         <input onClick="$('."'#txtClonar_".$diario['intId']."'".').val('.$diario['intId'].'); setTimeout(function(){ $('."'#btnForm_diario_".$diario['intId']."'".').click(); }, 500);" type="submit" name="submit" value="Clonar diario en siguiente día" class="btn btn-block btn-xs" style="padding-bottom: 0px;padding-top: 0px;"/>
@@ -743,8 +754,8 @@ function fnFoodJournalCore(){
                         <input type="hidden" name="intOp" value="2" />
                         
                           <ul class="nav nav-tabs nav-justified" role="tablist">
-                            <li role="presentation" class="active"><a href="#tab_food_journal_'.$diario['intId'].'" aria-controls="tab_food_journal_'.$diario['intId'].'" role="tab" data-toggle="tab"><i class="fas fa-utensils"></i><i class="fas fa-book"></i> Por Alimento</a></li>
-                            <li role="presentation"><a href="#tab_food_journal_receta_'.$diario['intId'].'" aria-controls="tab_food_journal_receta_'.$diario['intId'].'" role="tab" data-toggle="tab"><i class="fas fa-list-ul"></i> Por Receta</a></li>
+                            <li role="presentation" class="active"><a href="#tab_food_journal_'.$diario['intId'].'" aria-controls="tab_food_journal_'.$diario['intId'].'" role="tab" data-toggle="tab"><i class="fa fa-utensils"></i><i class="fa fa-book"></i> Por Alimento</a></li>
+                            <li role="presentation"><a href="#tab_food_journal_receta_'.$diario['intId'].'" aria-controls="tab_food_journal_receta_'.$diario['intId'].'" role="tab" data-toggle="tab"><i class="fa fa-list-ul"></i> Por Receta</a></li>
                           </ul>
                           <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="tab_food_journal_'.$diario['intId'].'">
@@ -966,10 +977,10 @@ function fnFoodJournalCore(){
         $itemEditar = $itemEditar[0];
         echo '<script>';
         echo 'setTimeout(function(){
-                $("#intIDDETALLE_'.$itemEditar->intDiario.'").val('.$itemEditar->intId.');
-                $("#intDiarioDet_Tiempo_'.$itemEditar->intDiario.'").val("'.$itemEditar->intTiempo.'").trigger("change");                
-                $("#intDiarioDet_Cantidad_'.$itemEditar->intDiario.'").val('.$itemEditar->devCantidad.');
-                $("#intDiarioDet_Alimento_'.$itemEditar->intDiario.'").val("'.$itemEditar->intAlimentoPorcion.'").trigger("change");
+                $("#intIDDETALLE_'.$itemEditar['intDiario'].'").val('.$itemEditar['intId'].');
+                $("#intDiarioDet_Tiempo_'.$itemEditar['intDiario'].'").val("'.$itemEditar['intTiempo'].'").trigger("change");                
+                $("#intDiarioDet_Cantidad_'.$itemEditar['intDiario'].'").val('.$itemEditar['devCantidad'].');
+                $("#intDiarioDet_Alimento_'.$itemEditar['intDiario'].'").val("'.$itemEditar['intAlimentoPorcion'].'").trigger("change");
         }, 2000);';
         echo '</script>';
     }else if($intDiarioSiguiente != null && $intDiarioSiguiente > 0 ){

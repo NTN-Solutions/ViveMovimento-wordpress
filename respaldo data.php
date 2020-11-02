@@ -34,7 +34,7 @@
 
 
  <div class="col-md-3 col-xs-6 col-sm-6">
-    <label for="decIMC"><i class="fas fa-calculator"></i> BMI (automatico)</label>
+    <label for="decIMC"><i class="fa fa-calculator"></i> BMI (automatico)</label>
     <input type="number" name="decIMC" value="' . ( isset( $_POST['decIMC']) ? $_POST['decIMC'] : $decIMC ) . '" disabled>
     </div>
      

@@ -1,4 +1,3 @@
-
 <?php
 /**
 * Plugin Name: Vive Movimento - Nicaragua
@@ -7,6 +6,17 @@
 * Version: 1.0.0
 * Author: steven vilchez castillo
 * Author URI: https://vivemovimento.com/
+
+
+
+CAMBIOS PARA FUNCIONAR SIN WORDPRESS
+1- Realizar login por medio URL, envuar usaurio, correo y si es admin
+http://localhost:8888/?login_api_usr=USUARIO_TAL&login_api_email=CORREO_USUARIO@TAL.COM&login_api_admin=1
+
+2- Para finalizar sesion, misma logica solo cambiar accion a login_api_out
+http://localhost:8888/?login_api_out=USUARIO_TAL&login_api_email=CORREO_USUARIO@TAL.COM&login_api_admin=1
+
+
 **/
 function registration_form( $username, $password, $email, $website, $first_name, $last_name, $nickname, $bio ) {
     echo '
@@ -419,10 +429,50 @@ function fn_insert($strTabla, $registro){
     $bitSuccess = false;
     if (mysqli_query($conn, $sql)) {
         $bitSuccess = true;
-        echo "New record created successfully";
+        // echo "New record created successfully";
     } else {
         $bitSuccess = false;
-        echo "Error: " . $sql . "" . mysqli_error($conn);
+        // echo "Error: " . $sql . "" . mysqli_error($conn);
+    }
+    $conn->close();
+    return $bitSuccess;
+}
+function fn_update($strTabla, $registro, $where){
+    //wp_vivemov_users_informacion
+    $servername = "localhost";
+    $username = "vivemovimento_own";
+    $password = "vivemovimento123";
+    $dbname = "vivemovimento";
+
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+
+    // Check connection
+    if ($conn->connect_error) {
+       die("Connection failed: " . $conn->connect_error);
+    } 
+    // echo '======>';
+    // print_r($registro);
+    // echo '<======';
+    
+    $strColumnas = '';
+    $strValores = '';
+    foreach($registro as $key=>$data) {
+        $data = str_replace(",", ".", $data);
+        if ($strColumnas == '') {
+            $strColumnas = "".$key." = '".$data."'";
+        }else{
+            $strColumnas = $strColumnas.", ".$key." = '".$data."'";
+        }
+    }
+    $sql = "UPDATE $strTabla SET $strColumnas WHERE $where ";
+    $bitSuccess = false;
+    if (mysqli_query($conn, $sql)) {
+        $bitSuccess = true;
+        // echo "Record updated successfully";
+    } else {
+        $bitSuccess = false;
+        // echo "Error: " . $sql . "" . mysqli_error($conn);
     }
     $conn->close();
     return $bitSuccess;
@@ -442,10 +492,39 @@ function get_results($strQuery){
 
     $sql = $strQuery;
     $result = $conn->query($sql);
-
+    $sql = strtolower($sql);
+    
     $datos = array();
     $intFila = 0;
-    if ($result->num_rows > 0) {
+
+    // error_log(print_r($result, TRUE)); 
+    // if (strpos($sql, 'select') !== false && $result = $conn->query($sql)) {
+    //     /* fetch object array */
+    //     $listado = $result->fetch_object();
+    //     foreach ($listado as $obj){
+    //         $datos[$intFila] = $obj;
+    //         $intFila += 1;
+    //     }
+    //     // while ($obj = $result->fetch_object()) {
+    //     //     $datos[$intFila] = $obj;
+    //     //     $intFila += 1;
+    //     //     // printf ("%s (%s)\n", $obj->Name, $obj->CountryCode);
+    //     // }
+    //     /* free result set */
+    //     $result->close();
+    // }else{
+    //     $datos = array();
+    // }
+
+    // if (strpos($sql, 'select') !== false && $result != null && $result[0]->num_rows > 0) {
+    if (strpos($sql, 'update') !== false || strpos($sql, 'delete') !== false|| strpos($sql, 'insert') !== false){
+        $datos = array();
+    }else if (strpos($sql, 'select') !== false && $result != null ) {
+        // error_log('==================');
+        // error_log($sql);
+        // error_log(print_r($result, TRUE));
+        // error_log('==================');
+
         // echo "<table><tr><th>ID</th><th>Name</th></tr>";
         // // output data of each row
         while($row = $result->fetch_assoc()) {
@@ -453,6 +532,7 @@ function get_results($strQuery){
             $intFila += 1;
             // echo "<tr><td>".$row["id"]."</td><td>".$row["firstname"]." ".$row["lastname"]."</td></tr>";
         }
+        $result->close();
         // echo "</table>";
         // $datos = $result->fetch_assoc();
         // print_r($datos);
@@ -462,15 +542,39 @@ function get_results($strQuery){
     $conn->close();
     return $datos;
 }
+function delete($strTabla, $strColumna1, $strValor1){
+    $servername = "localhost";
+    $username = "vivemovimento_own";
+    $password = "vivemovimento123";
+    $dbname = "vivemovimento";
+
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    $sql = 'DELETE FROM '.$strTabla.' WHERE '.$strColumna1." = '".$strValor1."'";
+
+    // error_log('==================');
+    // error_log($sql);
+    // error_log('==================');
+
+    $conn->query($sql);    
+    $conn->close();
+    return 1;
+}
 function admin_url($strFuncion){
     // $strURL = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] .'/'. $strFuncion;
-    $strURL = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    // $strURL = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    $strURL = 'http://' . $_SERVER['HTTP_HOST'] . '/';
     return $strURL;
 }
 
 $bitNormal = true;
 $url = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
-if (strpos($url,'&action=fnViveMovimento') === false) {
+if (strpos($url,'action=fnViveMovimento') === false) {
     $bitNormal = true;
 } else {
     $bitNormal = false;
@@ -505,7 +609,8 @@ if ($bitNormal == true) {
         <script src="/js/pdfobject.min.js"></script>
 
         <script src="/datepicker/js/bootstrap-datepicker.min.js"></script>
-
+        
+        <link rel="stylesheet" href="/font-awesome-4.7.0/css/font-awesome.min.css">
       </head>
       <body>
     <?php
@@ -540,12 +645,12 @@ if ($bitNormal == true) {
     }else if (strpos($url,'fnViveMovimentoRecetaEliminar') !== false){
         session_start();
         fnViveMovimentoRecetaEliminar();
-    }else if (strpos($url,'fnViveMovimentoRecetaListado') !== false){
-        session_start();
-        fnViveMovimentoRecetaListado();
     }else if (strpos($url,'fnViveMovimentoRecetaListadoCore') !== false){
         session_start();
         fnViveMovimentoRecetaListadoCore();
+    }else if (strpos($url,'fnViveMovimentoRecetaListado') !== false){
+        session_start();
+        fnViveMovimentoRecetaListado();
     }else if (strpos($url,'fnViveMovimentoRecetaDetalleAgregar') !== false){
         session_start();
         fnViveMovimentoRecetaDetalleAgregar();

@@ -16,7 +16,7 @@
 		}
 
 		if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_7' && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '1') { 
-    		$reg_errors = new WP_Error;
+    		// $reg_errors = new WP_Error;
     		/*** se cambia para que acepte decimales, float val no sirve, steven 15/setp/10 5:25pm */
 	        // $decPeso = floatval($_POST['txtActualizarPeso']);
 	        $decPeso = number_format($_POST['txtActualizarPeso'],2);
@@ -34,10 +34,10 @@
 					ORDER BY datRegistro DESC
 					LIMIT 2");
 			$lastUserINFO = $lastUserINFO[0];
-			$intEdad = $lastUserINFO->intEdad;
-			$decAltura = $lastUserINFO->decAltura;
-			$intSexo = $lastUserINFO->intSexo;
-			$decGrasa = $lastUserINFO->decGrasa;
+			$intEdad = $lastUserINFO['intEdad'];
+			$decAltura = $lastUserINFO['decAltura'];
+			$intSexo = $lastUserINFO['intSexo'];
+			$decGrasa = $lastUserINFO['decGrasa'];
 			fnGuardarMiInformacion_save();
        		echo fnMensaje(1,'Listo, peso guardado!');
     	}
@@ -181,7 +181,7 @@
 			    <div class="input-group">
 			      <div class="input-group-addon">Peso</div>
 			      <input type="hidden" name="intOp" value="1">
-			      <input type="number" class="form-control" name="txtActualizarPeso" id="txtActualizarPeso" placeholder="100 libras..." required="required" step="0.01">
+			      <input type="number" class="form-control" name="txtActualizarPeso" id="txtActualizarPeso" placeholder="100 libras..." required="required" step="0.01" min="30" max="500">
 			    </div>
 			  </div>
 			  <button type="submit" class="btn btn-primary">

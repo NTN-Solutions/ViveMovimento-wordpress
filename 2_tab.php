@@ -71,7 +71,7 @@ function fnTab_2_form($strUsuario,$intActividadTipo,$decMetabolismo,$decActivity
       <tbody>
         <tr>
           <th scope="row">
-            <label class="rbContainer"><i class="fas fa-battery-empty"></i> SEDENTARIO
+            <label class="rbContainer"><i class="fa fa-battery-empty"></i> SEDENTARIO
               <input type="radio" name="intActividadTipo" value="1" <?php echo ($intActividadTipo == 1 ? 'checked="checked"': ''); ?> >
               <span class="rbCheckmark"></span>
             </label>
@@ -84,7 +84,7 @@ function fnTab_2_form($strUsuario,$intActividadTipo,$decMetabolismo,$decActivity
         </tr>
         <tr class="active">
           <th scope="row">
-            <label class="rbContainer"><i class="fas fa-battery-quarter"></i> SEMI-SEDENTARIO
+            <label class="rbContainer"><i class="fa fa-battery-quarter"></i> SEMI-SEDENTARIO
               <input type="radio" name="intActividadTipo" value="2" <?php echo ($intActividadTipo == 2 ? 'checked="checked"': ''); ?>>
               <span class="rbCheckmark"></span>
             </label>
@@ -97,7 +97,7 @@ function fnTab_2_form($strUsuario,$intActividadTipo,$decMetabolismo,$decActivity
         </tr>
         <tr class="info">
           <th scope="row">
-            <label class="rbContainer"><i class="fas fa-battery-half"></i> SEMI-ACTIVO (1)
+            <label class="rbContainer"><i class="fa fa-battery-half"></i> SEMI-ACTIVO (1)
               <input type="radio" name="intActividadTipo" value="3" <?php echo ($intActividadTipo == 3 ? 'checked="checked"': ''); ?>>
               <span class="rbCheckmark"></span>
             </label>            
@@ -110,7 +110,7 @@ function fnTab_2_form($strUsuario,$intActividadTipo,$decMetabolismo,$decActivity
         </tr>
         <tr class="info">
           <th scope="row">
-            <label class="rbContainer"><i class="fas fa-battery-half"></i> SEMI-ACTIVO (2)
+            <label class="rbContainer"><i class="fa fa-battery-half"></i> SEMI-ACTIVO (2)
               <input type="radio" name="intActividadTipo" value="7" <?php echo ($intActividadTipo == 7 ? 'checked="checked"': ''); ?>>
               <span class="rbCheckmark"></span>
             </label>            
@@ -123,7 +123,7 @@ function fnTab_2_form($strUsuario,$intActividadTipo,$decMetabolismo,$decActivity
         </tr>
         <tr class="success">
           <th scope="row">
-            <label class="rbContainer"><i class="fas fa-battery-three-quarters"></i> MODERADAMENTE ACTIVO
+            <label class="rbContainer"><i class="fa fa-battery-three-quarters"></i> MODERADAMENTE ACTIVO
               <input type="radio" name="intActividadTipo" value="4" <?php echo ($intActividadTipo == 4 ? 'checked="checked"': ''); ?>>
               <span class="rbCheckmark"></span>
             </label>
@@ -136,7 +136,7 @@ function fnTab_2_form($strUsuario,$intActividadTipo,$decMetabolismo,$decActivity
         </tr>
         <tr class="warning">
           <th scope="row">
-            <label class="rbContainer"><i class="fas fa-battery-full"></i> MUY ACTIVO
+            <label class="rbContainer"><i class="fa fa-battery-full"></i> MUY ACTIVO
               <input type="radio" name="intActividadTipo" value="5" <?php echo ($intActividadTipo == 5 ? 'checked="checked"': ''); ?>>
               <span class="rbCheckmark"></span>
             </label>            
@@ -149,7 +149,7 @@ function fnTab_2_form($strUsuario,$intActividadTipo,$decMetabolismo,$decActivity
         </tr>
         <tr class="danger">
           <th scope="row">            
-            <label class="rbContainer"><i class="fas fa-charging-station"></i> EXTREMADAMENTE ACTIVO
+            <label class="rbContainer"><i class="fa fa-charging-station"></i> EXTREMADAMENTE ACTIVO
               <input type="radio" name="intActividadTipo" value="6" <?php echo ($intActividadTipo == 6 ? 'checked="checked"': ''); ?>>
               <span class="rbCheckmark"></span>
             </label>  
@@ -168,17 +168,17 @@ function fnTab_2_form($strUsuario,$intActividadTipo,$decMetabolismo,$decActivity
     <div class="btn-group btn-group-justified" role="group" aria-label="...">
       <div class="btn-group" role="group">
         <button type="button" class="btn" onclick="fnTabNavRedirect(1);" style="color: white;">
-          <i class="fas fa-angle-left"></i> Anterior
+          <i class="fa fa-angle-left"></i> Anterior
         </button>
       </div>
       <div class="btn-group" role="group" style="display: none;">
         <button type="submit" class="btn" style="color: white;">
-          <i class="fas fa-save"></i> Guardar
+          <i class="fa fa-save"></i> Guardar
         </button>
       </div>
       <div class="btn-group" role="group">
         <button type="submit" class="btn" style="color: white;">
-          Siguiente <i class="fas fa-angle-right"></i>
+          Siguiente <i class="fa fa-angle-right"></i>
         </button>
       </div>
     </div>

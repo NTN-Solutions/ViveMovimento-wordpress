@@ -278,10 +278,10 @@ function fnTab_5(){
   <div class="panel-heading">
     <div class="row">
         <div class="col-md-3 col-xs-3 col-sm-3">
-            <h3 class="panel-title" style="margin-top: 15px;"><i class="fas fa-calendar-day"></i> Food Journal</h3>
+            <h3 class="panel-title" style="margin-top: 15px;"><i class="fa fa-calendar-day"></i> Food Journal</h3>
         </div>
         <div class="col-md-3 col-xs-3 col-sm-3">
-            <label><i class="fas fa-calendar-day"></i> Calendario:</label>
+            <label><i class="fa fa-calendar-day"></i> Calendario:</label>
             <div class="input-group date">
               <input id="txtFechaDiario" type="text" class="form-control datepicker"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
             </div>
@@ -292,22 +292,22 @@ function fnTab_5(){
                 <div class="btn-group btn-group-justified" role="group" aria-label="...">
                   <div class="btn-group" role="group">
                     <button type="button" class="btn" onclick="fnTabNav(4);" style="color: white;display: none;">
-                      <i class="fas fa-angle-left"></i> Anterior
+                      <i class="fa fa-angle-left"></i> Anterior
                     </button>
 
                     <button type="button" class="btn" onclick="fnCargarDiario();" style="color: white !important;margin-top: 15px;">
-                        <i class="fas fa-search"></i> Buscar
+                        <i class="fa fa-search"></i> Buscar
                     </button>
                   </div>
                   <div class="btn-group" role="group">
                         <input type="hidden" name="intOp" value="1">
                         <button type="submit" style="color: white;margin-top: 15px;" class="btn" <?php  echo ($intDia == 0 ? 'disabled="disabled"': ''); ?> >
-                          <i class="fas fa-plus"></i> <?php echo ($intDia > 0 ? ' Agregar Dia '.$intDia : 'Dia actual ya fue agregado'); ?>
+                          <i class="fa fa-plus"></i> <?php echo ($intDia > 0 ? ' Agregar Dia '.$intDia : 'Dia actual ya fue agregado'); ?>
                         </button>
                   </div>
                   <div class="btn-group" role="group" style="display: none;">
                     <button type="button" class="btn" onclick="fnTabNav(6);" style="color: white;">
-                      Siguiente <i class="fas fa-angle-right"></i>
+                      Siguiente <i class="fa fa-angle-right"></i>
                     </button>
                   </div>
                 </div>
@@ -327,14 +327,14 @@ function fnTab_5(){
             $bitFolderAbierto = true;
             echo '<div class="col-md-12 col-xs-12 col-sm-12" style="display: none;"><br/>';
             echo '  <a class="btn btn-link badge" role="button" data-toggle="collapse" href="#collapseFOLDER" aria-expanded="false" aria-controls="collapseFOLDER">';
-            echo '      <i class="fas fa-calendar-day"></i> Folder de dias anteriores';
+            echo '      <i class="fa fa-calendar-day"></i> Folder de dias anteriores';
             echo '  </a>';
             echo '</div>';
             echo '<div class="collapse col-md-12 col-xs-12 col-sm-12" id="collapseFOLDER">';
         }
         echo '<div class="col-md-3 col-xs-12 col-sm-12" style="display: none;">';
         echo '  <a class="btn btn-link badge" role="button" data-toggle="collapse" href="#collapseDiario_'.$diario->intId.'" aria-expanded="false" aria-controls="collapseDiario_'.$diario->intId.'">';
-        echo '      <i class="fas fa-calendar-day"></i> Dia '.$intDiaContador.' ('.$datFechaDiario->format('D, d-M-Y').')';
+        echo '      <i class="fa fa-calendar-day"></i> Dia '.$intDiaContador.' ('.$datFechaDiario->format('D, d-M-Y').')';
         echo '  </a>';
         echo '</div>';
         $intDiaContador -= 1;
@@ -352,7 +352,7 @@ function fnTab_5(){
         echo '
             <div class="collapse col-md-12 col-xs-12 col-sm-12" id="collapseDiario_'.$diario->intId.'">
             <div class="col-md-6 col-xs-6 col-sm-6">
-                <center><h2 style="margin: 0px;"><small><i class="fas fa-calendar-day"></i> Dia '.$intDiaContador.' - '.$datFechaDiario->format('D, d-M-Y').'</small></h2></center>
+                <center><h2 style="margin: 0px;"><small><i class="fa fa-calendar-day"></i> Dia '.$intDiaContador.' - '.$datFechaDiario->format('D, d-M-Y').'</small></h2></center>
             </div>
             <div class="col-md-4 col-xs-4 col-sm-4">
                 <input onClick="$('."'#txtClonar_".$diario->intId."'".').val('.$diario->intId.');" type="submit" name="submit" value="Clonar diario en siguiente día" class="btn btn-block btn-xs" style="padding-bottom: 0px;padding-top: 0px;"/>
@@ -425,7 +425,7 @@ function fnTab_5(){
                             <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_5&tab_Diario_'.$diario->intId.'" method="post" style="display: inline-block;">
                                 <input type="hidden" name="intOp" value="3" />
                                 <input type="hidden" name="intEliminar" value="'.$det->intId.'" />
-                                <button type="submit" class="btn btn-link badge" role="button" href="#"><i class="fas fa-trash-alt"></i></button>
+                                <button type="submit" class="btn btn-link badge" role="button" href="#"><i class="fa fa-trash-alt"></i></button>
                             </form>
                             '.$det->strAlimento.'
                         </td>

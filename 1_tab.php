@@ -146,21 +146,21 @@ function fnMiInformacion_form($strUsuario,$intEdad,$decAltura,$decPeso,$intSexo,
             </div>
             <div class="item customCarousel">
                 <div class="carousel-caption">
-                    <h3><i class="fas fa-ruler-vertical"></i> Altura:</h3>
+                    <h3><i class="fa fa-ruler-vertical"></i> Altura:</h3>
                     <p>Ingresa en centimetros:</p>
                     <input type="number" step="0.01" name="decAltura" value="<?php echo ( isset( $_POST['decAltura']) ? $_POST['decAltura'] : $decAltura ) ?>">
                 </div>
             </div>
             <div class="item customCarousel">
                 <div class="carousel-caption">
-                    <h3><i class="fas fa-balance-scale"></i> Peso:</h3>
+                    <h3><i class="fa fa-balance-scale"></i> Peso:</h3>
                     <p>Ingresa en libras:</p>
                     <input type="number" step="0.01" name="decPeso" value="<?php echo ( isset( $_POST['decPeso']) ? $_POST['decPeso'] : $decPeso ) ?>">
                 </div>
             </div>
             <div class="item customCarousel">
                 <div class="carousel-caption">
-                    <h3><i class="fas fa-balance-scale-right"></i> Grasa (%):</h3>
+                    <h3><i class="fa fa-balance-scale-right"></i> Grasa (%):</h3>
                     <p>Es opcional:</p>
                     <input type="number" step="0.01" name="decGrasa" value="<?php echo ( isset( $_POST['decGrasa']) ? $_POST['decGrasa'] : $decGrasa ) ?>">
                 </div>
@@ -169,11 +169,11 @@ function fnMiInformacion_form($strUsuario,$intEdad,$decAltura,$decPeso,$intSexo,
                 <div class="carousel-caption">
                     <h3>Selecciona tu sexo:</h3>
                     <div class="col-md-12 col-xs-12 col-sm-12" style="padding-top: 30px;">
-                      <label class="rbContainer"><i class="fas fa-male"></i> Hombre
+                      <label class="rbContainer"><i class="fa fa-male"></i> Hombre
                             <input type="radio" name="intSexo" value="1">
                             <span class="rbCheckmark"></span>
                         </label>
-                        <label class="rbContainer"><i class="fas fa-female"></i> Mujer
+                        <label class="rbContainer"><i class="fa fa-female"></i> Mujer
                             <input type="radio" name="intSexo" value="0">
                             <span class="rbCheckmark"></span>
                         </label>
@@ -185,12 +185,12 @@ function fnMiInformacion_form($strUsuario,$intEdad,$decAltura,$decPeso,$intSexo,
                        <div class="btn-group btn-group-justified" role="group" aria-label="...">
                             <div class="btn-group" role="group" style="display: none;">
                                 <button type="submit" id="btnTab1_submit" class="btn" style="color: white;">
-                                     <i class="fas fa-save"></i> Guardar
+                                     <i class="fa fa-save"></i> Guardar
                                 </button>
                              </div>
                              <div class="btn-group" role="group">
                                   <button type="submit" class="btn" onclick="fnTab_1_finish();" style="color: white;">
-                                     Siguiente <i class="fas fa-angle-right"></i>
+                                     Siguiente <i class="fa fa-angle-right"></i>
                                  </button>
                             </div>
                         </div>

@@ -395,10 +395,10 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
             <th></th>
           </tr>
           <tr>
-            <th>PORCIONES<br/>Recomendadas <i class="fas fa-chevron-right"></i></th>
-            <th class="amarillo"><h3 style="margin: 0px;"><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decProteinas[3])); ?></h3></th>
-            <th class="naranja"><h3 style="margin: 0px;"><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decCarbo[3])); ?></h3></th>
-            <th class="celeste"><h3 style="margin: 0px;"><?php echo (' <i class="fas fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decGrasas[3])); ?></h3></th>
+            <th>PORCIONES<br/>Recomendadas <i class="fa fa-chevron-right"></i></th>
+            <th class="amarillo"><h3 style="margin: 0px;"><?php echo (' <i class="fa fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decProteinas[3])); ?></h3></th>
+            <th class="naranja"><h3 style="margin: 0px;"><?php echo (' <i class="fa fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decCarbo[3])); ?></h3></th>
+            <th class="celeste"><h3 style="margin: 0px;"><?php echo (' <i class="fa fa-chevron-right"></i> '.fnRedondearCUSTOMUP($decGrasas[3])); ?></h3></th>
             <th></th>
           </tr>
           <?php
@@ -409,7 +409,7 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
                 <form action="<?php echo strtok($_SERVER["REQUEST_URI"],'?');?>?action=tab_Paso_4" method="post" class="row">
                   <input type="hidden" name="intOpcion" value="2">
                   <input type="hidden" name="txtCustomOpcion" id="txtCustomOpcion" value="1">
-                  <th>Tus Propias<br/>Porciones <i class="fas fa-chevron-right"></i></th>
+                  <th>Tus Propias<br/>Porciones <i class="fa fa-chevron-right"></i></th>
                   <th class="amarillo"><input type="number" name="intCustomP" class="form-control txtMisPorciones" step="0.01" value="<?= ($misPorciones != null ? str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones['intProteina'])) : '0') ?>" min="1" max="99"></th>
                   <th class="naranja"><input type="number" name="intCustomC" class="form-control txtMisPorciones" step="0.01" value="<?= ($misPorciones != null ? str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones['intCarbohidrato'])) : '0') ?>" min="1" max="99"></th>
                   <th class="celeste"><input type="number" name="intCustomG" class="form-control txtMisPorciones" step="0.01" value="<?= ($misPorciones != null ? str_replace(',','.',fnRedondearCUSTOMUP_1($misPorciones['intGrasa'])) : '0') ?>" min="1" max="99"></th>
@@ -436,17 +436,17 @@ function fnTab_4_form($strUsuario,$intMeta,$decMetabolismo,$decActivityFactor,$d
     <div class="btn-group btn-group-justified" role="group" aria-label="...">
       <div class="btn-group" role="group">
         <button type="button" class="btn btn-lg" onclick="fnTabNavRedirect(3);" style="color: white;">
-          <i class="fas fa-angle-left"></i> Anterior
+          <i class="fa fa-angle-left"></i> Anterior
         </button>
       </div>
       <div class="btn-group" role="group" style="display: none;" style="color: white;">
         <button type="submit" class="btn btn-lg">
-          <i class="fas fa-save"></i> Guardar
+          <i class="fa fa-save"></i> Guardar
         </button>
       </div>
       <div class="btn-group" role="group">
         <button type="button" class="btn btn-lg" onclick="fnTabNavRedirect(10);" style="color: white;font-size: 27px;padding-top: 5px;padding-bottom: 4px;">
-          Siguiente <i class="fas fa-angle-right"></i> Mi Cuenta <i class="fas fa-user-circle"></i>
+          Siguiente <i class="fa fa-angle-right"></i> Mi Cuenta <i class="fa fa-user-circle"></i>
         </button>
       </div>
     </div>

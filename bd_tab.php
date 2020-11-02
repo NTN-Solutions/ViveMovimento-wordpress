@@ -75,12 +75,10 @@ function fnTab_bd_save(){
         $_POST = array();
       }
   }else{
-    $buscar = get_results("SELECT * FROM wp_vivemov_alimentos_porciones WHERE intId = ".$intA_Id);
-    $buscar = $buscar[0];
-    $where = array(
-      'intId' => $intA_Id
-    );
-    $wpdb->update( 'wp_vivemov_alimentos_porciones', $registro, $where, null, null );
+    // $buscar = get_results("SELECT * FROM wp_vivemov_alimentos_porciones WHERE intId = ".$intA_Id);
+    // $buscar = $buscar[0];
+    $where = 'intId = '.$intA_Id;
+    fn_update( 'wp_vivemov_alimentos_porciones', $registro, $where);
   }
 }
 
@@ -116,19 +114,19 @@ function fnTab_BD(){
     $bdItem = get_results("SELECT * FROM wp_vivemov_alimentos_porciones WHERE intId = ".$_POST['intId']);
     $bdItem = $bdItem[0];
 
-    $intA_Id = $bdItem->intId;
-    $intA_Cantidad = $bdItem->decPorcion;
-    $intA_UM = $bdItem->intUnidadMedida;
-    $strA_Alimento = $bdItem->strAlimento;
-    $decA_Proteina = $bdItem->decProteina;
-    $decA_Carbs = $bdItem->decCarbohidratos;
-    $decA_Grasa = $bdItem->decGrasa;
-    $decA_Libre = $bdItem->decLibre;
+    $intA_Id = $bdItem['intId'];
+    $intA_Cantidad = $bdItem['decPorcion'];
+    $intA_UM = $bdItem['intUnidadMedida'];
+    $strA_Alimento = $bdItem['strAlimento'];
+    $decA_Proteina = $bdItem['decProteina'];
+    $decA_Carbs = $bdItem['decCarbohidratos'];
+    $decA_Grasa = $bdItem['decGrasa'];
+    $decA_Libre = $bdItem['decLibre'];
   }else if (isset($_GET['action']) && $_GET['action'] == 'tab_Paso_6' && isset($_POST['intOp']) && $_POST['intOp'] != null && $_POST['intOp'] == '3') {
     $decId = intval($_POST['intId']);
-    $registro = array('bitActivo' => false);
-    $where = array('intId' => $decId);
-    $wpdb->update( 'wp_vivemov_alimentos_porciones', $registro, $where, null, null);
+    $registro = array('bitActivo' => 0);
+    $where = 'intId='.$decId;
+    fn_update('wp_vivemov_alimentos_porciones', $registro, $where);
   }
   fnTab_bd_cargar();
   // if ($bitPermiso == true) {
@@ -152,33 +150,33 @@ function fnTab_bd_tabla($listAlimentos, $bitPermiso, $strUsuario){ ?>
       </tr>
       <?php
       foreach ($listAlimentos as $item) {
-        if(!isset($item->decProteina)){
+        if(!isset($item['decProteina'])){
           continue;
         }
         $strColor = '';        
-        if($item->decProteina > 0 && $item->decCarbohidratos > 0 && $item->decGrasa > 0){
+        if($item['decProteina'] > 0 && $item['decCarbohidratos'] > 0 && $item['decGrasa'] > 0){
           $strColor = 'gris';
-        }else if($item->decProteina > 0 && $item->decGrasa > 0){
+        }else if($item['decProteina'] > 0 && $item['decGrasa'] > 0){
           $strColor = 'rojo';
-        }else if($item->decProteina > 0 && $item->decCarbohidratos > 0){
+        }else if($item['decProteina'] > 0 && $item['decCarbohidratos'] > 0){
           $strColor = 'morado';
-        }else if($item->decCarbohidratos > 0 && $item->decGrasa > 0){
+        }else if($item['decCarbohidratos'] > 0 && $item['decGrasa'] > 0){
           $strColor = 'verde';
-        }else if($item->decProteina > 0){
+        }else if($item['decProteina'] > 0){
           $strColor = 'amarillo';
-        }else if($item->decCarbohidratos > 0){
+        }else if($item['decCarbohidratos'] > 0){
           $strColor = 'naranja';
-        }else if($item->decGrasa > 0){
+        }else if($item['decGrasa'] > 0){
           $strColor = 'celeste';
-        }else if($item->decLibre > 0){
+        }else if($item['decLibre'] > 0){
           $strColor = 'rosado';
         }
         $strEditar = '';
         $bitPermiso = false;
 
-        if ($strUsuario != $item->strUsuario && ($item->strUsuario == 'svc9304' || $item->strUsuario == 'anamoralescpt' || $item->strUsuario == 'amms24')) {
+        if ($strUsuario != $item['strUsuario'] && ($item['strUsuario'] == 'svc9304' || $item['strUsuario'] == 'anamoralescpt' || $item['strUsuario'] == 'amms24')) {
             $bitPermiso = false;
-        }else if ($item->strUsuario == $item->strUsuario) {
+        }else if ($item['strUsuario'] == $item['strUsuario']) {
             $bitPermiso = true;
         }
 
@@ -187,17 +185,17 @@ function fnTab_bd_tabla($listAlimentos, $bitPermiso, $strUsuario){ ?>
           <td style="display: flex;">
           <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_6" method="post" style="margin: 0px;">
           <input type="hidden" name="intOp" value="2">
-          <input type="hidden" name="intId" value="'.$item->intId.'">
+          <input type="hidden" name="intId" value="'.$item['intId'].'">
           <button type="submit" name="submit" class="btn" style="color: white;">
-          <i class="fas fa-pen"></i>
+          <i class="fa fa-pencil"></i>
           </button>
           </form>
 
           <form action="'.strtok($_SERVER["REQUEST_URI"],'?').'?action=tab_Paso_6" method="post" style="margin: 0px;">
           <input type="hidden" name="intOp" value="3">
-          <input type="hidden" name="intId" value="'.$item->intId.'">
+          <input type="hidden" name="intId" value="'.$item['intId'].'">
           <button type="submit" name="submit" class="btn" style="color: white;">
-          <i class="fas fa-trash"></i>
+          <i class="fa fa-trash"></i>
           </button>
           </form>
           </td>';
@@ -206,12 +204,12 @@ function fnTab_bd_tabla($listAlimentos, $bitPermiso, $strUsuario){ ?>
         }
 
         echo '<tr>'.$strEditar.'
-        <td class="'.$strColor.'">'.$item->decPorcion.' '.$item->strUnidadMedida.'</td>
-        <td class="'.$strColor.'">'.$item->strAlimento.'</td>
-        <td class="amarillo">'.($item->decProteina > 0 ? $item->decProteina : '').'</td>
-        <td class="naranja">'.($item->decCarbohidratos > 0 ? $item->decCarbohidratos : '').'</td>
-        <td class="celeste">'.($item->decGrasa > 0 ? $item->decGrasa : '').'</td>
-        <td class="rosado">'.($item->decLibre > 0 ? $item->decLibre : '').'</td>
+        <td class="'.$strColor.'">'.$item['decPorcion'].' '.$item['strUnidadMedida'].'</td>
+        <td class="'.$strColor.'">'.$item['strAlimento'].'</td>
+        <td class="amarillo">'.($item['decProteina'] > 0 ? $item['decProteina'] : '').'</td>
+        <td class="naranja">'.($item['decCarbohidratos'] > 0 ? $item['decCarbohidratos'] : '').'</td>
+        <td class="celeste">'.($item['decGrasa'] > 0 ? $item['decGrasa'] : '').'</td>
+        <td class="rosado">'.($item['decLibre'] > 0 ? $item['decLibre'] : '').'</td>
         </tr>
         ';
       }
@@ -228,7 +226,7 @@ function fnTab_bd_tabla($listAlimentos, $bitPermiso, $strUsuario){ ?>
       <input type="hidden" name="intOp" value="1">
       <div class="col-md-3 col-xs-6 col-sm-6">
         <label for="intA_Cantidad">Cantidad <strong>*</strong></label>
-        <input type="number" step="0.01" name="intA_Cantidad" value='<?php echo $intA_Cantidad; ?>'>
+        <input type="number" class="form-control" step="0.01" name="intA_Cantidad" value='<?php echo $intA_Cantidad; ?>'>
       </div>
 
       <div class="col-md-3 col-xs-6 col-sm-6">
@@ -236,8 +234,8 @@ function fnTab_bd_tabla($listAlimentos, $bitPermiso, $strUsuario){ ?>
         <select name="intA_UM" style="width: 100%">
           <?php
           foreach ($listUM as $um) {
-            if (isset($um->intId)){
-              echo '<option value="'.$um->intId.'" '.($um->intId == $intA_UM? 'selected' : '').'>'.$um->strUnidadMedida.'</option>';
+            if (isset($um['intId'])){
+              echo '<option value="'.$um['intId'].'" '.($um['intId'] == $intA_UM? 'selected' : '').'>'.$um['strUnidadMedida'].'</option>';
             }
           }
           ?>
@@ -246,30 +244,30 @@ function fnTab_bd_tabla($listAlimentos, $bitPermiso, $strUsuario){ ?>
       <input type="hidden" value = "<?php echo $intA_Id ?>" name="intA_Id"/>
       <div class="col-md-3 col-xs-12 col-sm-12">
         <label for="strA_Alimento">Alimento <strong>*</strong></label>
-        <input type="text" name="strA_Alimento" value='<?php echo $strA_Alimento;?> '>
+        <input type="text" class="form-control" name="strA_Alimento" value='<?php echo $strA_Alimento;?> '>
       </div>
 
       <div class="col-md-3 col-xs-6 col-sm-6">
         <label for="decA_Proteina">Proteina </label>
-        <input type="number" step="0.01" name="decA_Proteina" value='<?php echo ($decA_Proteina > 0 ? $decA_Proteina : ''); ?>'>
+        <input type="number" class="form-control" step="0.01" name="decA_Proteina" value='<?php echo ($decA_Proteina > 0 ? $decA_Proteina : ''); ?>'>
       </div>
 
       <div class="col-md-3 col-xs-6 col-sm-6">
         <label for="decA_Carbs">Carbohidratos</label>
-        <input type="number" step="0.01" name="decA_Carbs" value='<?php echo ($decA_Carbs > 0 ? $decA_Carbs : ''); ?>'>
+        <input type="number" class="form-control" step="0.01" name="decA_Carbs" value='<?php echo ($decA_Carbs > 0 ? $decA_Carbs : ''); ?>'>
       </div>
 
       <div class="col-md-3 col-xs-6 col-sm-6">
         <label for="decA_Grasa">Grasa</label>
-        <input type="number" step="0.01" name="decA_Grasa" value='<?php echo ($decA_Grasa > 0 ? $decA_Grasa : ''); ?>'>
+        <input type="number" class="form-control" step="0.01" name="decA_Grasa" value='<?php echo ($decA_Grasa > 0 ? $decA_Grasa : ''); ?>'>
       </div>
 
       <div class="col-md-3 col-xs-6 col-sm-6">
         <label for="decA_Libre">Libre</label>
-        <input type="number" step="0.01" name="decA_Libre" value='<?php echo ($decA_Libre > 0 ? $decA_Libre : ''); ?>'>
+        <input type="number" class="form-control" step="0.01" name="decA_Libre" value='<?php echo ($decA_Libre > 0 ? $decA_Libre : ''); ?>'>
       </div>
 
-      <input type="submit" name="submit" value='<?php echo ($intA_Id == 0 ? 'Nuevo' : 'Guardar'); ?>' class="col-md-3 col-xs-12 col-sm-12" style="margin-top: 25px;"/>
+      <input type="submit" name="submit" value='<?php echo ($intA_Id == 0 ? 'Nuevo' : 'Guardar'); ?>' class="col-md-3 col-xs-12 col-sm-12 btn btn-primary btn-xs" style="margin-top: 25px;"/>
     </form>
 
   <?php } ?>

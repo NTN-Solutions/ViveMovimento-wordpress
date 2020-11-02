@@ -245,7 +245,7 @@
 		?>
 		<div class="" style="display: none;">
 			<div class="col-md-12- col-xs-12 col-sm-12 sinPadding">
-				<i class="fas fa-info"></i>
+				<i class="fa fa-info"></i>
 				Cuando uno entra a la pagina, lo primero que sale es esto:
 				Quiero que sea mas interactivo, informativo.
 				
@@ -262,62 +262,62 @@
 				<ul class="nav nav-tabs nav-justified" role="tablist" id="tabsViveMovimento">
 					<li role="presentation" class="tab_core_no_diario">
 						<a href="#tab_Paso_1" id="tab_Paso_1_Ref" aria-controls="tab_Paso_1" role="tab" data-toggle="tab">
-							<i class="fas fa-weight"></i></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo ' Paso 1 <br/>';}?> Metabolismo Basal
+							<i class="fa fa-weight"></i></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo ' Paso 1 <br/>';}?> Metabolismo Basal
 						</a>
 					</li>
 					<li role="presentation" class="tab_core_no_diario">
 						<a href="#tab_Paso_2" id="tab_Paso_2_Ref" aria-controls="tab_Paso_2" role="tab" data-toggle="tab">
-							<i class="fas fa-running"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo ' Paso 2 <br/>';}?>Gasto Energético
+							<i class="fa fa-running"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo ' Paso 2 <br/>';}?>Gasto Energético
 						</a>
 					</li>
 					<li role="presentation" class="tab_core_no_diario">
 						<a href="#tab_Paso_21" id="tab_Paso_21_Ref" aria-controls="tab_Paso_21" role="tab" data-toggle="tab">
-							<i class="fas fa-running"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo ' Paso 3 <br/>';}?>Experiencia
+							<i class="fa fa-running"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo ' Paso 3 <br/>';}?>Experiencia
 						</a>
 					</li>
 					<li role="presentation" class="tab_core_no_diario">
 						<a href="#tab_Paso_22" id="tab_Paso_22_Ref" aria-controls="tab_Paso_22" role="tab" data-toggle="tab">
-							<i class="fas fa-running"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo ' Paso 3 <br/>';}?>Tipo de Ejercicio
+							<i class="fa fa-running"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo ' Paso 3 <br/>';}?>Tipo de Ejercicio
 						</a>
 					</li>
 					<li role="presentation" class="tab_core_no_diario">
 						<a href="#tab_Paso_3" id="tab_Paso_3_Ref" aria-controls="tab_Paso_3" role="tab" data-toggle="tab">
-							<i class="fas fa-chart-line"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo ' Paso 4 <br/>';}?>Meta
+							<i class="fa fa-chart-line"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo ' Paso 4 <br/>';}?>Meta
 						</a>
 					</li>
 					<li role="presentation" class="tab_core_no_diario">
 						<a href="#tab_Paso_4" id="tab_Paso_4_Ref" aria-controls="tab_Paso_4" role="tab" data-toggle="tab">
-							<i class="fas fa-calculator"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo ' Paso 5 <br/>';}?>Calculadora
+							<i class="fa fa-calculator"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo ' Paso 5 <br/>';}?>Calculadora
 						</a>
 					</li>
 					<li role="presentation" class="tab_core_diario" style="display: none;">
 						<a href="#" onclick="fnTabNav(10);" role="tab" data-toggle="tab">
-							<i class="fas fa-user"></i>Dashboard
+							<i class="fa fa-user"></i>Dashboard
 						</a>
 					</li>
 					<li role="presentation" id="tab_core_5" class="tab_core_diario" style="display: none;">
 						<a href="#tab_Paso_5" id="tab_Paso_5_Ref" aria-controls="tab_Paso_5" role="tab" data-toggle="tab">
-							<i class="fas fa-utensils"></i><i class="fas fa-book"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo '<br/>';} ?> Food Journal
+							<i class="fa fa-utensils"></i><i class="fa fa-book"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo '<br/>';} ?> Food Journal
 						</a>
 					</li>
 					<li role="presentation" id="tab_core_6" class="tab_core_diario" style="display: none;">
 						<a href="#tab_Paso_9" id="tab_Paso_9_Ref" aria-controls="tab_Paso_9" role="tab" data-toggle="tab">
-							<i class="fas fa-list-ul"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo '<br/>';} ?>Mis Recetas
+							<i class="fa fa-list-ul"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo '<br/>';} ?>Mis Recetas
 						</a>
 					</li>
 					<li role="presentation" id="tab_core_6" class="tab_core_diario" style="display: none;">
 						<a href="#tab_Paso_6" id="tab_Paso_6_Ref" aria-controls="tab_Paso_6" role="tab" data-toggle="tab">
-							<i class="fas fa-hamburger"></i><i class="fas fa-pizza-slice"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo '<br/>';} ?> Base Datos
+							<i class="fa fa-hamburger"></i><i class="fa fa-pizza-slice"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo '<br/>';} ?> Base Datos
 						</a>
 					</li>
 					<li role="presentation" id="tab_core_7" class="tab_check_in" style="display: none;">
 						<a href="#tab_Paso_7" id="tab_Paso_7_Ref" aria-controls="tab_Paso_7" role="tab" data-toggle="tab">
-							<i class="fas fa-check"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo '<br/>';} ?> Check In
+							<i class="fa fa-check"></i><?php if($gDataPaso_1 == null || $gDataPaso_2 == null || $gDataPaso_3 == null) { echo '<br/>';} ?> Check In
 						</a>
 					</li>
 					<li role="presentation" id="tab_core_8" class="tab_planes_ejercicio" style="display: none;">
 						<a href="#tab_Paso_8" id="tab_Paso_8_Ref" aria-controls="tab_Paso_8" role="tab" data-toggle="tab">
-							<i class="fas fa-check"></i> Plan de Ejercicios
+							<i class="fa fa-check"></i> Plan de Ejercicios
 						</a>
 					</li>
 				</ul>

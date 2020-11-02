@@ -35,14 +35,14 @@ function fnViveMovimentoRecetaClonar(){
       FROM wp_vivemov_recetas
       WHERE intId = $intClonar;
       ");
-  $decReceta = fn_insert_id;
+  $ULTIMO = get_results("SELECT intId, strUsuario FROM wp_vivemov_recetas WHERE strUsuario = '$strUsuario' ORDER BY intId DESC LIMIT 1");
+  $decReceta = $ULTIMO[0]['intId'];
   get_results("
       INSERT INTO wp_vivemov_recetas_detalle(intReceta,decCantidad,decAlimento,bitActivo)
       SELECT $decReceta,decCantidad,decAlimento,bitActivo
       FROM wp_vivemov_recetas_detalle
       WHERE intReceta = $intClonar AND bitActivo = 1;
   ");
-
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, agregado!';
   echo json_encode($result);
@@ -73,6 +73,10 @@ function fnViveMovimentoRecetaListado(){
   
     if($item['bitActivo'] == 1){
       $item['detalle'] = fnViveMovimentoRecetaListadoDetalle($item['intId']);      
+      // echo '<br/>==========>';
+      // echo '<br/>';
+      // print_r($item['detalle']);
+      // echo '<br/>==========>';
     }
   }
   return $list;
@@ -114,6 +118,7 @@ function fnViveMovimentoRecetaDetalleAgregar(){
   $responseDiario = fn_insert("wp_vivemov_recetas_detalle", $itemRow);  
   $result['type'] = 'success';
   $result['mnj'] = 'Listo, agregado!';
+  echo '================> fnViveMovimentoRecetaDetalleAgregar 111';
   echo json_encode($result);
   exit();
 }
@@ -178,13 +183,13 @@ function fnTab_9(){
   echo '</div>';
 }
 function fnTab_9_core($intR){
+  // echo 'fnTab_9_coreasdfasdf asdfasdfasdf';
   global $wpdb;
   global $intReceta;
   $intReceta = $intR;
   $listado = fnViveMovimentoRecetaListado($intReceta);
   $listadoAdmin = fnViveMovimentoRecetaListadoAdmin();
   $listAlimentos = get_results("SELECT ap.*, um.strUnidadMedida FROM wp_vivemov_alimentos_porciones ap INNER JOIN wp_vivemov_alimentos_unidad_medida um ON um.intId = ap.intUnidadMedida WHERE ap.bitActivo=1 ORDER BY ap.strAlimento ASC ");
-
   if ($intReceta == 0) { ?>
 </br>
 <div class="col-md-4 col-xs-12 col-sm-12" style="padding-left: 2px;padding-right: 2px;">
@@ -205,7 +210,7 @@ function fnTab_9_core($intR){
           <select id="cbRecetaAlimento_configurada">
             <option selected="true" disabled="disabled">Seleccionar</option>
             <?php foreach ($listadoAdmin as $receta) { ?>
-              <option value="<?= $receta->intId ?>"><?= $receta->strNombre ?></option>
+              <option value="<?= $receta['intId'] ?>"><?= $receta['strNombre'] ?></option>
             <?php } ?>
           </select>
       </div>
@@ -253,28 +258,28 @@ foreach ($listado as $item) {
                 <option selected="true" disabled="disabled">Seleccionar alimento</option>
                 <?php
                   foreach ($listAlimentos as $alimento) {
-                    if(!isset($alimento->decProteina)){
+                    if(!isset($alimento['decProteina'])){
                       continue;
                     }
                   $strPCGVL = '';
-                  if($alimento->decProteina>0){
-                      $strPCGVL = ($alimento->decProteina + 0).'P';
+                  if($alimento['decProteina']>0){
+                      $strPCGVL = ($alimento['decProteina'] + 0).'P';
                   }
-                  if($alimento->decCarbohidratos>0){
-                      $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decCarbohidratos + 0).'C';
+                  if($alimento['decCarbohidratos']>0){
+                      $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento['decCarbohidratos'] + 0).'C';
                   }
-                  if($alimento->decGrasa>0){
-                      $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decGrasa + 0).'G';
+                  if($alimento['decGrasa']>0){
+                      $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento['decGrasa'] + 0).'G';
                   }
-                  if($alimento->decVegetales>0){
-                      $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decVegetales + 0).'V';
+                  if($alimento['decVegetales']>0){
+                      $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento['decVegetales'] + 0).'V';
                   }
-                  if($alimento->decLibre>0){
-                      $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento->decLibre + 0).'L';
+                  if($alimento['decLibre']>0){
+                      $strPCGVL = $strPCGVL.($strPCGVL!=''?', ':'').($alimento['decLibre'] + 0).'L';
                   }
-                  $strAlimento = (($alimento->decPorcion+0).' '.$alimento->strUnidadMedida.' de '.$alimento->strAlimento.' ('.$strPCGVL.')');
+                  $strAlimento = (($alimento['decPorcion']+0).' '.$alimento['strUnidadMedida'].' de '.$alimento['strAlimento'].' ('.$strPCGVL.')');
                   ?>
-                  <option value="<?= $alimento->intId ?>"><?= $strAlimento ?></option>
+                  <option value="<?= $alimento['intId'] ?>"><?= $strAlimento ?></option>
                 <?php } ?>
               </select>
           </div>
@@ -296,20 +301,23 @@ foreach ($listado as $item) {
           <th style="width: 15px;"></th>
         </tr>
       </thead>
-<?php if (isset($item['detalle'])){ foreach ($item['detalle'] as $itemDetalle) { ?>
+<?php
+$item['detalle'] = fnViveMovimentoRecetaListadoDetalle($item['intId']);
+
+ if (isset($item['detalle'])){ foreach ($item['detalle'] as $itemDetalle) { ?>
   <tr>
     <td>
-        <button class="btn btn-info btn-xs" onclick="fnViveMovimento_Receta_Detalle_editar(<?= $itemDetalle->intId ?>);">
+        <button class="btn btn-info btn-xs" onclick="fnViveMovimento_Receta_Detalle_editar(<?= $itemDetalle['intId'] ?>);">
           <i class="fa fa-refresh" aria-hidden="true"></i>
         </button>   
     </td>
     <td>
-      <input type="number" class="form-control input-sm" id="txtRecetaCantidad_editar_<?= $itemDetalle->intId ?>" placeholder="1" value="<?= $itemDetalle->decCantidad ?>" min="0" max="999" step="0.01" style="padding: 1px;">
+      <input type="number" class="form-control input-sm" id="txtRecetaCantidad_editar_<?= $itemDetalle['intId'] ?>" placeholder="1" value="<?= $itemDetalle['decCantidad'] ?>" min="0" max="999" step="0.01" style="padding: 1px;">
     </td>
-    <td style="padding-left: 0px;padding-right: 0px;"><?= $itemDetalle->strUnidadMedida ?></td>
-    <td><?= $itemDetalle->strAlimento ?></td>
+    <td style="padding-left: 0px;padding-right: 0px;"><?= $itemDetalle['strUnidadMedida'] ?></td>
+    <td><?= $itemDetalle['strAlimento'] ?></td>
     <td>
-       <button class="btn btn-warning btn-xs" onclick="fnViveMovimento_Receta_Detalle_eliminar(<?= $itemDetalle->intId ?>);">
+       <button class="btn btn-warning btn-xs" onclick="fnViveMovimento_Receta_Detalle_eliminar(<?= $itemDetalle['intId'] ?>);">
           <i class="fa fa-trash" aria-hidden="true"></i>
         </button>
     </td>
@@ -343,7 +351,7 @@ if ($intCursorRow % 3 == 0) {
       },
       success: function(response) {
         $('#divRecetasCore_'+intReceta).html(response);
-        setTimeout(function(){ $('select').select2(); }, 500);
+        setTimeout(function(){ try{$('select').select2();}catch(e){} }, 500);
      }
    });
   }

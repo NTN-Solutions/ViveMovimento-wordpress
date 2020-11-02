@@ -63,7 +63,7 @@ function fnTab_22_form($strUsuario,$intEjercicio){ ?>
       <tbody>
         <tr class="info">
           <th scope="row">
-            <label class="rbContainer"><i class="fas fa-battery-empty"></i> PESAS
+            <label class="rbContainer"><i class="fa fa-battery-empty"></i> PESAS
               <input type="radio" name="intEjercicio" value="1" <?php echo ($intEjercicio == 1 ? 'checked="checked"': ''); ?> >
               <span class="rbCheckmark"></span>
             </label>
@@ -72,7 +72,7 @@ function fnTab_22_form($strUsuario,$intEjercicio){ ?>
         </tr>
         <tr class="active">
           <th scope="row">
-            <label class="rbContainer"><i class="fas fa-battery-quarter"></i> CARDIO
+            <label class="rbContainer"><i class="fa fa-battery-quarter"></i> CARDIO
               <input type="radio" name="intEjercicio" value="2" <?php echo ($intEjercicio == 2 ? 'checked="checked"': ''); ?>>
               <span class="rbCheckmark"></span>
             </label>
@@ -81,7 +81,7 @@ function fnTab_22_form($strUsuario,$intEjercicio){ ?>
         </tr>
         <tr class="success">
           <th scope="row">
-            <label class="rbContainer"><i class="fas fa-battery-three-quarters"></i> AMBOS
+            <label class="rbContainer"><i class="fa fa-battery-three-quarters"></i> AMBOS
               <input type="radio" name="intEjercicio" value="3" <?php echo ($intEjercicio == 3 ? 'checked="checked"': ''); ?>>
               <span class="rbCheckmark"></span>
             </label>
@@ -96,17 +96,17 @@ function fnTab_22_form($strUsuario,$intEjercicio){ ?>
     <div class="btn-group btn-group-justified" role="group" aria-label="...">
       <div class="btn-group" role="group">
         <button type="button" class="btn" onclick="fnTabNavRedirect(21);" style="color: white;">
-          <i class="fas fa-angle-left"></i> Anterior
+          <i class="fa fa-angle-left"></i> Anterior
         </button>
       </div>
       <div class="btn-group" role="group" style="display: none;">
         <button type="submit" class="btn" style="color: white;">
-          <i class="fas fa-save"></i> Guardar
+          <i class="fa fa-save"></i> Guardar
         </button>
       </div>
       <div class="btn-group" role="group">
         <button type="submit" class="btn" style="color: white;">
-          Siguiente <i class="fas fa-angle-right"></i>
+          Siguiente <i class="fa fa-angle-right"></i>
         </button>
       </div>
     </div>

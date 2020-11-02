@@ -1,5 +1,4 @@
 <?php
-
   function fnViveMovimentoOneToOnetabla(){
     global $wpdb;
     $list = get_results("
@@ -25,10 +24,10 @@
                 echo $intContadoronetoone;
                 echo '</td>';
                 echo '<td>';
-                echo $item->strUsuario;
+                echo $item['strUsuario'];
                 echo '</td>';
                 echo '<td>';
-                echo '<button type="button" class="btn btn-warning btn-block btn-xs" aria-label="Eliminar" onclick="fnUsuarioonetoone_Eliminar('."'".$item->strUsuario."'".');">
+                echo '<button type="button" class="btn btn-warning btn-block btn-xs" aria-label="Eliminar" onclick="fnUsuarioonetoone_Eliminar('."'".$item['strUsuario']."'".');">
               <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </button>';
                 echo '</td>';
@@ -47,7 +46,7 @@
           'strUsuario'            => $_GET['strUsuario'],
           'bitActivo'             => 1,
       );
-      insert("wp_vivemov_users_one_to_one", $itemRow);
+      fn_insert("wp_vivemov_users_one_to_one", $itemRow);
       $result['type'] = 'success';
       $result['mnj'] = 'Listo, eliminado!';
       $result = json_encode($result);
@@ -56,7 +55,7 @@
   }
   function fnViveMovimentoOneToOneEliminar(){
       global $wpdb;
-      delete( 'wp_vivemov_users_one_to_one', array( 'strUsuario' => $_GET['strUsuario'] ) );
+      delete( 'wp_vivemov_users_one_to_one', 'strUsuario', $_GET['strUsuario'] );
       $result['type'] = 'success';
       $result['mnj'] = 'Listo, eliminado!';
       $result = json_encode($result);
@@ -122,11 +121,11 @@
       <strong>
         <a href="/user/?action=tab_Paso_1"> Paso 1 - </strong> Información Básica (<?php echo ($gDataPaso_1 == null ? 'PENDIENTE' : 'Completada') ?>)
         </a>
-        <?php if ($listPasosVideos != null && $listPasosVideos[0]->strURL != null && $listPasosVideos[0]->strURL != '') {
-          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[0]->strURL."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[0]['strURL'] != null && $listPasosVideos[0]['strURL'] != '') {
+          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[0]['strURL']."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
         } ?>
-        <?php if ($listPasosVideos != null && $listPasosVideos[0]->strAyudaLink != null && $listPasosVideos[0]->strAyudaLink != '') {
-          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[0]->strAyudaLink.'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[0]['strAyudaLink'] != null && $listPasosVideos[0]['strAyudaLink'] != '') {
+          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[0]['strAyudaLink'].'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
         } ?>
     </div>
 
@@ -134,11 +133,11 @@
       <strong>
         <a href="/user/?action=tab_Paso_2"> Paso 2 - </strong> Gasto Energético (<?php echo ($gDataPaso_2 == null ? 'PENDIENTE' : 'Completada') ?>)
         </a>
-        <?php if ($listPasosVideos != null && $listPasosVideos[1]->strURL != null && $listPasosVideos[1]->strURL != '') {
-          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[1]->strURL."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[1]['strURL'] != null && $listPasosVideos[1]['strURL'] != '') {
+          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[1]['strURL']."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
         } ?>
-        <?php if ($listPasosVideos != null && $listPasosVideos[1]->strAyudaLink != null && $listPasosVideos[1]->strAyudaLink != '') {
-          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[1]->strAyudaLink.'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[1]['strAyudaLink'] != null && $listPasosVideos[1]['strAyudaLink'] != '') {
+          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[1]['strAyudaLink'].'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
         } ?>
     </div>
 
@@ -146,11 +145,11 @@
       <strong>
         <a href="/user/?action=tab_Paso_3"> Paso 3 - </strong> Metas (<?php echo ($gDataPaso_3 == null ? 'PENDIENTE' : 'Completada') ?>)
         </a>
-        <?php if ($listPasosVideos != null && $listPasosVideos[2]->strURL != null && $listPasosVideos[2]->strURL != '') {
-          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[2]->strURL."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[2]['strURL'] != null && $listPasosVideos[2]['strURL'] != '') {
+          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[2]['strURL']."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
         } ?>
-        <?php if ($listPasosVideos != null && $listPasosVideos[2]->strAyudaLink != null && $listPasosVideos[2]->strAyudaLink != '') {
-          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[2]->strAyudaLink.'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[2]['strAyudaLink'] != null && $listPasosVideos[2]['strAyudaLink'] != '') {
+          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[2]['strAyudaLink'].'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
         } ?>
     </div>
 
@@ -158,44 +157,44 @@
       <strong>
         <a href="/user/?action=tab_Paso_4"> Paso 4 - </strong> Conoce tu Plan Nutricional
         </a>
-        <?php if ($listPasosVideos != null && $listPasosVideos[3]->strURL != null && $listPasosVideos[3]->strURL != '') {
-          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[3]->strURL."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[3]['strURL'] != null && $listPasosVideos[3]['strURL'] != '') {
+          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[3]['strURL']."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
         } ?>
-        <?php if ($listPasosVideos != null && $listPasosVideos[3]->strAyudaLink != null && $listPasosVideos[3]->strAyudaLink != '') {
-          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[3]->strAyudaLink.'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[3]['strAyudaLink'] != null && $listPasosVideos[3]['strAyudaLink'] != '') {
+          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[3]['strAyudaLink'].'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
         } ?>
     </div>
     <div class="alert alert-info" role="alert">
       <strong>
         <a href="/user/?action=tab_Paso_8"> Paso 5 - </strong> Elige tu Plan de Ejercicios
         </a>
-        <?php if ($listPasosVideos != null && $listPasosVideos[4]->strURL != null && $listPasosVideos[4]->strURL != '') {
-          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[4]->strURL."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[4]['strURL'] != null && $listPasosVideos[4]['strURL'] != '') {
+          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[4]['strURL']."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
         } ?>
-        <?php if ($listPasosVideos != null && $listPasosVideos[4]->strAyudaLink != null && $listPasosVideos[4]->strAyudaLink != '') {
-          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[4]->strAyudaLink.'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[4]['strAyudaLink'] != null && $listPasosVideos[4]['strAyudaLink'] != '') {
+          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[4]['strAyudaLink'].'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
         } ?>
     </div>
     <div class="alert alert-info" role="alert">
       <strong>
         <a href="/user/?action=tab_Paso_5"> Paso 6 - </strong> Ingresa tus comidas en tu Food Journal
         </a>
-        <?php if ($listPasosVideos != null && $listPasosVideos[5]->strURL != null && $listPasosVideos[5]->strURL != '') {
-          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[5]->strURL."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[5]['strURL'] != null && $listPasosVideos[5]['strURL'] != '') {
+          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[5]['strURL']."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
         } ?>
-        <?php if ($listPasosVideos != null && $listPasosVideos[5]->strAyudaLink != null && $listPasosVideos[5]->strAyudaLink != '') {
-          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[5]->strAyudaLink.'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[5]['strAyudaLink'] != null && $listPasosVideos[5]['strAyudaLink'] != '') {
+          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[5]['strAyudaLink'].'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
         } ?>
     </div>
     <div class="alert alert-info" role="alert">
       <strong>
         <a href="/user/?action=tab_Paso_7"> Paso 7 - </strong> Lleva control de tu progreso
         </a>
-        <?php if ($listPasosVideos != null && $listPasosVideos[6]->strURL != null && $listPasosVideos[6]->strURL != '') {
-          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[6]->strURL."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[6]['strURL'] != null && $listPasosVideos[6]['strURL'] != '') {
+          echo '<span style="float: right;cursor: pointer;" onClick="fnPasosMostrarVideo('."'".$listPasosVideos[6]['strURL']."'".');"><i class="fa fa-video-camera" aria-hidden="true"></i></span>';
         } ?>
-        <?php if ($listPasosVideos != null && $listPasosVideos[6]->strAyudaLink != null && $listPasosVideos[6]->strAyudaLink != '') {
-          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[6]->strAyudaLink.'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
+        <?php if ($listPasosVideos != null && $listPasosVideos[6]['strAyudaLink'] != null && $listPasosVideos[6]['strAyudaLink'] != '') {
+          echo '<a style="float: right;cursor: pointer;" href="'.$listPasosVideos[6]['strAyudaLink'].'"><i class="fa fa-question-circle" aria-hidden="true"></i></a>';
         } ?>
     </div>
   </div>
@@ -232,8 +231,8 @@
               foreach ($listPasosVideos as $key) {
                 echo '<tr class="info">
                         <td>'.$intContadorPasos.'</td>
-                        <td><input type="text" class="form-control" name="decId_'.$intContadorPasos.'" placeholder="Url youtube" value="'.$key->strURL.'"></td>
-                        <td><input type="text" class="form-control" name="strAyuda_'.$intContadorPasos.'" placeholder="Link pagina ayuda" value="'.$key->strAyudaLink.'"></td>
+                        <td><input type="text" class="form-control" name="decId_'.$intContadorPasos.'" placeholder="Url youtube" value="'.$key['strURL'].'"></td>
+                        <td><input type="text" class="form-control" name="strAyuda_'.$intContadorPasos.'" placeholder="Link pagina ayuda" value="'.$key['strAyudaLink'].'"></td>
                       </tr>';
                 $intContadorPasos += 1;
               }
@@ -257,10 +256,13 @@
     <select id="cbUsuarioInfo">
       <option selected="true" disabled="disabled">Ver informacion. Usuario - nombres - correo</option>
 <?php
-    $users = get_users(['meta_key' => 'first_name','orderby' => 'meta_value','order' => 'ASC' ]);
+    // $users = get_users(['meta_key' => 'first_name','orderby' => 'meta_value','order' => 'ASC' ]);
+    $users = get_results('SELECT * FROM wp_users');
+    // print_r($users);
     foreach($users as $user){
-            $info = get_user_meta ( $user->ID);
-            echo '<option value="'.$info['nickname'][0].'">'.$info['nickname'][0].' - '.$info['first_name'][0].' '.$info['last_name'][0].' - '.$info['billing_email'][0].'</option>';
+            // $info = get_user_meta ( $user->ID);
+            $info = $user;
+            echo '<option value="'.$info['user_nicename'].'">'.$info['user_nicename'].' - '.$info['user_email'].'</option>';
         }
 ?>
     </select>
@@ -295,10 +297,12 @@
     <select id="cbUsuarioonetoone">
       <option selected="true" disabled="disabled">Usuario One to One - nombres - correo</option>
 <?php
-    $users = get_users(['meta_key' => 'first_name','orderby' => 'meta_value','order' => 'ASC' ]);
+    // $users = get_users(['meta_key' => 'first_name','orderby' => 'meta_value','order' => 'ASC' ]);
+    $users = get_results('SELECT * FROM wp_users');
     foreach($users as $user){
-            $info = get_user_meta ( $user->ID);
-            echo '<option value="'.$info['nickname'][0].'">'.$info['nickname'][0].' - '.$info['first_name'][0].' '.$info['last_name'][0].' - '.$info['billing_email'][0].'</option>';
+            // $info = get_user_meta ( $user->ID);
+            $info = $user;
+            echo '<option value="'.$info['user_nicename'].'">'.$info['user_nicename'].' - '.$info['user_email'].'</option>';
         }
 ?>
     </select>
