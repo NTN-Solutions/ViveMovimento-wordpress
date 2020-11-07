@@ -596,7 +596,7 @@ function fnUsuarioCalculadoraObtener(){
 			$calculadora['strTipo'] = 'PORCIONES Recomendadas';
 			$calculadora['decProteinas'] = fnRedondear($decProteinas[3]);
 			$calculadora['decCarbohidratos'] = fnRedondear($decCarbo[3]);
-			$calculadora['decGrasas'] = fnRedondear($decGrasas[3]*100);
+			$calculadora['decGrasas'] = fnRedondear($decGrasas[3]);
 			$calculadora['decTotal'] = 0;
 			$listCalculadora[3] = $calculadora;
 			
