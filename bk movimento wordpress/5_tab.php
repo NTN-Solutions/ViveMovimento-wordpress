@@ -155,7 +155,7 @@ function fnDiario_clonar(){
     }
 }
 function fnDiario_Detalle($decDiario,$intTiempo){
-    global $wpdb;
+    global $wpdb,$strUsuario;
     $listado = $wpdb->get_results("
         SELECT T.strTiempo,T.bitPrincipal,DD.*, AP.strAlimento
             ,um.strUnidadMedida
@@ -179,10 +179,16 @@ function fnDiario_Detalle($decDiario,$intTiempo){
              )
             ) * 1) intCantidadTomado
         FROM wp_vivemov_alimentos_tiempo T
-        INNER JOIN wp_vivemov_users_diario_detalle DD ON DD.intDiario = $decDiario AND DD.intTiempo = T.intId  
+        INNER JOIN wp_vivemov_users_diario_detalle DD ON DD.intDiario = $decDiario AND DD.strUsuario = '$strUsuario' AND DD.intTiempo = T.intId  
         INNER JOIN wp_vivemov_alimentos_porciones AP ON AP.intId = DD.intAlimentoPorcion
         INNER JOIN wp_vivemov_alimentos_unidad_medida um on um.intId = AP.intUnidadMedida
-        WHERE T.bitActivo = 1 AND T.intId = $intTiempo ORDER BY AP.strAlimento ASC");
+        WHERE
+            DD.strUsuario = '$strUsuario'
+            AND DD.intDiario = $decDiario
+            AND T.bitActivo = 1
+            AND T.intId = $intTiempo
+        ORDER BY AP.strAlimento ASC
+        ");
     return $listado;
 }
 function fnDiario_eliminar($intDetalle,$detEncabezado){
@@ -682,7 +688,7 @@ function fnFoodJournalCore(){
         //se habilita nuevamente los badges de fechas, steven 22/jun/2020 09:40 pm
         // echo '<div class="col-md-3 col-xs-12 col-sm-12 sinPadding" style="display: none;">';
         echo '<div class="col-md-3 col-xs-12 col-sm-12 sinPadding">';
-        echo '  <a class="btn btn-link badge" role="button" data-toggle="collapse" href="#collapseDiario_'.$diario->intId.'" aria-expanded="false" aria-controls="collapseDiario_'.$diario->intId.'">';
+        echo '  <a class="btn btn-link badge" role="button" onClick="fnViveMovimentoDiarioDetalleTabla('.$diario->intId.');" data-toggle="collapse" href="#collapseDiario_'.$diario->intId.'" aria-expanded="false" aria-controls="collapseDiario_'.$diario->intId.'">';
         echo '      <i class="fas fa-calendar-day"></i> Dia '.$intDiaContador.' ('.$datFechaDiario->format('D, d-M-Y').')';
         echo '  </a>';
         echo '</div>';
@@ -810,7 +816,8 @@ function fnFoodJournalCore(){
                 <hr/>
             <div class="table-responsive">
         ';
-        fnViveMovimentoDiarioDetalleTablaCore(strtok($_SERVER["REQUEST_URI"],'?'),$diario,$listTiempos);
+        echo '<div id="div_vivemovimento_tabla_diario_'.$diario->intId.'"></div>';
+        //fnViveMovimentoDiarioDetalleTablaCore(strtok($_SERVER["REQUEST_URI"],'?'),$diario,$listTiempos);
         echo '</div></div>';
         $intDiaContador -= 1;
     }
@@ -905,6 +912,12 @@ function fnFoodJournalCore(){
         });
     }
     function fnViveMovimentoDiarioDetalleTabla(decDiario) {
+        debugger
+        setTimeout(function(){ fnViveMovimentoDiarioDetalleTabla_Core(decDiario); }, 500);
+    }
+    function fnViveMovimentoDiarioDetalleTabla_Core(decDiario) {
+        if(!$('#div_vivemovimento_tabla_diario_'+decDiario).is(':visible'))return;
+        $('#div_vivemovimento_tabla_diario_'+ decDiario).html('Cargando, por favor espere...');
         jQuery.ajax({
             type : "get",
             // dataType : "json",
