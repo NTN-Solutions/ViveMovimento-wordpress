@@ -156,6 +156,7 @@ function fnDiario_clonar(){
 }
 function fnDiario_Detalle($decDiario,$intTiempo){
     global $wpdb,$strUsuario;
+    $strUsuario = fnViveMovimento_usuario();
     $listado = $wpdb->get_results("
         SELECT T.strTiempo,T.bitPrincipal,DD.*, AP.strAlimento
             ,um.strUnidadMedida
@@ -688,7 +689,7 @@ function fnFoodJournalCore(){
         //se habilita nuevamente los badges de fechas, steven 22/jun/2020 09:40 pm
         // echo '<div class="col-md-3 col-xs-12 col-sm-12 sinPadding" style="display: none;">';
         echo '<div class="col-md-3 col-xs-12 col-sm-12 sinPadding">';
-        echo '  <a class="btn btn-link badge" role="button" onClick="fnViveMovimentoDiarioDetalleTabla('.$diario->intId.');" data-toggle="collapse" href="#collapseDiario_'.$diario->intId.'" aria-expanded="false" aria-controls="collapseDiario_'.$diario->intId.'">';
+        echo '  <a class="btn btn-link badge"  onClick="fnViveMovimentoDiarioDetalleTabla('.$diario->intId.');" role="button" data-toggle="collapse" href="#collapseDiario_'.$diario->intId.'" aria-expanded="false" aria-controls="collapseDiario_'.$diario->intId.'">';
         echo '      <i class="fas fa-calendar-day"></i> Dia '.$intDiaContador.' ('.$datFechaDiario->format('D, d-M-Y').')';
         echo '  </a>';
         echo '</div>';
@@ -912,9 +913,25 @@ function fnFoodJournalCore(){
         });
     }
     function fnViveMovimentoDiarioDetalleTabla(decDiario) {
-        debugger
         setTimeout(function(){ fnViveMovimentoDiarioDetalleTabla_Core(decDiario); }, 500);
     }
+    
+    var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+};
+
+
     function fnViveMovimentoDiarioDetalleTabla_Core(decDiario) {
         if(!$('#div_vivemovimento_tabla_diario_'+decDiario).is(':visible'))return;
         $('#div_vivemovimento_tabla_diario_'+ decDiario).html('Cargando, por favor espere...');
@@ -925,6 +942,7 @@ function fnFoodJournalCore(){
             data : {
                 action: "fnViveMovimentoDiarioDetalleTabla"
                 ,intDiario: decDiario                
+                ,infoUsuario: (getUrlParameter('infoUsuario') == null ? '' : getUrlParameter('infoUsuario'))
             },
             success: function(response) {
                 $('#div_vivemovimento_tabla_diario_'+ decDiario).html(response);
